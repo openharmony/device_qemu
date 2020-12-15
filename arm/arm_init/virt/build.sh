@@ -6,7 +6,6 @@
 # error out on errors
 set -e
 OUT_DIR="$1"
-OHOS_BUILD_COMPILER="$4"
 
 function main(){
     ROOT_DIR=$(cd $(dirname "$0");pwd)
