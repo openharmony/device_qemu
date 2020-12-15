@@ -54,25 +54,16 @@ extern "C" {
 
 #define OS_USER_HWI_MIN                 OS_HWI_MIN
 
-#define NUM_HAL_INTERRUPT_CNTPSIRQ      29
-#define NUM_HAL_INTERRUPT_CNTPNSIRQ     30
+#define IRQ_SGI_BASE                    0
+#define IRQ_PPI_BASE                    16
+#define IRQ_SPI_BASE                    32
+
+#define NUM_HAL_INTERRUPT_CNTPSIRQ      (IRQ_PPI_BASE + 13)
+#define NUM_HAL_INTERRUPT_CNTPNSIRQ     (IRQ_PPI_BASE + 14)
 #define OS_TICK_INT_NUM                 NUM_HAL_INTERRUPT_CNTPSIRQ // use secure physical timer for now
 
-#define NUM_HAL_INTERRUPT_TIMER0        37
-#define NUM_HAL_INTERRUPT_TIMER1        37
-#define NUM_HAL_INTERRUPT_TIMER2        38
-#define NUM_HAL_INTERRUPT_TIMER3        38
-
-#if 0
-#define NUM_HAL_INTERRUPT_UART0         39
-#else
-#define NUM_HAL_INTERRUPT_UART0         (31 + 2)
-#endif
-#define NUM_HAL_INTERRUPT_UART1         40
-#define NUM_HAL_INTERRUPT_UART2         41
-
-#define NUM_HAL_INTERRUPT_TIMER         NUM_HAL_INTERRUPT_TIMER0
-#define NUM_HAL_INTERRUPT_HRTIMER       NUM_HAL_INTERRUPT_TIMER3
+#define NUM_HAL_INTERRUPT_UART0         (IRQ_SPI_BASE + 1)
+#define NUM_HAL_INTERRUPT_UART1         (IRQ_SPI_BASE + 8)
 
 #define NUM_HAL_INTERRUPT_NONE          -1
 
