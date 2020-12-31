@@ -32,6 +32,11 @@
 #define _SOC_H
 #include "soc_common.h"
 
+/*
+ * Get the response interrupt number via mcause.
+ * id = mcause & MCAUSE_INT_ID_MASK
+ */
+#define MCAUSE_INT_ID_MASK                            0x7FFFFFF
 #define MSIP                                          0x2000000
 #define MTIMERCMP                                     0x2004000
 #define MTIMER                                        0x200BFF8

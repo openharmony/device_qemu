@@ -29,6 +29,7 @@ CFLAGS        := -I $(LITEOSTOPDIR)/utils                                  \
                  -I $(LITEOSTOPDIR)/kernel/include                         \
                  -I $(LITEOSTOPDIR)/kernel/arch/risc-v                     \
                  -I $(LITEOSTOPDIR)/kernel/arch/risc-v/asm                 \
+                 -I $(LITEOSTOPDIR)/kernel/arch/include                    \
                  -I $(LITEOSTOPDIR)/components/cpup                        \
                  -I $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/include     \
                  -I $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/include/asm \
@@ -38,6 +39,7 @@ CFLAGS        := -I $(LITEOSTOPDIR)/utils                                  \
 LOCAL_CSRCS   := $(wildcard $(LITEOSTOPDIR)/kernel/src/*.c)                       \
                  $(wildcard $(LITEOSTOPDIR)/kernel/src/mm/*.c)                    \
                  $(wildcard $(LITEOSTOPDIR)/kernel/arch/risc-v/*.c)               \
+                 $(wildcard $(LITEOSTOPDIR)/utils/*.c)                            \
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/*.c)       \
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/driver/*.c) \
                  $(wildcard $(LITEOSTOPDIR)/components/cpup/*.c)                  \

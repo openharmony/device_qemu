@@ -32,7 +32,7 @@
 #include "plic.h"
 #include "soc.h"
 #include "los_reg.h"
-#include "los_interrupt.h"
+#include "los_arch_interrupt.h"
 #include "los_debug.h"
 
 #ifdef __cplusplus
@@ -41,7 +41,7 @@ extern "C" {
 #endif
 #endif
 
-static VOID OsMachineExternalInterrupt(UINT32 arg)
+STATIC VOID OsMachineExternalInterrupt(VOID *arg)
 {
     volatile UINT32 *plicReg = (volatile UINT32 *)(PLIC_REG_BASE + 0x4);
     UINT32 irqNum, saveIrqNum;
@@ -50,7 +50,7 @@ static VOID OsMachineExternalInterrupt(UINT32 arg)
     saveIrqNum = irqNum;
 
     if ((irqNum >= OS_RISCV_CUSTOM_IRQ_VECTOR_CNT) || (irqNum == 0)) {
-        OsHwiDefaultHandler(irqNum);
+        HalHwiDefaultHandler((VOID *)irqNum);
     }
 
     irqNum += RISCV_SYS_MAX_IRQ;
@@ -80,7 +80,7 @@ VOID PlicIrqInit()
 
     WRITE_UINT32(0, plicReg);
 
-    ret = LOS_HwiCreate(RISCV_MACH_EXT_IRQ, 0x1, 0, OsMachineExternalInterrupt, 0);
+    ret = HalHwiCreate(RISCV_MACH_EXT_IRQ, 0x1, 0, OsMachineExternalInterrupt, 0);
     if (ret != LOS_OK) {
         PRINT_ERR("Creat machine external failed! ret : 0x%x\n", ret);
     }

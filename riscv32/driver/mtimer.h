@@ -33,6 +33,7 @@
 #define _MTIMER_H
 
 #include "los_compiler.h"
+#include "los_context.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -41,7 +42,7 @@ extern "C" {
 #endif
 
 extern VOID MTimerCpuCycle(UINT32 *contHi, UINT32 *contLo);
-extern UINT32 MTimerTickInit(UINT32 period);
+extern UINT32 MTimerTickInit(OS_TICK_HANDLER handler, UINT32 period);
 
 #ifdef __cplusplus
 #if __cplusplus

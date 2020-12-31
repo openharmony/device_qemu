@@ -43,6 +43,8 @@ extern "C" {
 #endif
 #endif
 
+STATIC OS_TICK_HANDLER g_TickHandler = NULL;
+
 VOID MTimerCpuCycle(UINT32 *contHi, UINT32 *contLo)
 {
     READ_UINT32(*contLo, MTIMER);
@@ -63,16 +65,20 @@ STATIC INLINE VOID UpdateMtimerCmp(UINT32 tick)
     WRITE_UINT32((UINT32)(timer >> 32), MTIMERCMP + 4);
 }
 
-STATIC VOID OsMachineTimerInterrupt(UINT32 sysCycle)
+STATIC VOID OsMachineTimerInterrupt(VOID *sysCycle)
 {
-    OsTickHandler();
-    UpdateMtimerCmp(sysCycle);
+    UINT32 period = (UINT32)(UINTPTR)sysCycle;
+
+    g_TickHandler();
+    UpdateMtimerCmp(period);
 }
 
-UINT32 MTimerTickInit(UINT32 period)
+UINT32 MTimerTickInit(OS_TICK_HANDLER handler, UINT32 period)
 {
     unsigned int ret;
-    ret = LOS_HwiCreate(RISCV_MACH_TIMER_IRQ, 0x1, 0, OsMachineTimerInterrupt, period);
+    g_TickHandler = handler;
+
+    ret = HalHwiCreate(RISCV_MACH_TIMER_IRQ, 0x1, 0, OsMachineTimerInterrupt, period);
     if (ret != LOS_OK) {
         return ret;
     }
@@ -81,7 +87,7 @@ UINT32 MTimerTickInit(UINT32 period)
     WRITE_UINT32(period, MTIMERCMP);
     WRITE_UINT32(0x0, MTIMERCMP + 4);
 
-    OsIrqEnable(RISCV_MACH_TIMER_IRQ);
+    HalIrqEnable(RISCV_MACH_TIMER_IRQ);
     return LOS_OK;
 }
 
