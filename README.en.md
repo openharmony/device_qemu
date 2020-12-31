@@ -15,3 +15,6 @@ The qemu repository is to use QEMU to emulate different hardware platforms.
 
 ```
 
+#### HOWTOs
+
+[QEMU ARM Virt](https://gitee.com/openharmony/device_qemu/blob/master/arm/virt/README.en.md)

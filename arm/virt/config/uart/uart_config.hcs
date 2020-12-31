@@ -1,0 +1,18 @@
+root {
+    platfrom {
+        template uart_controller {
+            match_attr = "";
+            num = 0;
+            baudrate = 115200;
+            fifoRxEn = 1;
+            fifoTxEn = 1;
+            flags = 4;
+            regPbase = 0x09000000;
+            interrupt = 33;
+            iomemCount = 0x48;
+        }
+        controller_0x09000000 :: uart_controller {
+            match_attr = "qemu_virt_uart_0";
+        }
+    }
+}

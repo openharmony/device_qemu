@@ -1,0 +1,40 @@
+ root {
+    device_info {
+        match_attr = "hdf_manager";
+        template host {
+            hostName = "";
+            priority = 100;
+            template device{
+                template deviceNode {
+                    policy = 0;
+                    priority = 100;
+                    preload = 0;
+                    permission = 0664;
+                    moduleName = "";
+                    serviceName = "";
+                    deviceMatchAttr = "";
+                }
+            }
+        }
+        platform :: host {
+            hostName = "platform_host";
+            priority = 50;
+            device_uart :: device {
+                device0 :: deviceNode {
+                    policy = 1;
+                    priority = 40;
+                    permission = 0644;
+                    moduleName = "HDF_PLATFORM_UART";
+                    serviceName = "HDF_PLATFORM_UART_0";
+                    deviceMatchAttr = "qemu_virt_uart_0";
+                }
+            }
+        }
+        network :: host {
+        }
+        storage :: host {
+        }
+        media :: host {
+        }
+    }
+}
