@@ -59,7 +59,7 @@ _start:
     li    t0, RISCV_MSTATUS_MPP
     csrw  mstatus, t0
     csrw  mie, zero
-    la    t0, TrapVector
+    la    t0, HalTrapVector
     csrw  mtvec, t0      # direct mode
 
     .option push

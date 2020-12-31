@@ -14,7 +14,7 @@ SECTIONS
     __text_start = .;
     . = ALIGN(0x10);
     *(.start.text)
-    *(.interrupt.text)
+    *(.interrupt.*)
     *(.text.*)
     . = ALIGN(0x20);
     __rodata_start = .;

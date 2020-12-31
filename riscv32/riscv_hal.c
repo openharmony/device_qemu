@@ -41,7 +41,7 @@ extern "C" {
 #endif
 #endif
 
-VOID OsIrqDisable(UINT32 vector)
+VOID HalIrqDisable(UINT32 vector)
 {
     if (vector <= RISCV_SYS_MAX_IRQ) {
         CLEAR_CSR(mie, 1 << vector);
@@ -50,7 +50,7 @@ VOID OsIrqDisable(UINT32 vector)
     }
 }
 
-VOID OsIrqEnable(UINT32 vector)
+VOID HalIrqEnable(UINT32 vector)
 {
     if (vector <= RISCV_SYS_MAX_IRQ) {
         SET_CSR(mie, 1 << vector);
@@ -59,12 +59,12 @@ VOID OsIrqEnable(UINT32 vector)
     }
 }
 
-VOID OsSetLocalInterPri(UINT32 interPriNum, UINT16 prior)
+VOID HalSetLocalInterPri(UINT32 interPriNum, UINT16 prior)
 {
     PlicIrqSetPrio(interPriNum, prior);
 }
 
-VOID OsGetCpuCycle(UINT32 *cntHi, UINT32 *cntLo)
+VOID HalGetSysCpuCycle(UINT32 *cntHi, UINT32 *cntLo)
 {
     if ((cntHi == NULL) || (cntLo == NULL)) {
         return;
@@ -73,7 +73,7 @@ VOID OsGetCpuCycle(UINT32 *cntHi, UINT32 *cntLo)
     MTimerCpuCycle(cntHi, cntLo);
 }
 
-BOOL OsBackTraceFpCheck(UINT32 value)
+BOOL HalBackTraceFpCheck(UINT32 value)
 {
     if (value >= (UINT32)(UINTPTR)(&__bss_end)) {
         return TRUE;
@@ -86,7 +86,7 @@ BOOL OsBackTraceFpCheck(UINT32 value)
     return FALSE;
 }
 
-BOOL OsBackTraceRaCheck(UINT32 value)
+BOOL HalBackTraceRaCheck(UINT32 value)
 {
     BOOL ret = FALSE;
 
@@ -98,10 +98,10 @@ BOOL OsBackTraceRaCheck(UINT32 value)
     return ret;
 }
 
-VOID SysClockInit(UINT32 period)
+VOID HalClockInit(OS_TICK_HANDLER handler, UINT32 period)
 {
     UINT32 ret;
-    ret = MTimerTickInit(period);
+    ret = MTimerTickInit(handler, period);
     if (ret != LOS_OK) {
         PRINT_ERR("Creat Mtimer failed! ret : 0x%x \n", ret);
         return;
@@ -109,7 +109,7 @@ VOID SysClockInit(UINT32 period)
 
     PlicIrqInit();
 
-    OsIrqEnable(RISCV_MACH_EXT_IRQ);
+    HalIrqEnable(RISCV_MACH_EXT_IRQ);
 }
 
 #ifdef __cplusplus

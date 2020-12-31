@@ -33,6 +33,7 @@
 #define _RISCV_HAL_H
 
 #include "los_compiler.h"
+#include "los_context.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -49,15 +50,15 @@ extern CHAR *__text_start;
 extern CHAR *__text_end;
 extern CHAR *__bss_end;
 
-extern BOOL OsBackTraceRaCheck(UINT32 value);
-extern BOOL OsBackTraceFpCheck(UINT32 value);
+extern BOOL HalBackTraceRaCheck(UINT32 value);
+extern BOOL HalBackTraceFpCheck(UINT32 value);
 
-extern VOID OsIrqDisable(UINT32 vector);
-extern VOID OsIrqEnable(UINT32 vector);
-extern VOID OsSetLocalInterPri(UINT32 vector, UINT16 prior);
+extern VOID HalIrqDisable(UINT32 vector);
+extern VOID HalIrqEnable(UINT32 vector);
+extern VOID HalSetLocalInterPri(UINT32 vector, UINT16 prior);
 
-extern VOID OsGetCpuCycle(UINT32 *cntHi, UINT32 *cntLo);
-extern VOID SysClockInit(UINT32 period);
+extern VOID HalGetSysCpuCycle(UINT32 *cntHi, UINT32 *cntLo);
+extern VOID HalClockInit(OS_TICK_HANDLER handler, UINT32 period);
 
 #ifdef __cplusplus
 #if __cplusplus
