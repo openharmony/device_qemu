@@ -1,5 +1,6 @@
 #include "device_info/device_info.hcs"
 #include "uart/uart_config.hcs"
+#include "cfiflash/cfi_config.hcs"
 
 root {
     module = "qemu,arm_virt_chip";

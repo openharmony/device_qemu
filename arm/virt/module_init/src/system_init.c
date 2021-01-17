@@ -109,18 +109,18 @@ void SystemInit(void)
     dprintf("\n************************************************************\n");
 #endif
 
-#ifdef LOSCFG_PLATFORM_ROOTFS
-    dprintf("OsMountRootfs start ...\n");
-    OsMountRootfs();
-    dprintf("OsMountRootfs end ...\n");
-#endif
-
 #ifdef LOSCFG_DRIVERS_HDF
     dprintf("DeviceManagerStart start ...\n");
     if (DeviceManagerStart()) {
         PRINT_ERR("No drivers need load by hdf manager!");
     }
     dprintf("DeviceManagerStart end ...\n");
+#endif
+
+#ifdef LOSCFG_PLATFORM_ROOTFS
+    dprintf("OsMountRootfs start ...\n");
+    OsMountRootfs();
+    dprintf("OsMountRootfs end ...\n");
 #endif
 
 #ifdef LOSCFG_DRIVERS_HDF_PLATFORM_UART
