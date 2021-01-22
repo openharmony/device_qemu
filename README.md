@@ -14,3 +14,7 @@
     └── project                                            --- 编译构建工程目录
 
 ```
+
+#### 使用说明
+
+[QEMU ARM Virt](https://gitee.com/openharmony/device_qemu/blob/master/arm/virt/README.md)
