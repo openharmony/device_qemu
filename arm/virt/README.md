@@ -38,10 +38,22 @@ a) 如果没有安装 `qemu-system-arm` ，安装请参考链接 [Qemu installat
 
 提示: 当前引入的功能在virt-5.1的目标machine已经测试过了，不能保证所有的Qemu版本都能够运行成功，因此需要保证你的qemu-system-arm版本尽可能的新。
 
-b) 运行`qemu-system-arm`
+b) 准备flash映像文件。目前系统硬编码flash容量64M，分三个分区：分区一10M用于内核映像，分区二27M用于rootfs，分区三27M用于userfs。Linux系统可参考如下命令：
+```
+sudo modprobe mtdram total_size=65536 erase_size=128 writebuf_size=2048
+sudo mtdpart add /dev/mtd0 kernel 0 10485760
+sudo mtdpart add /dev/mtd0 root 10485760 28311552
+sudo mtdpart add /dev/mtd0 user 38797312 28311552
+sudo nandwrite -p /dev/mtd1 out/qemu_arm_virt_ca7/OHOS_Image.bin
+sudo nandwrite -p /dev/mtd2 out/qemu_arm_virt_ca7/rootfs.img
+sudo nandwrite -p /dev/mtd3 out/qemu_arm_virt_ca7/userfs.img
+sudo dd if=/dev/mtd0 of=flash.img
+sudo chown USERNAME flash.img
+```
+c) 运行`qemu-system-arm`，进入用户态命令行。
 
 ```
-qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -kernel ./out/qemu_arm_virt_ca7/OHOS_Image -m 1G
+qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw
 ```
 
 ```

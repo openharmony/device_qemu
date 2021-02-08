@@ -44,10 +44,23 @@ For details, please refer to the HOWTO: [Qemu installation](https://www.qemu.org
 Note: The introduced functionality was tested on virt-5.1 target machine. It is not guaranteed to work with any other version
       so make sure that your qemu-system-arm emulator is up to date.
 
-b) Run `qemu-system-arm`  
+b) Prepare flash image file. Now its capacity was hard-coded 64M with 3 partitions, 1st 10M for kernel image, 2nd 27M for rootfs, 3rd 27M for userfs. Linux host can reference following commands:
+```
+sudo modprobe mtdram total_size=65536 erase_size=128 writebuf_size=2048
+sudo mtdpart add /dev/mtd0 kernel 0 10485760
+sudo mtdpart add /dev/mtd0 root 10485760 28311552
+sudo mtdpart add /dev/mtd0 user 38797312 28311552
+sudo nandwrite -p /dev/mtd1 out/qemu_arm_virt_ca7/OHOS_Image.bin
+sudo nandwrite -p /dev/mtd2 out/qemu_arm_virt_ca7/rootfs.img
+sudo nandwrite -p /dev/mtd3 out/qemu_arm_virt_ca7/userfs.img
+sudo dd if=/dev/mtd0 of=flash.img
+sudo chown USERNAME flash.img
+```
+
+c) Run `qemu-system-arm`, enter user-space command line.
 
 ```
-qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -kernel ./out/qemu_arm_virt_ca7/OHOS_Image -m 1G
+qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw
 ```
 
 
