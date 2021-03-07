@@ -66,10 +66,26 @@ sudo rmmod mtdram
 ```
 Note: bootargs only rootsize is adjustable. 3nd partition beyond it mounted at /storage, writable.
 
-c) Run `qemu-system-arm`, enter user-space command line.
+c) Config host net bridge device. In Linux we can do like this:
+```
+sudo modprobe tun tap
+sudo ip link add br0 type bridge
+sudo ip address add 10.0.2.2/24 dev br0
+sudo ip link set dev br0 up
+
+# comment these if already done
+sudo mkdir -p /etc/qemu
+echo 'allow br0' | sudo tee -a /etc/qemu/bridge.conf
+
+# comment this if the file doesn't exist
+echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
+```
+Note: The guest network is hardcoded as 10.0.2.0/24, gateway 10.0.2.2, default ip 10.0.2.15. Different guest instance should use different MAC and IP(better use different flash image). MAC can be assigned through command line. IP can be changed in OHOS command line, e.g. `ifconfig vn0 inet 10.0.2.30`, or whatever method.
+
+d) Run `qemu-system-arm`, enter user-space command line.
 
 ```
-qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw
+qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw -netdev bridge,id=net0 -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66
 ```
 
 
