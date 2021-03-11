@@ -13,24 +13,40 @@
  * limitations under the License.
  */
 
-#ifndef _UART_H
-#define _UART_H
+#ifndef __SOC_SYS_CTRL_H__
+#define __SOC_SYS_CTRL_H__
 
-#include "los_compiler.h"
+#include "asm/platform.h"
 
 #ifdef __cplusplus
 #if __cplusplus
 extern "C" {
-#endif
-#endif
+#endif /* __cplusplus */
+#endif /* __cplusplus */
 
-extern INT32 UartPutc(INT32 c, VOID *file);
-extern INT32 UartOut(INT32 c, VOID *file);
-extern VOID UartInit(VOID);
+#define REG_SC_CTRL            0
+#define REG_SC_SYSRES            0x4
+#define PERIPHCTRL24            0x94
+
+#define REG_SC_GEN0            0x0138
+#define REG_SC_GEN1            0x013c
+#define REG_SC_GEN2            0x0140
+#define REG_SC_GEN3            0x0144
+#define REG_SC_GEN4            0x0148
+
+#define REG_SC_DDRT0            0x0090
+#define NORMAL_BOOTMODE_OFFSET        9
+#define NORMAL_BOOTMODE_MASK        3
+
+/********** Communication Register and flag used by bootrom *************/
+#define REG_START_FLAG         (SYS_CTRL_REG_BASE + REG_SC_GEN1)
+#define CONFIG_START_MAGIC     (0x444f574e)
 
 #ifdef __cplusplus
 #if __cplusplus
 }
 #endif /* __cplusplus */
 #endif /* __cplusplus */
+
 #endif
+

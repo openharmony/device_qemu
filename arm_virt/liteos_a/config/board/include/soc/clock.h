@@ -13,24 +13,22 @@
  * limitations under the License.
  */
 
-#ifndef _UART_H
-#define _UART_H
+#ifndef __SOC_CLOCK_H__
+#define __SOC_CLOCK_H__
 
-#include "los_compiler.h"
+#include "asm/platform.h"
 
 #ifdef __cplusplus
 #if __cplusplus
-extern "C" {
+extern "C"{
 #endif
-#endif
-
-extern INT32 UartPutc(INT32 c, VOID *file);
-extern INT32 UartOut(INT32 c, VOID *file);
-extern VOID UartInit(VOID);
+#endif /* __cplusplus */
 
 #ifdef __cplusplus
 #if __cplusplus
 }
-#endif /* __cplusplus */
-#endif /* __cplusplus */
 #endif
+#endif /* __cplusplus */
+
+#endif
+

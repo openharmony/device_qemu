@@ -51,12 +51,11 @@ SECTIONS
     . += START_AND_IRQ_STACK_SIZE;
     __start_and_irq_stack_top = .;
   } > ram
-/*
+
   .heap (NOLOAD): ALIGN(0x40)
   {
     __heap_start = .;
-    . += HEAP_SIZE;
-    __heap_end = .;
   } > ram
-*/
+
+  __heap_size = RAM_ADDR_SIZE - (__heap_start - __text_start);
 }

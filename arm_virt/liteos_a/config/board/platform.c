@@ -13,24 +13,37 @@
  * limitations under the License.
  */
 
-#ifndef _UART_H
-#define _UART_H
-
-#include "los_compiler.h"
-
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
+#include "asm/platform.h"
+#include "asm/io.h"
+#include "soc/sys_ctrl.h"
+#include "los_typedef.h"
+#include "los_hwi.h"
+#include "los_task_pri.h"
+#include "los_spinlock.h"
+#ifdef LOSCFG_DRIVERS_RANDOM
+#include "soc/random.h"
 #endif
+
+UINT32 OsRandomStackGuard(VOID)
+{
+#ifdef LOSCFG_DRIVERS_RANDOM
+    UINT32 stackGuard = 0;
+
+    HiRandomHwInit();
+    (VOID)HiRandomHwGetInteger(&stackGuard);
+    HiRandomHwDeinit();
+    return stackGuard;
+#else
+    return 0;
 #endif
-
-extern INT32 UartPutc(INT32 c, VOID *file);
-extern INT32 UartOut(INT32 c, VOID *file);
-extern VOID UartInit(VOID);
-
-#ifdef __cplusplus
-#if __cplusplus
 }
-#endif /* __cplusplus */
-#endif /* __cplusplus */
-#endif
+
+void OsReboot(void)
+{
+    writel(0xffffffff, (SYS_CTRL_REG_BASE + REG_SC_SYSRES));
+}
+
+void InitRebootHook(void)
+{
+    OsSetRebootHook(OsReboot);
+}

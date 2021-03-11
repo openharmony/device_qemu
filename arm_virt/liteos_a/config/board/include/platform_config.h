@@ -13,24 +13,25 @@
  * limitations under the License.
  */
 
-#ifndef _UART_H
-#define _UART_H
+#ifndef __PLATFORM_CONFIG_H__
+#define __PLATFORM_CONFIG_H__
 
-#include "los_compiler.h"
+#include "soc/clock.h"
 
 #ifdef __cplusplus
 #if __cplusplus
 extern "C" {
-#endif
-#endif
+#endif /* __cplusplus */
+#endif /* __cplusplus */
 
-extern INT32 UartPutc(INT32 c, VOID *file);
-extern INT32 UartOut(INT32 c, VOID *file);
-extern VOID UartInit(VOID);
+#define LOSCFG_PLATFORM_HWI_LIMIT       96
+#define OS_SYS_CLOCK                    50000000
+#define LOSCFG_BASE_CORE_TICK_HW_TIME   NO
 
 #ifdef __cplusplus
 #if __cplusplus
 }
 #endif /* __cplusplus */
 #endif /* __cplusplus */
+
 #endif

@@ -13,24 +13,36 @@
  * limitations under the License.
  */
 
-#ifndef _UART_H
-#define _UART_H
-
-#include "los_compiler.h"
+#ifndef _RESET_SHELL_H
+#define _RESET_SHELL_H
+#include "los_task.h"
 
 #ifdef __cplusplus
 #if __cplusplus
 extern "C" {
-#endif
-#endif
+#endif /* __cplusplus */
+#endif /* __cplusplus */
 
-extern INT32 UartPutc(INT32 c, VOID *file);
-extern INT32 UartOut(INT32 c, VOID *file);
-extern VOID UartInit(VOID);
+
+typedef VOID* (*STORAGE_HOOK_FUNC)(VOID*);
+
+typedef struct tagHookFuncNode {
+    STORAGE_HOOK_FUNC  pHandler;
+    VOID *pParam;
+    struct tagHookFuncNode *pNext;
+}Hook_Func_Node;
+
+extern Hook_Func_Node *g_hook_func_node;
+
+UINT32 osReHookFuncAdd(STORAGE_HOOK_FUNC handler, VOID *param);
+UINT32 osReHookFuncDel(STORAGE_HOOK_FUNC handler);
+VOID osReHookFuncHandle(VOID);
+extern void cmd_reset(void);
 
 #ifdef __cplusplus
 #if __cplusplus
 }
 #endif /* __cplusplus */
 #endif /* __cplusplus */
+
 #endif

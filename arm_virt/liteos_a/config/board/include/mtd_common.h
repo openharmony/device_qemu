@@ -13,24 +13,14 @@
  * limitations under the License.
  */
 
-#ifndef _UART_H
-#define _UART_H
+#ifndef __MTD_COMMON_H__
+#define __MTD_COMMON_H__
 
-#include "los_compiler.h"
+#include "fs/fs.h"
 
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif
-#endif
+const struct file_operations_vfs *GetMtdCharFops(void);
+const struct block_operations *GetDevSpinorOps(void);
+const struct block_operations *GetDevNandOps(void);
 
-extern INT32 UartPutc(INT32 c, VOID *file);
-extern INT32 UartOut(INT32 c, VOID *file);
-extern VOID UartInit(VOID);
+#endif /* End of __MTD_COMMON_H__ */
 
-#ifdef __cplusplus
-#if __cplusplus
-}
-#endif /* __cplusplus */
-#endif /* __cplusplus */
-#endif

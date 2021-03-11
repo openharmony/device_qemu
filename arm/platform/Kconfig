@@ -1,7 +1,0 @@
-config DRIVERS_HDF_PLATFORM
-    bool "Enable HDF platform driver"
-    default n
-    depends on DRIVERS_HDF
-    help
-      Answer Y to enable HDF platform driver.
-

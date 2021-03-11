@@ -1,3 +1,16 @@
+#Copyright (c) 2020-2021 Huawei Device Co., Ltd.
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing, software
+#distributed under the License is distributed on an "AS IS" BASIS,
+#WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#See the License for the specific language governing permissions and
+#limitations under the License.
+
 LITEOSTOPDIR := $(shell if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
 LITEOSTOPDIR := ../../../kernel/liteos_m
 OPENHARMONYDIR := ../../..
@@ -6,8 +19,8 @@ OPENHARMONYDIR := $(realpath $(OPENHARMONYDIR))
 export LITEOSTOPDIR
 
 # Selective compiler
-COMPILE_NAME := riscv32-unknown-elf
-#COMPILE_NAME = riscv-none-embed
+#COMPILE_NAME := riscv32-unknown-elf
+COMPILE_NAME = riscv-none-embed
 ifeq ($(COMPILE_NAME), riscv-none-embed)
 CROSS_COMPILE = riscv-none-embed-
 VERSION_NUM = 8.1.0
@@ -27,8 +40,8 @@ LITEOS_PLATFORM := riscv32
 # System default
 CFLAGS        := -I $(LITEOSTOPDIR)/utils                                  \
                  -I $(LITEOSTOPDIR)/kernel/include                         \
-                 -I $(LITEOSTOPDIR)/kernel/arch/risc-v                     \
-                 -I $(LITEOSTOPDIR)/kernel/arch/risc-v/asm                 \
+                 -I $(LITEOSTOPDIR)/kernel/arch/risc-v/riscv32/gcc         \
+                 -I $(LITEOSTOPDIR)/kernel/arch/risc-v/riscv32/gcc/asm     \
                  -I $(LITEOSTOPDIR)/kernel/arch/include                    \
                  -I $(LITEOSTOPDIR)/components/cpup                        \
                  -I $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/include     \
@@ -38,14 +51,14 @@ CFLAGS        := -I $(LITEOSTOPDIR)/utils                                  \
 
 LOCAL_CSRCS   := $(wildcard $(LITEOSTOPDIR)/kernel/src/*.c)                       \
                  $(wildcard $(LITEOSTOPDIR)/kernel/src/mm/*.c)                    \
-                 $(wildcard $(LITEOSTOPDIR)/kernel/arch/risc-v/*.c)               \
+                 $(wildcard $(LITEOSTOPDIR)/kernel/arch/risc-v/riscv32/gcc/*.c)   \
                  $(wildcard $(LITEOSTOPDIR)/utils/*.c)                            \
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/*.c)       \
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/driver/*.c) \
                  $(wildcard $(LITEOSTOPDIR)/components/cpup/*.c)                  \
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/libc/*.c)
 
-LOCAL_ASMSRCS := $(wildcard $(LITEOSTOPDIR)/kernel/arch/risc-v/*.S)                 \
+LOCAL_ASMSRCS := $(wildcard $(LITEOSTOPDIR)/kernel/arch/risc-v/riscv32/gcc/*.S)           \
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/los_start.S) \
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/libc/*.S)
 

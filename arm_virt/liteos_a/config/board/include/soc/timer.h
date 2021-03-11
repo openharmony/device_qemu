@@ -13,20 +13,21 @@
  * limitations under the License.
  */
 
-#ifndef _UART_H
-#define _UART_H
+#ifndef __SOC_TIMER_H__
+#define __SOC_TIMER_H__
 
-#include "los_compiler.h"
+#include "asm/platform.h"
+#include "los_bitmap.h"
 
 #ifdef __cplusplus
 #if __cplusplus
 extern "C" {
-#endif
-#endif
+#endif /* __cplusplus */
+#endif /* __cplusplus */
 
-extern INT32 UartPutc(INT32 c, VOID *file);
-extern INT32 UartOut(INT32 c, VOID *file);
-extern VOID UartInit(VOID);
+VOID LOS_Udelay(UINT32 usecs);
+VOID LOS_Mdelay(UINT32 msecs);
+VOID reset_timer_masked(VOID);
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -34,3 +35,4 @@ extern VOID UartInit(VOID);
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 #endif
+
