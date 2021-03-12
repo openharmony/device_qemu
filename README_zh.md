@@ -32,7 +32,7 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 
 ## 使用说明<a name="section169045116126"></a>
 
-arm架构参考[QEMU教程 for arm](https://gitee.com/openharmony/device_qemu/blob/master/arm/virt/README.md)，riscv架构教程待后续更新。
+arm架构参考[QEMU教程 for arm](https://gitee.com/openharmony/device_qemu/blob/master/arm_virt/README_zh.md)，riscv架构教程待后续更新。
 
 ## 相关仓<a name="section1371113476307"></a>
 

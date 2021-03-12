@@ -32,7 +32,7 @@ QEMU applies only to the OpenHarmony kernel.
 
 ## Usage<a name="section169045116126"></a>
 
-For details about the ARM architecture, see  [Qemu ARM Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/arm/virt/README.en.md). The RISCV architecture tutorial will be updated later.
+For details about the ARM architecture, see  [Qemu ARM Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/arm_virt/README.md). The RISCV architecture tutorial will be updated later.
 
 ## Repositories Involved<a name="section1371113476307"></a>
 
