@@ -36,5 +36,9 @@ For details about the ARM architecture, see  [Qemu ARM Virt HOWTO](https://gitee
 
 ## Repositories Involved<a name="section1371113476307"></a>
 
-**[device\_qemu](https://gitee.com/openharmony/device_qemu/tree/master)**
+[Kernel subsystem](https://gitee.com/openharmony/docs/blob/master/en/readme/kernel.md)
+
+**device\_qemu**
+
+[kernel\_liteos\_a](https://gitee.com/openharmony/kernel_liteos_a/blob/master/README.md)
 
