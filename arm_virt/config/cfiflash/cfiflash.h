@@ -67,11 +67,11 @@ extern "C" {
 extern volatile uint32_t *g_cfiFlashBase;
 
 int CfiFlashInit(void);
-ssize_t CfiBlkRead(struct inode *inode, unsigned char *buffer,
+ssize_t CfiBlkRead(struct Vnode *vnode, unsigned char *buffer,
             unsigned long long start_sector, unsigned int nsectors);
-ssize_t CfiBlkWrite(struct inode *inode, const unsigned char *buffer,
+ssize_t CfiBlkWrite(struct Vnode *vnode, const unsigned char *buffer,
             unsigned long long start_sector, unsigned int nsectors);
-int CfiBlkGeometry(struct inode *inode, struct geometry *geometry);
+int CfiBlkGeometry(struct Vnode *vnode, struct geometry *geometry);
 
 int CfiMtdErase(struct MtdDev *mtd, UINT64 start, UINT64 bytes, UINT64 *failAddr);
 int CfiMtdRead(struct MtdDev *mtd, UINT64 start, UINT64 bytes, const char *buf);
