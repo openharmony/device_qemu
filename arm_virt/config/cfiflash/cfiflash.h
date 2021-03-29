@@ -27,22 +27,42 @@ extern "C" {
 #define HDF_LOG_TAG cfi_flash_driver
 #define CFI_DRIVER "/dev/cfiflash"
 
-#define CFIFLASH_CAPACITY       (64 * 1024 * 1024)
-#define CFIFLASH_ONE_BANK_BITS  25                  /* 32M */
+#define CFIFLASH_CAPACITY               (64 * 1024 * 1024)
+#define CFIFLASH_ONE_BANK_BITS          25                  /* 32M */
 
-#define CFIFLASH_SEC_SIZE       512
-#define CFIFLASH_SEC_SIZE_BITS  9
-#define CFIFLASH_SECTORS        (CFIFLASH_CAPACITY / CFIFLASH_SEC_SIZE)
-#define CFIFLASH_SEC_TO_BYTES(sector) ({ sector << CFIFLASH_SEC_SIZE_BITS; })
+#define CFIFLASH_SEC_SIZE               512
+#define CFIFLASH_SEC_SIZE_BITS          9
+#define CFIFLASH_SECTORS                (CFIFLASH_CAPACITY / CFIFLASH_SEC_SIZE)
 
 #define CFIFLASH_PAGE_SIZE                  2048
 #define CFIFLASH_PAGE_WORDS                 (CFIFLASH_PAGE_SIZE / sizeof(uint32_t))
 #define CFIFLASH_PAGE_WORDS_MASK            (CFIFLASH_PAGE_WORDS - 1)
-#define CFIFLASH_PAGE_WORDOFFSET(addr)      ({ (addr) & CFIFLASH_PAGE_WORDS_MASK; })
 #define CFIFLASH_ERASEBLK_SIZE              (128 * 1024)
 #define CFIFLASH_ERASEBLK_WORDS             (CFIFLASH_ERASEBLK_SIZE / sizeof(uint32_t))
 #define CFIFLASH_ERASEBLK_WORDMASK          (~(CFIFLASH_ERASEBLK_WORDS - 1))
-#define CFIFLASH_ERASEBLK_WORDADDR(addr)    ({ (addr) & CFIFLASH_ERASEBLK_WORDMASK; })
+
+#define CFIFLASH_QUERY_CMD              0x98
+#define CFIFLASH_QUERY_BASE             0x55
+#define CFIFLASH_QUERY_QRY              0x10
+#define CFIFLASH_QUERY_VENDOR           0x13
+#define CFIFLASH_QUERY_SIZE             0x27
+#define CFIFLASH_QUERY_PAGE_BITS        0x2A
+#define CFIFLASH_QUERY_ERASE_REGION     0x2C
+#define CFIFLASH_QUERY_BLOCKS           0x2D
+#define CFIFLASH_QUERY_BLOCK_SIZE       0x2F
+#define CFIFLASH_EXPECT_VENDOR          1       /* Intel command set */
+#define CFIFLASH_EXPECT_PAGE_BITS       11
+#define CFIFLASH_EXPECT_BLOCKS          255     /* plus 1: # of blocks */
+#define CFIFLASH_EXPECT_BLOCK_SIZE      512     /* times 256: block size */
+#define CFIFLASH_EXPECT_ERASE_REGION    1
+
+#define CFIFLASH_CMD_CLEAR_STATUS       0x50
+#define CFIFLASH_CMD_READ_STATUS        0x70
+#define CFIFLASH_CMD_CONFIRM            0xD0
+#define CFIFLASH_CMD_BUFWRITE           0xE8
+#define CFIFLASH_CMD_RESET              0xFF
+
+#define CFIFLASH_STATUS_READY_MASK      0x80
 
 extern volatile uint32_t *g_cfiFlashBase;
 
@@ -53,9 +73,9 @@ ssize_t CfiBlkWrite(struct inode *inode, const unsigned char *buffer,
             unsigned long long start_sector, unsigned int nsectors);
 int CfiBlkGeometry(struct inode *inode, struct geometry *geometry);
 
-int CfiMtdErase(struct MtdDev *mtd, UINT64 start, UINT64 len, UINT64 *failAddr);
-int CfiMtdRead(struct MtdDev *mtd, UINT64 start, UINT64 len, const char *buf);
-int CfiMtdWrite(struct MtdDev *mtd, UINT64 start, UINT64 len, const char *buf);
+int CfiMtdErase(struct MtdDev *mtd, UINT64 start, UINT64 bytes, UINT64 *failAddr);
+int CfiMtdRead(struct MtdDev *mtd, UINT64 start, UINT64 bytes, const char *buf);
+int CfiMtdWrite(struct MtdDev *mtd, UINT64 start, UINT64 bytes, const char *buf);
 
 #ifdef __cplusplus
 #if __cplusplus
