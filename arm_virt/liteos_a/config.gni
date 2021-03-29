@@ -25,10 +25,10 @@ board_arch = ""
 
 # Toolchain name used for system compiling.
 # E.g. gcc-arm-none-eabi, arm-linux-harmonyeabi-gcc, ohos-clang,  riscv32-unknown-elf.
-# Note: The default toolchain is "ohos-clang". It's not mandatory if you use the default toochain.
+# Note: The default toolchain is "ohos-clang". It's not mandatory if you use the default toolchain.
 board_toolchain = ""
 
-# The toolchain path instatlled, it's not mandatory if you have added toolchian path to your ~/.bashrc.
+# The toolchain path installed, it's not mandatory if you have added toolchain path to your ~/.bashrc.
 board_toolchain_path = ""
 
 # Compiler prefix.

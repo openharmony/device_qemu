@@ -19,10 +19,10 @@ board_arch = "rv32imac"
 
 # Toolchain used for system compiling.
 # For example: gcc-arm-none-eabi, arm-linux-ohoseabi-gcc, ohos-clang,  riscv32-unknown-elf.
-# Note: The default toolchain is "ohos-clang". It's not mandatory if you use the default toochain.
+# Note: The default toolchain is "ohos-clang". It's not mandatory if you use the default toolchain.
 board_toolchain = "riscv32-unknown-elf"
 
-# The path which toolchain instatlled, it's not mandatory if toolchain path has been added to your ~/.bashrc.
+# The path which toolchain installed, it's not mandatory if toolchain path has been added to your ~/.bashrc.
 board_toolchain_path = ""
 
 # Compiler prefix.
