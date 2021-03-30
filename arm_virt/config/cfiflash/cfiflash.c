@@ -232,7 +232,7 @@ static ssize_t CfiPostRead(char *buffer, char *newbuf, unsigned bytes, ssize_t r
     return ret;
 }
 
-ssize_t CfiBlkRead(struct inode *inode, unsigned char *buffer,
+ssize_t CfiBlkRead(struct Vnode *vnode, unsigned char *buffer,
                    unsigned long long startSector, unsigned int nSectors)
 {
     unsigned int i, wordOffset, bytes;
@@ -250,7 +250,7 @@ ssize_t CfiBlkRead(struct inode *inode, unsigned char *buffer,
         p[i] = CfiFlashReadWord(wordOffset + i);
     }
     ret = nSectors;
-    
+
     return CfiPostRead((char*)buffer, (char*)p, bytes, ret);
 }
 
@@ -288,7 +288,7 @@ static ssize_t CfiPostWrite(const char *buffer, char *newbuf, ssize_t ret)
     return ret;
 }
 
-ssize_t CfiBlkWrite(struct inode *inode, const unsigned char *buffer,
+ssize_t CfiBlkWrite(struct Vnode *vnode, const unsigned char *buffer,
                     unsigned long long startSector, unsigned int nSectors)
 {
     unsigned int wordOffset, bytes;
@@ -308,7 +308,7 @@ ssize_t CfiBlkWrite(struct inode *inode, const unsigned char *buffer,
     return CfiPostWrite((const char*)buffer, (char*)p, ret);
 }
 
-int CfiBlkGeometry(struct inode *inode, struct geometry *geometry)
+int CfiBlkGeometry(struct Vnode *vnode, struct geometry *geometry)
 {
     geometry->geo_available = TRUE,
     geometry->geo_mediachanged = FALSE;

@@ -9,6 +9,9 @@ OUT_DIR="$2"
 KERNEL_DIR=$1
 
 function main(){
+    cp ../../hisilicon/drivers/libs/ohos/llvm/hi3518ev300/libmtd_common.a ../drivers/libs/virt/
+    cp ../../hisilicon/drivers/libs/ohos/llvm/hi3518ev300/libspinor_flash.a ../drivers/libs/virt/
+    cp ../../hisilicon/drivers/libs/ohos/llvm/hi3518ev300/libhdf_uart.a ../drivers/libs/virt/
     pushd $KERNEL_DIR
     cp tools/build/config/qemu_arm_virt_debug_shell.config .config
     make clean OUTDIR=$OUT_DIR && make rootfs -e -j 16 OUTDIR=$OUT_DIR
