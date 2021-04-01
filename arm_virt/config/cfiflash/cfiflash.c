@@ -15,13 +15,12 @@
 /*
  * simple CFI flash driver for QEMU arm 'virt' machine, with:
  *
- * 64M = 2 bank * 1 region * 256 Erase Blocks * 128K(64 pages * 2048B)
+ * 64M = 1 region * 256 Erase Blocks * 256K(2 banks: 64 pages * 4096B)
  * 32 bits, Intel command set
  */
 
-#include "sys/param.h"
 #include "user_copy.h"
-#include "cfiflash.h"
+#include "cfiflash_internal.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -321,6 +320,20 @@ int CfiBlkGeometry(struct Vnode *vnode, struct geometry *geometry)
 
 int CfiMtdErase(struct MtdDev *mtd, UINT64 start, UINT64 bytes, UINT64 *failAddr)
 {
+    uint32_t blkAddr, count, i;
+
+    blkAddr = CfiFlashEraseBlkWordAddr(B2W(start));
+    count = (CfiFlashEraseBlkWordAddr(B2W(start + bytes - 1)) - blkAddr) / CFIFLASH_ERASEBLK_WORDS + 1;
+
+    for (i = 0; i < count; i++) {
+        CfiFlashWriteWord(blkAddr, CFIFLASH_CMD_ERASE);
+        CfiFlashWriteWord(blkAddr, CFIFLASH_CMD_CONFIRM);
+        while (!CfiFlashIsReady(blkAddr)) { }
+
+        blkAddr += CFIFLASH_ERASEBLK_WORDS;
+    }
+
+    CfiFlashWriteWord(0, CFIFLASH_CMD_CLEAR_STATUS);
     return 0;
 }
 

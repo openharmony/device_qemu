@@ -45,16 +45,21 @@ a) 如果没有安装 `qemu-system-arm` ，安装请参考链接 [Qemu installat
 
 提示: 当前引入的功能在virt-5.1的目标machine已经测试过了，不能保证所有的Qemu版本都能够运行成功，因此需要保证你的qemu-system-arm版本尽可能的新。
 
-b) 准备flash映像文件。目前系统硬编码flash容量64M，分两个分区：分区一10M用于内核映像，分区二54M用于rootfs。Linux系统可参考如下命令：
+b) 准备flash映像文件。目前系统硬编码flash容量64M，分三个分区：分区一10M-256K用于内核映像，分区二256K用于启动参数，分区三54M用于rootfs。Linux系统可参考如下命令：
 ```
-sudo modprobe mtdram total_size=65536 erase_size=128 writebuf_size=2048
-sudo mtdpart add /dev/mtd0 kernel 0 10485760
+sudo modprobe mtdram total_size=65536 erase_size=256
+sudo mtdpart add /dev/mtd0 kernel 0 10223616
+sudo mtdpart add /dev/mtd0 kernel 10223616 10485760
 sudo mtdpart add /dev/mtd0 root 10485760 56623104
 sudo nandwrite -p /dev/mtd1 out/qemu_arm_virt_ca7/OHOS_Image.bin
-sudo nandwrite -p /dev/mtd2 out/qemu_arm_virt_ca7/rootfs_jffs2.img
+echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=0xA00000 rootsize=27M\x0" | sudo nandwrite -p /dev/mtd2 - 
+sudo nandwrite -p /dev/mtd3 out/qemu_arm_virt_ca7/rootfs_jffs2.img
 sudo dd if=/dev/mtd0 of=flash.img
 sudo chown USERNAME flash.img
+sudo rmmod mtdram
 ```
+提示：bootargs中仅rootsize可调整，分区三rootsize以外空间安装在/storage目录，可读可写。
+
 c) 运行`qemu-system-arm`，进入用户态命令行。
 
 ```

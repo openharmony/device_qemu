@@ -3,8 +3,6 @@ root {
         template cfi_flash_attr {
             match_attr = "";
             pbase = 0x00000000;     // slot0
-            size  = 0x04000000;     // 64M
-            vbase = 0x70000000;
         }
         cfiflash0 :: cfi_flash_attr {
             match_attr = "qemu_virt_cfi_0";

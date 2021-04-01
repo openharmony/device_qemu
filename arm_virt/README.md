@@ -51,16 +51,20 @@ For details, please refer to the HOWTO: [Qemu installation](https://www.qemu.org
 Note: The introduced functionality was tested on virt-5.1 target machine. It is not guaranteed to work with any other version
       so make sure that your qemu-system-arm emulator is up to date.
 
-b) Prepare flash image file. Now its capacity was hard-coded 64M with 2 partitions, 1st 10M for kernel image, 2nd 54M for rootfs. Linux host can reference following commands:
+b) Prepare flash image file. Now its capacity was hard-coded 64M with 3 partitions, 1st 10M-256K for kernel image, 2nd 256K for bootargs, 3rd 54M for rootfs. Linux host can reference following commands:
 ```
-sudo modprobe mtdram total_size=65536 erase_size=128 writebuf_size=2048
-sudo mtdpart add /dev/mtd0 kernel 0 10485760
+sudo modprobe mtdram total_size=65536 erase_size=256
+sudo mtdpart add /dev/mtd0 kernel 0 10223616
+sudo mtdpart add /dev/mtd0 kernel 10223616 10485760
 sudo mtdpart add /dev/mtd0 root 10485760 56623104
 sudo nandwrite -p /dev/mtd1 out/qemu_arm_virt_ca7/OHOS_Image.bin
-sudo nandwrite -p /dev/mtd2 out/qemu_arm_virt_ca7/rootfs_jffs2.img
+echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=0xA00000 rootsize=27M\x0" | sudo nandwrite -p /dev/mtd2 - 
+sudo nandwrite -p /dev/mtd3 out/qemu_arm_virt_ca7/rootfs_jffs2.img
 sudo dd if=/dev/mtd0 of=flash.img
 sudo chown USERNAME flash.img
+sudo rmmod mtdram
 ```
+Note: bootargs only rootsize is adjustable. 3nd partition beyond it mounted at /storage, writable.
 
 c) Run `qemu-system-arm`, enter user-space command line.
 
