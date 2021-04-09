@@ -82,6 +82,13 @@ extern void tcpip_init(tcpip_init_done_fn initfunc, void *arg);
         }
     } while (netif_is_link_up(pnetif) == 0);
 #endif
+
+    extern struct netif *VirtnetInit(void);
+    struct netif *p = VirtnetInit();
+    if (p) {
+        netif_set_default(p);
+        (void)netifapi_netif_set_up(p);
+    }
 }
 #endif
 

@@ -60,10 +60,26 @@ sudo rmmod mtdram
 ```
 提示：bootargs中仅rootsize可调整，分区三rootsize以外空间安装在/storage目录，可读可写。
 
-c) 运行`qemu-system-arm`，进入用户态命令行。
+c) 配置主机网桥设备。Linux系统可参考以下命令：
+```
+sudo modprobe tun tap
+sudo ip link add br0 type bridge
+sudo ip address add 10.0.2.2/24 dev br0
+sudo ip link set dev br0 up
+
+# 以下命令执行一次后即可注释掉
+sudo mkdir -p /etc/qemu
+echo 'allow br0' | sudo tee -a /etc/qemu/bridge.conf
+
+# 如果这个文件不存在可删除此命令
+echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
+```
+提示：系统网络硬编码为10.0.2.0/24，网关10.0.2.2，默认网址10.0.2.15。不同的客户机实例应使用不同的MAC和IP地址(flash映像文件也最好不同)，MAC地址可通过QEMU命令行传递，IP地址可在OHOS命令行中调整，如`ifconfig vn0 inet 10.0.2.30`，或使用其它方法。
+
+d) 运行`qemu-system-arm`，进入用户态命令行。
 
 ```
-qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw
+qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw -netdev bridge,id=net0 -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66
 ```
 
 ```
