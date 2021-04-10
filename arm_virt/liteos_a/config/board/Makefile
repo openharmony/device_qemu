@@ -17,6 +17,8 @@ MODULE_NAME := bsp_config
 
 LOCAL_SRCS += $(wildcard *.c)
 
+LOCAL_SRCS += $(wildcard amba_pl011/*.c)
+
 ifeq ($(LOSCFG_SHELL), y)
 LOCAL_SRCS += $(wildcard extcmd/*.c)
 endif
