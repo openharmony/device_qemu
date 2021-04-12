@@ -16,7 +16,6 @@
 #ifndef __BOARD_CONFIG_H__
 #define __BOARD_CONFIG_H__
 
-#include "menuconfig.h"
 
 #ifdef __cplusplus
 #if __cplusplus
