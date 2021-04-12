@@ -9,6 +9,8 @@ OUT_DIR="$2"
 KERNEL_DIR=$1
 
 function main(){
+    mkdir -p $OUT_DIR/../../../bin
+    mkdir -p $OUT_DIR/../../../libs
     cp ../../hisilicon/drivers/libs/ohos/llvm/hi3518ev300/libmtd_common.a ../drivers/libs/virt/
     cp ../../hisilicon/drivers/libs/ohos/llvm/hi3518ev300/libspinor_flash.a ../drivers/libs/virt/
     cp ../../hisilicon/drivers/libs/ohos/llvm/hi3518ev300/libhdf_uart.a ../drivers/libs/virt/
