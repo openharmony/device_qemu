@@ -35,8 +35,6 @@ MABI  := ilp32
 
 LITEOS_PLATFORM := riscv32
 
-
-
 # System default
 CFLAGS        := -I $(LITEOSTOPDIR)/utils                                  \
                  -I $(LITEOSTOPDIR)/kernel/include                         \
@@ -90,7 +88,7 @@ LITEOS_LIBDEP := -lkernel -lgcc -lc
 
 LITEOS_SSP = -fno-stack-protector
 LITEOS_COPTS_BASE  := -march=$(MARCH) -mabi=$(MABI) -static -fno-common -O2 $(LITEOS_SSP)
-LITEOS_COPTS_EXTRA := -ffunction-sections -fdata-sections -fno-omit-frame-pointer -Wall -Wno-format-truncation
+LITEOS_COPTS_EXTRA := -ffunction-sections -fdata-sections -fno-omit-frame-pointer -Wno-format-truncation #-Wall
 LITEOS_ASOPTS      := -march=$(MARCH) -mabi=$(MABI) -static -O2
 LITEOS_LD_OPTS     := --build-id=none -static -nostartfiles --gc-sections
 

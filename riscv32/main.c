@@ -38,8 +38,8 @@ VOID TaskSampleEntry2(VOID)
 VOID TaskSampleEntry1(VOID)
 {
     while(1) {
-        LOS_TaskDelay(1000);
         printf("TaskSampleEntry1 running...\n\r");
+        LOS_TaskDelay(1000);
     }
 
 }

@@ -48,15 +48,6 @@ VOID HalSetLocalInterPri(UINT32 interPriNum, UINT16 prior)
     PlicIrqSetPrio(interPriNum, prior);
 }
 
-VOID HalGetSysCpuCycle(UINT32 *cntHi, UINT32 *cntLo)
-{
-    if ((cntHi == NULL) || (cntLo == NULL)) {
-        return;
-    }
-
-    MTimerCpuCycle(cntHi, cntLo);
-}
-
 BOOL HalBackTraceFpCheck(UINT32 value)
 {
     if (value >= (UINT32)(UINTPTR)(&__bss_end)) {
