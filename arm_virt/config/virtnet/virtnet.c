@@ -17,10 +17,10 @@
 #define __LWIP__
 
 #include "los_base.h"
+#include "los_hw_cpu.h"
 #include "los_printf.h"
 #include "los_vm_zone.h"
 #include "los_vm_phys.h"
-#include "los_hwi.h"
 
 /* kernel header changed some lwip behavior, so this should be prior to them */
 #include "virtnet.h"
@@ -166,7 +166,7 @@ static void ReleaseRvEntry(struct pbuf *p)
 
     LOS_SpinLockSave(&nic->recvLock, &intSave);
     nic->recv.avail->ring[nic->recv.avail->index % nic->recv.qsz] = pc->id;
-    Dsb();
+    DSB;
     nic->recv.avail->index++;
     LOS_SpinUnlockRestore(&nic->recvLock, intSave);
 
@@ -340,7 +340,7 @@ static err_t LowLevelOutput(struct netif *netif, struct pbuf *p)
     pbuf_ref(p);
 
     trans->avail->ring[trans->avail->index % trans->qsz] = head;
-    Dsb();
+    DSB;
     trans->avail->index++;
     WRITE_UINT32(VIRTQ_IDX_TRANS, RegVaddr(nic, VIRTMMIO_REG_QUEUENOTIFY));
 
@@ -392,14 +392,14 @@ static void VirtnetRvHandle(struct netif *netif)
         if (q->last == q->used->index) {
             q->avail->flag = 0;
             /* recheck if new one come in between empty ring and enable interrupt */
-            Dsb();
+            DSB;
             if (q->last == q->used->index) {
                 break;
             }
             q->avail->flag = VIRTQ_AVAIL_F_NO_INTERRUPT;
         }
 
-        Dsb();
+        DSB;
         e = &q->used->ring[q->last % q->qsz];
         buf = LowLevelInput(netif, e);
         if (netif->input(buf, netif) != ERR_OK) {
@@ -419,7 +419,7 @@ static void VirtnetTxHandle(struct VirtNetif *nic)
     /* Bypass recheck as VirtnetRvHandle */
     q->avail->flag = VIRTQ_AVAIL_F_NO_INTERRUPT;
     while (q->last != q->used->index) {
-        Dsb();
+        DSB;
         e = &q->used->ring[q->last % q->qsz];
         FreeTxEntry(nic, e->id);
         q->last++;
