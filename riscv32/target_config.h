@@ -35,6 +35,9 @@ extern "C" {
 #define OS_SYS_CLOCK                                        10000000UL
 #define LOSCFG_BASE_CORE_TICK_PER_SECOND                    (1000UL)
 #define LOSCFG_BASE_CORE_TICK_HW_TIME                       0
+#define LOSCFG_BASE_CORE_TICK_WTIMER                        1
+#define LOSCFG_BASE_CORE_TICK_RESPONSE_MAX                  ((UINT64)-1)
+
 /*=============================================================================
                                        Task module configuration
 =============================================================================*/
@@ -43,7 +46,7 @@ extern "C" {
 #define LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE             (0x1000U)
 #define LOSCFG_BASE_CORE_TSK_MIN_STACK_SIZE                 (0x130U)
 #define LOSCFG_BASE_CORE_TIMESLICE                          1
-#define LOSCFG_BASE_CORE_TIMESLICE_TIMEOUT                  10
+#define LOSCFG_BASE_CORE_TIMESLICE_TIMEOUT                  20000
 #define LOSCFG_BASE_CORE_TSK_MONITOR                        1
 #define LOSCFG_BASE_CORE_CPUP                               1
 

@@ -27,42 +27,11 @@ extern "C" {
 #endif
 #endif
 
-STATIC OS_TICK_HANDLER g_TickHandler = NULL;
-
-VOID MTimerCpuCycle(UINT32 *contHi, UINT32 *contLo)
-{
-    READ_UINT32(*contLo, MTIMER);
-    READ_UINT32(*contHi, MTIMER + 4);
-    return;
-}
-
-STATIC INLINE VOID UpdateMtimerCmp(UINT32 tick)
-{
-    unsigned long long timer;
-    unsigned timerL, timerH;
-    READ_UINT32(timerL, MTIMER);
-    READ_UINT32(timerH, MTIMER + 4);
-    timer = (UINT64)(((UINT64)timerH << 32) + timerL);
-    timer += tick;
-    WRITE_UINT32(0xffffffff, MTIMERCMP + 4);
-    WRITE_UINT32((UINT32)timer, MTIMERCMP);
-    WRITE_UINT32((UINT32)(timer >> 32), MTIMERCMP + 4);
-}
-
-STATIC VOID OsMachineTimerInterrupt(VOID *sysCycle)
-{
-    UINT32 period = (UINT32)(UINTPTR)sysCycle;
-
-    g_TickHandler();
-    UpdateMtimerCmp(period);
-}
-
 UINT32 MTimerTickInit(OS_TICK_HANDLER handler, UINT32 period)
 {
     unsigned int ret;
-    g_TickHandler = handler;
 
-    ret = HalHwiCreate(RISCV_MACH_TIMER_IRQ, 0x1, 0, OsMachineTimerInterrupt, period);
+    ret = HalHwiCreate(RISCV_MACH_TIMER_IRQ, 0x1, 0, (HWI_PROC_FUNC)handler, period);
     if (ret != LOS_OK) {
         return ret;
     }

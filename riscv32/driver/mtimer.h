@@ -25,7 +25,6 @@ extern "C" {
 #endif
 #endif
 
-extern VOID MTimerCpuCycle(UINT32 *contHi, UINT32 *contLo);
 extern UINT32 MTimerTickInit(OS_TICK_HANDLER handler, UINT32 period);
 
 #ifdef __cplusplus
