@@ -3,9 +3,9 @@
 import("//build/lite/config/component/lite_component.gni")
 
 build_ext_component("virt_make_kernel") {
-  exec_path = rebase_path("./", root_build_dir)
-  outdir = rebase_path("./out/qemu_arm_virt_ca7/obj/kernel/liteos_a/")
-  command = "sh ./build.sh ../../../kernel/liteos_a/ $outdir"
+  exec_path = rebase_path("./build/", root_build_dir)
+  outdir = rebase_path("./build/out/qemu_arm_virt_ca7/obj/kernel/liteos_a/")
+  command = "sh build.sh ../../../../kernel/liteos_a/ $outdir && sh qemu-init"
 }
 
 group("arm_virt") {
