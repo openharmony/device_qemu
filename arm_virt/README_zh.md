@@ -52,7 +52,7 @@ sudo mtdpart add /dev/mtd0 kernel 0 10223616
 sudo mtdpart add /dev/mtd0 kernel 10223616 10485760
 sudo mtdpart add /dev/mtd0 root 10485760 56623104
 sudo nandwrite -p /dev/mtd1 out/qemu_arm_virt_ca7/OHOS_Image.bin
-echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=0xA00000 rootsize=27M\x0" | sudo nandwrite -p /dev/mtd2 - 
+echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=0xA00000 rootsize=27M\x0" | sudo nandwrite -p /dev/mtd2 -
 sudo nandwrite -p /dev/mtd3 out/qemu_arm_virt_ca7/rootfs_jffs2.img
 sudo dd if=/dev/mtd0 of=flash.img
 sudo chown USERNAME flash.img
@@ -79,7 +79,7 @@ echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
 d) 运行`qemu-system-arm`，进入用户态命令行。
 
 ```
-qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw -netdev bridge,id=net0 -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66
+qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw -netdev bridge,id=net0 -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 -global virtio-mmio.force-legacy=false
 ```
 
 ```
