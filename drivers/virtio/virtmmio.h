@@ -67,6 +67,7 @@
 #define VIRTMMIO_VERSION                    2
 #define VIRTMMIO_DEVICE_ID_NET              1
 #define VIRTMMIO_DEVICE_ID_GPU              16
+#define VIRTMMIO_DEVICE_ID_INPUT            18
 
 /* QEMU 5.2 virtio-mmio */
 #define VIRTMMIO_BASE_ADDR                  0x0A000000
