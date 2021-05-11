@@ -26,7 +26,6 @@ function main(){
     mkdir -p $WORK_DIR/libs
     cp $HISI_LIBS_DIR/libmtd_common.a $DRIVERS_LIBS_DIR
     cp $HISI_LIBS_DIR/libspinor_flash.a $DRIVERS_LIBS_DIR
-    cp $HISI_LIBS_DIR/libhdf_uart.a $DRIVERS_LIBS_DIR
     pushd $KERNEL_DIR
     cp tools/build/config/qemu_arm_virt_debug_shell.config .config
     make clean OUTDIR=$OUT_DIR && make rootfs -e -j 16 OUTDIR=$OUT_DIR
@@ -38,6 +37,5 @@ function main(){
     popd
     rm -rf $DRIVERS_LIBS_DIR/libmtd_common.a
     rm -rf $DRIVERS_LIBS_DIR/libspinor_flash.a
-    rm -rf $DRIVERS_LIBS_DIR/libhdf_uart.a
 }
 main "$@"

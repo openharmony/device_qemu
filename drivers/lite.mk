@@ -32,9 +32,7 @@ LIB_SUBDIRS    += $(LITEOSTOPDIR)/../../device/$(patsubst "%",%,$(LOSCFG_DEVICE_
 ###################### HDF DRIVER ######################
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_UART), y)
     LITEOS_BASELIB += -lhdf_uart
-ifeq ($(BUILD_FROM_SOURCE), y)
-    LIB_SUBDIRS    += $(HISILICON_DRIVERS_SOURCE_ROOT)/uart
-endif
+    LIB_SUBDIRS    += $(HISILICON_DRIVERS_ROOT)/uart
 endif
 
 # mtd drivers
