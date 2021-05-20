@@ -101,12 +101,6 @@ int mem_dev_register(void)
 
 void SystemInit(void)
 {
-#ifdef LOSCFG_FS_PROC
-    dprintf("proc fs init ...\n");
-    extern void ProcFsInit(void);
-    ProcFsInit();
-#endif
-
 #ifdef LOSCFG_DRIVERS_MEM
     dprintf("mem dev init ...\n");
     extern int mem_dev_register(void);
