@@ -17,5 +17,5 @@
 
 echo start qemu
 sudo `which qemu-system-arm` -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive \
-if=pflash,file=./build/flash.img,format=raw -netdev bridge,id=net0 -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
+if=pflash,file=./flash.img,format=raw -netdev bridge,id=net0 -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
 -global virtio-mmio.force-legacy=false
