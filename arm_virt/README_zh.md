@@ -10,11 +10,11 @@ Qemu中machine为 **virt** 的单板就是这种可配置的，例如：选择�
 
 ## 2. 环境搭建
 
-参考链接: [环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/%E6%90%AD%E5%BB%BA%E7%B3%BB%E7%BB%9F%E7%8E%AF%E5%A2%83.md)
+参考链接: [环境搭建](https://gitee.com/openharmony/docs/blob/master/quick-start/%E6%90%AD%E5%BB%BA%E7%8E%AF%E5%A2%83.md)
 
 ## 3. 获取源码
 
-参考链接: [代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/%E6%BA%90%E7%A0%81%E8%8E%B7%E5%8F%96.md)
+参考链接: [代码获取](https://gitee.com/openharmony/docs/blob/master/get-code/%E6%BA%90%E7%A0%81%E8%8E%B7%E5%8F%96.md)
 提示: 可以使用 `repo` 命令来获取源码。
 
 ## 4. 源码构建
