@@ -4,6 +4,7 @@
 -   [Directory Structure](#section161941989596)
 -   [Constraints](#section119744591305)
 -   [Usage](#section169045116126)
+-   [Contribution](#section169045116136)
 -   [Repositories Involved](#section1371113476307)
 
 ## Introduction<a name="section11660541593"></a>
@@ -33,6 +34,12 @@ QEMU applies only to the OpenHarmony kernel.
 ## Usage<a name="section169045116126"></a>
 
 For details about the ARM architecture, see  [Qemu ARM Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/arm_virt/README.md). The RISCV architecture tutorial will be updated later.
+
+## Contribution<a name="section169045116136"></a>
+
+[How to involve](https://gitee.com/openharmony/docs/blob/master/en/contribute/contribution.md)
+
+[Commit message spec](https://gitee.com/openharmony/device_qemu/wikis/Commit%20message%E8%A7%84%E8%8C%83?sort_id=4042860)
 
 ## Repositories Involved<a name="section1371113476307"></a>
 
