@@ -15,11 +15,11 @@ Note: System memory size is hard-coded to 32MB.
 
 #### 2. Setting up environment
 
-Refer to HOWTO guide: [Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/docs-en/quick-start/setting-up-a-development-environment-1.md)
+Refer to HOWTO guide: [Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/environment-setup.md)
 
 #### 3. Code acquisition
 
-Refer to HOWTO guide: [Code acquisition](https://gitee.com/openharmony/docs/blob/master/docs-en/get-code/source-code-acquisition.md)
+Refer to HOWTO guide: [Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/source-code-acquisition.md)
 Note: One can use `repo` to fetch code in a straightforward manner.
 
 #### 4. Building from sources
