@@ -24,7 +24,6 @@ DRIVERS_LIBS_DIR=../../drivers/libs/virt/
 function main(){
     mkdir -p $WORK_DIR/bin
     mkdir -p $WORK_DIR/libs
-    cp $HISI_LIBS_DIR/libmtd_common.a $DRIVERS_LIBS_DIR
     cp $HISI_LIBS_DIR/libspinor_flash.a $DRIVERS_LIBS_DIR
     pushd $KERNEL_DIR
     cp tools/build/config/qemu_arm_virt_debug_shell.config .config
