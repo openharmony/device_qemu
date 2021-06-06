@@ -92,3 +92,6 @@ Explanation for our system configuration:
 
 提示: OHOS 构建名 `qemu_arm_virt_ca7` 来源于上述提到的命令。
 
+## 6. 用法示例
+
+- [向内核传递调试参数](example.md#sectiondebug)
