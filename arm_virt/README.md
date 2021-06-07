@@ -55,7 +55,7 @@ b) Prepare flash image file. Now its capacity was hard-coded 64M with 3 partitio
 ```
 sudo modprobe mtdram total_size=65536 erase_size=256
 sudo mtdpart add /dev/mtd0 kernel 0 10223616
-sudo mtdpart add /dev/mtd0 kernel 10223616 10485760
+sudo mtdpart add /dev/mtd0 bootarg 10223616 262144
 sudo mtdpart add /dev/mtd0 root 10485760 56623104
 sudo nandwrite -p /dev/mtd1 out/qemu_arm_virt_ca7/OHOS_Image.bin
 echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=0xA00000 rootsize=27M\x0" | sudo nandwrite -p /dev/mtd2 -
