@@ -49,7 +49,7 @@ b) 准备flash映像文件。目前系统硬编码flash容量64M，分三个分�
 ```
 sudo modprobe mtdram total_size=65536 erase_size=256
 sudo mtdpart add /dev/mtd0 kernel 0 10223616
-sudo mtdpart add /dev/mtd0 kernel 10223616 10485760
+sudo mtdpart add /dev/mtd0 bootarg 10223616 262144
 sudo mtdpart add /dev/mtd0 root 10485760 56623104
 sudo nandwrite -p /dev/mtd1 out/qemu_arm_virt_ca7/OHOS_Image.bin
 echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=0xA00000 rootsize=27M\x0" | sudo nandwrite -p /dev/mtd2 -
