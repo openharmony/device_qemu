@@ -100,3 +100,6 @@ Explanation for our system configuration:
 
 Note: OHOS build target name `qemu_arm_virt_ca7` is derived from the above mentioned command.
 
+#### 6. Usage examples
+
+- [passing debug arguments from command line](example.md#sectiondebug)
