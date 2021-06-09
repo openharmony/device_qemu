@@ -20,16 +20,9 @@
  */
 
 #include "user_copy.h"
+#include "disk.h"
+#include "cfiflash.h"
 #include "cfiflash_internal.h"
-
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-#endif /* __cplusplus */
-
-/* volatile disable compiler optimization */
-volatile uint32_t *g_cfiFlashBase;
 
 #define BIT_SHIFT8      8
 #define WORD_ALIGN      4
@@ -60,28 +53,13 @@ static inline unsigned B2W(unsigned bytes)
     return bytes >> BYTE_WORD_SHIFT;
 }
 
-static inline uint8_t CfiFlashReadByte(unsigned byteOffset)
-{
-    return ((uint8_t *)g_cfiFlashBase)[byteOffset];
-}
-
-static inline uint32_t CfiFlashReadWord(unsigned wordOffset)
-{
-    return g_cfiFlashBase[wordOffset];
-}
-
-static inline void CfiFlashWriteWord(unsigned wordOffset, uint32_t value)
-{
-    g_cfiFlashBase[wordOffset] = value;
-}
-
-static inline int CfiFlashQueryQRY()
+static inline int CfiFlashQueryQRY(uint8_t *p)
 {
     unsigned wordOffset = CFIFLASH_QUERY_QRY;
 
-    if (CfiFlashReadByte(W2B(wordOffset++)) == 'Q') {
-        if (CfiFlashReadByte(W2B(wordOffset++)) == 'R') {
-            if (CfiFlashReadByte(W2B(wordOffset)) == 'Y') {
+    if (p[W2B(wordOffset++)] == 'Q') {
+        if (p[W2B(wordOffset++)] == 'R') {
+            if (p[W2B(wordOffset)] == 'Y') {
                 return 0;
             }
         }
@@ -89,34 +67,35 @@ static inline int CfiFlashQueryQRY()
     return -1;
 }
 
-static inline int CfiFlashQueryUint8(unsigned wordOffset, uint8_t expect)
+static inline int CfiFlashQueryUint8(unsigned wordOffset, uint8_t expect, uint8_t *p)
 {
-    if (CfiFlashReadByte(W2B(wordOffset)) != expect) {
+    if (p[W2B(wordOffset)] != expect) {
         return -1;
     }
     return 0;
 }
 
-static inline int CfiFlashQueryUint16(unsigned wordOffset, uint16_t expect)
+static inline int CfiFlashQueryUint16(unsigned wordOffset, uint16_t expect, uint8_t *p)
 {
     uint16_t v;
 
-    v = (CfiFlashReadByte(W2B(wordOffset + 1)) << BIT_SHIFT8) +
-         CfiFlashReadByte(W2B(wordOffset));
+    v = (p[W2B(wordOffset + 1)] << BIT_SHIFT8) + p[W2B(wordOffset)];
     if (v != expect) {
         return -1;
     }
     return 0;
 }
 
-static inline int CfiFlashIsReady(unsigned wordOffset)
+static inline int CfiFlashIsReady(unsigned wordOffset, uint32_t *p)
 {
-    CfiFlashWriteWord(wordOffset, CFIFLASH_CMD_READ_STATUS);
-    return CfiFlashReadWord(wordOffset) & CFIFLASH_STATUS_READY_MASK;
+    DSB;
+    p[wordOffset] = CFIFLASH_CMD_READ_STATUS;
+    DSB;
+    return p[wordOffset] & CFIFLASH_STATUS_READY_MASK;
 }
 
 /* all in word(4 bytes) measure */
-static void CfiFlashWriteBuf(unsigned wordOffset, const uint32_t *buffer, size_t words)
+static void CfiFlashWriteBuf(unsigned wordOffset, const uint32_t *buffer, size_t words, uint32_t *p)
 {
     unsigned i, blkAddr, wordCount;
 
@@ -127,60 +106,62 @@ static void CfiFlashWriteBuf(unsigned wordOffset, const uint32_t *buffer, size_t
     while (words) {
         /* command buffer-write begin to Erase Block address */
         blkAddr = CfiFlashEraseBlkWordAddr(wordOffset);
-        CfiFlashWriteWord(blkAddr, CFIFLASH_CMD_BUFWRITE);
+        p[blkAddr] = CFIFLASH_CMD_BUFWRITE;
 
         /* write words count, 0-based */
-        CfiFlashWriteWord(blkAddr, wordCount - 1);
+        DSB;
+        p[blkAddr] = wordCount - 1;
 
         /* program word data to actual address */
         for (i = 0; i < wordCount; i++, wordOffset++, buffer++) {
-            CfiFlashWriteWord(wordOffset, *buffer);
+            p[wordOffset] = *buffer;
         }
 
         /* command buffer-write end to Erase Block address */
-        CfiFlashWriteWord(blkAddr, CFIFLASH_CMD_CONFIRM);
-        while (!CfiFlashIsReady(blkAddr)) { }
+        p[blkAddr] = CFIFLASH_CMD_CONFIRM;
+        while (!CfiFlashIsReady(blkAddr, p)) { }
 
         words -= wordCount;
         wordCount = (words >= CFIFLASH_PAGE_WORDS) ? CFIFLASH_PAGE_WORDS : words;
     }
 
-    CfiFlashWriteWord(0, CFIFLASH_CMD_CLEAR_STATUS);
+    p[0] = CFIFLASH_CMD_CLEAR_STATUS;
 }
 
-static int CfiFlashQuery(void)
+static int CfiFlashQuery(uint8_t *p)
 {
-    CfiFlashWriteWord(CFIFLASH_QUERY_BASE, CFIFLASH_QUERY_CMD);
+    uint32_t *base = (uint32_t *)p;
+    base[CFIFLASH_QUERY_BASE] = CFIFLASH_QUERY_CMD;
 
-    if (CfiFlashQueryQRY()) {
+    if (CfiFlashQueryQRY(p)) {
         goto ERR_OUT;
     }
 
-    if (CfiFlashQueryUint16(CFIFLASH_QUERY_VENDOR, CFIFLASH_EXPECT_VENDOR)) {
+    if (CfiFlashQueryUint16(CFIFLASH_QUERY_VENDOR, CFIFLASH_EXPECT_VENDOR, p)) {
         goto ERR_OUT;
     }
 
-    if (CfiFlashQueryUint8(CFIFLASH_QUERY_SIZE, CFIFLASH_ONE_BANK_BITS)) {
+    if (CfiFlashQueryUint8(CFIFLASH_QUERY_SIZE, CFIFLASH_ONE_BANK_BITS, p)) {
         goto ERR_OUT;
     }
 
-    if (CfiFlashQueryUint16(CFIFLASH_QUERY_PAGE_BITS, CFIFLASH_EXPECT_PAGE_BITS)) {
+    if (CfiFlashQueryUint16(CFIFLASH_QUERY_PAGE_BITS, CFIFLASH_EXPECT_PAGE_BITS, p)) {
         goto ERR_OUT;
     }
 
-    if (CfiFlashQueryUint8(CFIFLASH_QUERY_ERASE_REGION, CFIFLASH_EXPECT_ERASE_REGION)) {
+    if (CfiFlashQueryUint8(CFIFLASH_QUERY_ERASE_REGION, CFIFLASH_EXPECT_ERASE_REGION, p)) {
         goto ERR_OUT;
     }
 
-    if (CfiFlashQueryUint16(CFIFLASH_QUERY_BLOCKS, CFIFLASH_EXPECT_BLOCKS)) {
+    if (CfiFlashQueryUint16(CFIFLASH_QUERY_BLOCKS, CFIFLASH_EXPECT_BLOCKS, p)) {
         goto ERR_OUT;
     }
 
-    if (CfiFlashQueryUint16(CFIFLASH_QUERY_BLOCK_SIZE, CFIFLASH_EXPECT_BLOCK_SIZE)) {
+    if (CfiFlashQueryUint16(CFIFLASH_QUERY_BLOCK_SIZE, CFIFLASH_EXPECT_BLOCK_SIZE, p)) {
         goto ERR_OUT;
     }
 
-    CfiFlashWriteWord(0, CFIFLASH_CMD_RESET);
+    base[0] = CFIFLASH_CMD_RESET;
     return 0;
 
 ERR_OUT:
@@ -188,13 +169,36 @@ ERR_OUT:
     return -1;
 }
 
-int CfiFlashInit(void)
+int CfiFlashInit(uint8_t *p)
 {
+    struct MtdDev *slot = GetCfiMtdDev();
+
     dprintf("[%s]CFI flash init start ...\n", __FUNCTION__);
-    if (CfiFlashQuery()) {
+    if (CfiFlashQuery(p)) {
         return -1;
     }
+
+    /* slot 0 used as MTD device for jffs2 rootfs, slot 1 as block device */
+    if (slot->priv == NULL) {
+        slot->priv = p;
+    } else if (*(uint16_t *)&p[BS_SIG55AA] == BS_SIG55AA_VALUE) {
+        int id = los_alloc_diskid_byname(CFI_BLK_DRIVER);
+        (void)los_disk_init(CFI_BLK_DRIVER, GetCfiBlkOps(), p, id, NULL);
+    } else {
+        return 0;
+    }
+
     dprintf("[%s]CFI flash init end ...\n", __FUNCTION__);
+    return 0;
+}
+
+int CfiBlkOpen(struct Vnode *vnode)
+{
+    return 0;
+}
+
+int CfiBlkClose(struct Vnode *vnode)
+{
     return 0;
 }
 
@@ -222,7 +226,7 @@ static ssize_t CfiPostRead(char *buffer, char *newbuf, unsigned bytes, ssize_t r
             dprintf("[%s]LOS_ArchCopyToUser error\n", __FUNCTION__);
             ret = -EFAULT;
         }
-        
+
         if (LOS_MemFree(m_aucSysMem0, newbuf) != 0) {
             dprintf("[%s]LOS_MemFree error\n", __FUNCTION__);
             ret = -EFAULT;
@@ -236,6 +240,7 @@ ssize_t CfiBlkRead(struct Vnode *vnode, unsigned char *buffer,
 {
     unsigned int i, wordOffset, bytes;
     uint32_t *p;
+    uint32_t *base = ((struct drv_data*)(vnode->data))->priv;
     ssize_t ret;
 
     bytes = CfiFlashSec2Bytes(nSectors);
@@ -246,7 +251,7 @@ ssize_t CfiBlkRead(struct Vnode *vnode, unsigned char *buffer,
     }
 
     for (i = 0; i < B2W(bytes); i++) {
-        p[i] = CfiFlashReadWord(wordOffset + i);
+        p[i] = base[wordOffset + i];
     }
     ret = nSectors;
 
@@ -272,7 +277,7 @@ static ssize_t CfiPreWrite(const char *buffer, unsigned bytes, char **newbuf)
         return -EFAULT;
     } else {
         *newbuf = (char*)buffer;
-    } 
+    }
     return 0;
 }
 
@@ -301,7 +306,7 @@ ssize_t CfiBlkWrite(struct Vnode *vnode, const unsigned char *buffer,
         return ret;
     }
 
-    CfiFlashWriteBuf(wordOffset, (uint32_t *)p, B2W(bytes));
+    CfiFlashWriteBuf(wordOffset, (uint32_t *)p, B2W(bytes), ((struct drv_data*)(vnode->data))->priv);
     ret = nSectors;
 
     return CfiPostWrite((const char*)buffer, (char*)p, ret);
@@ -321,19 +326,21 @@ int CfiBlkGeometry(struct Vnode *vnode, struct geometry *geometry)
 int CfiMtdErase(struct MtdDev *mtd, UINT64 start, UINT64 bytes, UINT64 *failAddr)
 {
     uint32_t blkAddr, count, i;
+    uint32_t *p = mtd->priv;
 
     blkAddr = CfiFlashEraseBlkWordAddr(B2W(start));
     count = (CfiFlashEraseBlkWordAddr(B2W(start + bytes - 1)) - blkAddr) / CFIFLASH_ERASEBLK_WORDS + 1;
 
     for (i = 0; i < count; i++) {
-        CfiFlashWriteWord(blkAddr, CFIFLASH_CMD_ERASE);
-        CfiFlashWriteWord(blkAddr, CFIFLASH_CMD_CONFIRM);
-        while (!CfiFlashIsReady(blkAddr)) { }
+        p[blkAddr] = CFIFLASH_CMD_ERASE;
+        DSB;
+        p[blkAddr] = CFIFLASH_CMD_CONFIRM;
+        while (!CfiFlashIsReady(blkAddr, p)) { }
 
         blkAddr += CFIFLASH_ERASEBLK_WORDS;
     }
 
-    CfiFlashWriteWord(0, CFIFLASH_CMD_CLEAR_STATUS);
+    p[0] = CFIFLASH_CMD_CLEAR_STATUS;
     return 0;
 }
 
@@ -342,13 +349,14 @@ int CfiMtdRead(struct MtdDev *mtd, UINT64 start, UINT64 bytes, const char *buf)
     UINT64 i;
     char *p;
     ssize_t ret;
+    uint8_t *base = mtd->priv;
 
     if ((ret = CfiPreRead((char*)buf, bytes, &p))) {
         return ret;
     }
 
     for (i = 0; i < bytes; i++) {
-        p[i] = CfiFlashReadByte(start + i);
+        p[i] = base[start + i];
     }
     ret = (int)bytes;
 
@@ -369,14 +377,8 @@ int CfiMtdWrite(struct MtdDev *mtd, UINT64 start, UINT64 bytes, const char *buf)
         return ret;
     }
 
-    CfiFlashWriteBuf((int)B2W(start), (uint32_t *)p, (size_t)B2W(bytes));
+    CfiFlashWriteBuf((int)B2W(start), (uint32_t *)p, (size_t)B2W(bytes), mtd->priv);
     ret = (int)bytes;
 
     return CfiPostWrite(buf, p, ret);
 }
-
-#ifdef __cplusplus
-#if __cplusplus
-}
-#endif /* __cplusplus */
-#endif /* __cplusplus */
