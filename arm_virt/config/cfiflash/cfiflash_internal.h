@@ -17,12 +17,6 @@
 
 #include "cfiflash.h"
 
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-#endif /* __cplusplus */
-
 #define HDF_LOG_TAG cfi_flash_driver
 
 #define CFIFLASH_ONE_BANK_BITS          25
@@ -59,9 +53,9 @@ extern "C" {
 
 #define CFIFLASH_STATUS_READY_MASK      0x80
 
-extern volatile uint32_t *g_cfiFlashBase;
-
-int CfiFlashInit(void);
+int CfiFlashInit(uint32_t *p);
+int CfiBlkOpen(struct Vnode *vnode);
+int CfiBlkClose(struct Vnode *vnode);
 ssize_t CfiBlkRead(struct Vnode *vnode, unsigned char *buffer,
                    unsigned long long start_sector, unsigned int nsectors);
 ssize_t CfiBlkWrite(struct Vnode *vnode, const unsigned char *buffer,
@@ -71,11 +65,5 @@ int CfiBlkGeometry(struct Vnode *vnode, struct geometry *geometry);
 int CfiMtdErase(struct MtdDev *mtd, UINT64 start, UINT64 bytes, UINT64 *failAddr);
 int CfiMtdRead(struct MtdDev *mtd, UINT64 start, UINT64 bytes, const char *buf);
 int CfiMtdWrite(struct MtdDev *mtd, UINT64 start, UINT64 bytes, const char *buf);
-
-#ifdef __cplusplus
-#if __cplusplus
-}
-#endif /* __cplusplus */
-#endif /* __cplusplus */
 
 #endif

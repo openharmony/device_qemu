@@ -95,3 +95,5 @@ Explanation for our system configuration:
 ## 6. 用法示例
 
 - [向内核传递调试参数](example.md#sectiondebug)
+
+- [用FAT映像传递文件](example.md#sectionfatfs)
