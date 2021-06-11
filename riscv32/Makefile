@@ -60,8 +60,8 @@ LOCAL_ASMSRCS := $(wildcard $(LITEOSTOPDIR)/kernel/arch/risc-v/riscv32/gcc/*.S) 
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/los_start.S) \
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/libc/*.S)
 
-LOCAL_CSRCS += $(wildcard $(LITEOSTOPDIR)/components/bounds_checking_function/src/*.c)
-CFLAGS += -I $(LITEOSTOPDIR)/components/bounds_checking_function/include
+LOCAL_CSRCS += $(wildcard $(OPENHARMONYDIR)/third_party/bounds_checking_function/src/*.c)
+CFLAGS += -I $(OPENHARMONYDIR)/third_party/bounds_checking_function/include
 
 CC = $(CROSS_COMPILE)gcc
 AS  = $(CROSS_COMPILE)as
