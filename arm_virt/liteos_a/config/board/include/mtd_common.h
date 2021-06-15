@@ -16,7 +16,7 @@
 #ifndef __MTD_COMMON_H__
 #define __MTD_COMMON_H__
 
-#include "fs/fs.h"
+#include "fs/driver.h"
 
 const struct file_operations_vfs *GetMtdCharFops(void);
 const struct block_operations *GetDevSpinorOps(void);
