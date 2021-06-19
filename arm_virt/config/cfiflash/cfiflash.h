@@ -15,7 +15,7 @@
 #ifndef __CFIFLASH_H__
 #define __CFIFLASH_H__
 
-#include "fs/fs.h"
+#include "fs/driver.h"
 #include "mtd_dev.h"
 
 #ifdef __cplusplus
