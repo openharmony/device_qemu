@@ -34,7 +34,6 @@ function main(){
     cp -rf $OUT_DIR/liteos.map $WORK_DIR/OHOS_Image.map
     mv -f $WORK_DIR/liteos.bin $WORK_DIR/OHOS_Image.bin
     popd
-    rm -rf $DRIVERS_LIBS_DIR/libmtd_common.a
     rm -rf $DRIVERS_LIBS_DIR/libspinor_flash.a
 }
 main "$@"
