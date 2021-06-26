@@ -20,7 +20,7 @@ sudo mtdpart add /dev/mtd0 kernel 0 10223616
 sudo mtdpart add /dev/mtd0 bootarg 10223616 262144
 sudo mtdpart add /dev/mtd0 root 10485760 56623104
 sudo nandwrite -p /dev/mtd1 build/out/qemu_arm_virt_ca7/OHOS_Image.bin
-echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=0xA00000 rootsize=27M\x0" | sudo nandwrite -p /dev/mtd2 - 
+echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=10M rootsize=27M useraddr=37M usersize=27M\x0" | sudo nandwrite -p /dev/mtd2 - 
 sudo nandwrite -p /dev/mtd3 build/out/qemu_arm_virt_ca7/rootfs_jffs2.img
 sudo dd if=/dev/mtd0 of=flash.img
 sudo chown `whoami` flash.img
