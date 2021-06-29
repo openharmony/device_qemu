@@ -1,0 +1,43 @@
+# Copyright (c) 2020 Huawei Device Co., Ltd. All rights reserved.
+
+import("//build/lite/config/component/lite_component.gni")
+
+group("riscv32_sifive_u") {
+}
+
+static_library("board") {
+  asmflags = board_asmflags
+  sources = [
+    "main.c",
+    "riscv_hal.c",
+    "libc/dprintf.c",
+    "driver/mtimer.c",
+    "driver/plic.c",
+    "driver/uart.c",
+    "los_start.S",
+  ]
+
+  include_dirs = [
+    "./driver",
+  ]
+}
+
+executable("OHOS_Image") {
+  outdir = rebase_path(root_out_dir)
+  ldflags = [
+    "-Wl,-mcmodel=medany",
+    "-Wl,-melf32lriscv",
+    "-nostartfiles",
+    "-Wl,-T"+rebase_path("Liteos.ld"),
+    "-Wl,-Map=$outdir/bin/OHOH_Image.map,--cref",
+  ]
+  libs = [
+    "gcc",
+    "nosys",
+    "c"
+  ]
+  deps = [
+    "//build/lite:ohos",
+    ":board"
+  ]
+}

@@ -26,6 +26,7 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
+#if (LOSCFG_TEST_DEMO == 1)
 VOID TaskSampleEntry2(VOID)
 {
     while(1) {
@@ -63,6 +64,7 @@ UINT32 TaskSample(VOID)
 
     return ret;
 }
+#endif
 
 /*****************************************************************************
  Function    : main
@@ -84,8 +86,12 @@ LITE_OS_SEC_TEXT_INIT INT32 main(VOID)
         goto START_FAILED;
     }
 
+#if (LOSCFG_TEST_DEMO == 1)
     TaskSample();
-
+#else
+    extern UINT32 LosAppInit(VOID);
+    LosAppInit();
+#endif
     PRINTK("\n OHOS scheduler!!! \n\r");
 
     LOS_Start();

@@ -81,7 +81,7 @@ extern UINTPTR __heap_size;
 #define LOSCFG_SYS_HEAP_SIZE                                (UINTPTR)&__heap_size
 #define LOSCFG_BASE_MEM_NODE_INTEGRITY_CHECK                0
 #define LOSCFG_BASE_MEM_NODE_SIZE_CHECK                     0
-#define LOSCFG_MEM_MUL_POOL                                 0
+#define LOSCFG_MEM_MUL_POOL                                 1
 #define OS_SYS_MEM_NUM                                      20
 #define LOSCFG_KERNEL_MEM_SLAB                              0
 #define LOSCFG_MEMORY_BESTFIT                               1
@@ -92,6 +92,11 @@ extern UINTPTR __heap_size;
 
 #define OS_HWI_WITH_ARG                                     1
 
+#define LOSCFG_BACKTRACE_TYPE                               0
+#define LOSCFG_KERNEL_PM                                    1
+
+#define LOS_KERNEL_TEST_NOT_SMOKE                           0
+#define LOS_KERNEL_HWI_TEST                                 0
 #ifdef __cplusplus
 #if __cplusplus
 }

@@ -1,7 +1,15 @@
 OUTPUT_FORMAT("elf32-littleriscv", "elf32-littleriscv", "elf32-littleriscv")
 OUTPUT_ARCH("riscv")
 ENTRY(_start)
-INCLUDE board.ld.S
+
+RAM_ADDR_START            = 0x80000000;
+RAM_ADDR_SIZE             = 128M;
+FLASH_LOAD_START          = RAM_ADDR_START;
+FLASH_LOAD_SIZE           = RAM_ADDR_SIZE;
+EXCEPT_STACK_SIZE         = 2K;
+NMI_STACK_SIZE            = 1K;
+START_AND_IRQ_STACK_SIZE  = 8K;
+
 MEMORY
 {
    ram(rwx) : ORIGIN = RAM_ADDR_START, LENGTH = RAM_ADDR_SIZE
@@ -32,6 +40,7 @@ SECTIONS
     *(.data.* .sdata.*)
     . = ALIGN(0x20);
     __data_end = .;
+    _edata = .;
   } > ram AT > flash
   __data_load_size = SIZEOF(.data);
   .bss (NOLOAD): ALIGN(0x20)
@@ -58,4 +67,6 @@ SECTIONS
   } > ram
 
   __heap_size = RAM_ADDR_SIZE - (__heap_start - __text_start);
+  _end = .;
+  end = .;
 }
