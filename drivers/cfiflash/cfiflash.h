@@ -18,13 +18,8 @@
 #include "fs/driver.h"
 #include "mtd_dev.h"
 
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-#endif /* __cplusplus */
-
 #define CFI_DRIVER                  "/dev/cfiflash"
+#define CFI_BLK_DRIVER              "/dev/cfiblk"
 #define FLASH_TYPE                  "cfi-flash"
 
 #define CFIFLASH_CAPACITY           (64 * 1024 * 1024)
@@ -37,11 +32,5 @@ extern "C" {
 
 struct block_operations *GetCfiBlkOps(void);
 struct MtdDev *GetCfiMtdDev(void);
-
-#ifdef __cplusplus
-#if __cplusplus
-}
-#endif /* __cplusplus */
-#endif /* __cplusplus */
 
 #endif

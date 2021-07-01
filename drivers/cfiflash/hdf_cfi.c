@@ -19,15 +19,9 @@
 #include "los_vm_zone.h"
 #include "cfiflash_internal.h"
 
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-#endif /* __cplusplus */
-
 static struct block_operations g_cfiBlkops = {
-    NULL,           /* int     (*open)(struct Vnode *vnode); */
-    NULL,           /* int     (*close)(struct Vnode *vnode); */
+    CfiBlkOpen,
+    CfiBlkClose,
     CfiBlkRead,
     CfiBlkWrite,
     CfiBlkGeometry,
@@ -39,50 +33,6 @@ struct block_operations *GetCfiBlkOps()
 {
     return &g_cfiBlkops;
 }
-
-static int HdfCfiMapInit(const struct DeviceResourceNode *node)
-{
-    int ret;
-    uint32_t pbase;
-    struct DeviceResourceIface *p = DeviceResourceGetIfaceInstance(HDF_CONFIG_SOURCE);
-
-    if ((ret = p->GetUint32(node, "pbase", &pbase, 0))) {
-        HDF_LOGE("[%s]GetUint32 error:%d", __func__, ret);
-        return HDF_FAILURE;
-    }
-
-    g_cfiFlashBase = (uint32_t *)IO_DEVICE_ADDR(pbase);
-
-    return HDF_SUCCESS;
-}
-
-int HdfCfiDriverInit(struct HdfDeviceObject *deviceObject)
-{
-    if (deviceObject == NULL ||  deviceObject->property == NULL) {
-        HDF_LOGE("[%s]deviceObject or property is null", __func__);
-        return HDF_ERR_INVALID_PARAM;
-    }
-
-    if (HdfCfiMapInit(deviceObject->property) != HDF_SUCCESS) {
-        return HDF_FAILURE;
-    }
-
-    if(CfiFlashInit()) {
-        return HDF_ERR_NOT_SUPPORT;
-    }
-
-    return HDF_SUCCESS;
-}
-
-struct HdfDriverEntry g_cfiDriverEntry = {
-    .moduleVersion = 1,
-    .moduleName = "cfi_flash_driver",
-    .Bind = NULL,
-    .Init = HdfCfiDriverInit,
-    .Release = NULL,
-};
-
-HDF_INIT(g_cfiDriverEntry);
 
 static struct MtdDev g_cfiMtdDev = {
     .priv = NULL,
@@ -99,8 +49,38 @@ struct MtdDev *GetCfiMtdDev()
     return &g_cfiMtdDev;
 }
 
-#ifdef __cplusplus
-#if __cplusplus
+int HdfCfiDriverInit(struct HdfDeviceObject *deviceObject)
+{
+    int ret;
+    uint32_t pbase;
+    struct DeviceResourceIface *p = DeviceResourceGetIfaceInstance(HDF_CONFIG_SOURCE);
+
+    if (deviceObject == NULL ||  deviceObject->property == NULL) {
+        HDF_LOGE("[%s]deviceObject or property is null", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    if ((ret = p->GetUint32(deviceObject->property, "pbase0", &pbase, 0))) {
+        HDF_LOGE("[%s]GetUint32 error:%d", __func__, ret);
+        return HDF_FAILURE;
+    }
+    if(CfiFlashInit((uint8_t *)IO_DEVICE_ADDR(pbase))) {
+        return HDF_ERR_NOT_SUPPORT;
+    }
+
+    if (p->GetUint32(deviceObject->property, "pbase1", &pbase, 0) == 0) {
+        (void)CfiFlashInit((uint8_t *)IO_DEVICE_ADDR(pbase));
+    }
+
+    return HDF_SUCCESS;
 }
-#endif /* __cplusplus */
-#endif /* __cplusplus */
+
+struct HdfDriverEntry g_cfiDriverEntry = {
+    .moduleVersion = 1,
+    .moduleName = "cfi_flash_driver",
+    .Bind = NULL,
+    .Init = HdfCfiDriverInit,
+    .Release = NULL,
+};
+
+HDF_INIT(g_cfiDriverEntry);

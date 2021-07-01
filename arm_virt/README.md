@@ -103,3 +103,5 @@ Note: OHOS build target name `qemu_arm_virt_ca7` is derived from the above menti
 #### 6. Usage examples
 
 - [passing debug arguments from command line](example.md#sectiondebug)
+
+- [passing files through FAT image](example.md#sectionfatfs)
