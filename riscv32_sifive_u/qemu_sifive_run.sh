@@ -15,9 +15,18 @@
 
 set -e
 
+EXEFILE=$1
+
+if [ "$EXEFILE" == "" ]; then
+echo "Specify the path to the executable file"
+echo "For example:"
+echo "./qemu_sifive_run.sh out/OHOS_Image"
+exit
+fi
+
 qemu-system-riscv32        \
   -m 128M                  \
-  -kernel out/liteos       \
+  -kernel $EXEFILE         \
   -machine sifive_u        \
   -nographic               \
   -append "root=/dev/vda or console=ttyS0"

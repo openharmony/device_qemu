@@ -23,17 +23,15 @@ export LITEOSTOPDIR
 COMPILE_NAME = riscv-none-embed
 ifeq ($(COMPILE_NAME), riscv-none-embed)
 CROSS_COMPILE = riscv-none-embed-
-VERSION_NUM = 8.1.0
 else
 CROSS_COMPILE := riscv32-unknown-elf-
-VERSION_NUM = 7.3.0
 endif
 
 # Select instruction set
 MARCH := rv32imac
 MABI  := ilp32
 
-LITEOS_PLATFORM := riscv32
+LITEOS_PLATFORM := riscv32_sifive_u
 
 # System default
 CFLAGS        := -I $(LITEOSTOPDIR)/utils                                  \
@@ -42,6 +40,7 @@ CFLAGS        := -I $(LITEOSTOPDIR)/utils                                  \
                  -I $(LITEOSTOPDIR)/kernel/arch/risc-v/riscv32/gcc/asm     \
                  -I $(LITEOSTOPDIR)/kernel/arch/include                    \
                  -I $(LITEOSTOPDIR)/components/cpup                        \
+                 -I $(LITEOSTOPDIR)/components/power                       \
                  -I $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/include     \
                  -I $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/include/asm \
                  -I $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/driver      \
@@ -54,6 +53,7 @@ LOCAL_CSRCS   := $(wildcard $(LITEOSTOPDIR)/kernel/src/*.c)                     
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/*.c)       \
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/driver/*.c) \
                  $(wildcard $(LITEOSTOPDIR)/components/cpup/*.c)                  \
+                 $(wildcard $(LITEOSTOPDIR)/components/power/*.c)                  \
                  $(wildcard $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/libc/*.c)
 
 LOCAL_ASMSRCS := $(wildcard $(LITEOSTOPDIR)/kernel/arch/risc-v/riscv32/gcc/*.S)           \
@@ -83,8 +83,9 @@ OBJOUT := $(OUT)/obj
 LIBA = $(OUT)/libs/libkernel.a
 LITEOS_LIBS_DIR := -L$(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/$(OUT)/libs
 LITEOS_GCCLIB := libgcc.a
-LITEOS_TARGET = liteos
+LITEOS_TARGET = OHOS_Image
 LITEOS_LIBDEP := -lkernel -lgcc -lc
+VERSION_NUM := $(shell $(CC) -dumpversion)
 
 LITEOS_SSP = -fno-stack-protector
 LITEOS_COPTS_BASE  := -march=$(MARCH) -mabi=$(MABI) -static -fno-common -O2 $(LITEOS_SSP)
@@ -109,7 +110,7 @@ LITEOS_COMPILER_GCC_INCLUDE = -I $(LITEOS_COMPILER_PATH)/lib/gcc/$(COMPILE_NAME)
 LITEOS_LD_SCRIPT := $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/Liteos.ld
 LITEOS_LDFLAGS := $(LITEOS_LD_OPTS) -T$(LITEOS_LD_SCRIPT) $(LITEOS_LIBS_DIR) $(LITEOS_COMPILER_GCCLIB_PATH)
 
-LITEOS_CFLAGS  := $(LITEOS_COPTS_BASE) $(LITEOS_COPTS_EXTRA) -DLOSCFG_LIB_LIBC
+LITEOS_CFLAGS  := $(LITEOS_COPTS_BASE) $(LITEOS_COPTS_EXTRA) -DLOSCFG_LIB_LIBC -DLOSCFG_TEST_DEMO=1
 LITEOS_ASFLAGS := $(LITEOS_ASOPTS)
 LOCAL_FLAGS := $(CFLAGS) $(LITEOS_COMPILER_GCC_INCLUDE)
 LOCAL_COBJS := $(patsubst %.c,$(OBJOUT)/%.o,$(LOCAL_CSRCS))
