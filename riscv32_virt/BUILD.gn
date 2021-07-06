@@ -2,7 +2,7 @@
 
 import("//build/lite/config/component/lite_component.gni")
 
-group("riscv32_sifive_u") {
+group("riscv32_virt") {
 }
 
 static_library("board") {
@@ -23,13 +23,11 @@ static_library("board") {
 }
 
 executable("OHOS_Image") {
-  outdir = rebase_path(root_out_dir)
   ldflags = [
     "-Wl,-mcmodel=medany",
     "-Wl,-melf32lriscv",
     "-nostartfiles",
     "-Wl,-T"+rebase_path("Liteos.ld"),
-    "-Wl,-Map=$outdir/bin/OHOH_Image.map,--cref",
   ]
   libs = [
     "gcc",

@@ -1,7 +1,7 @@
-# Qemu RISC-V sifive_u 教程
+# Qemu RISC-V virt 教程
 
 ## 1. 简介
-`risc-v/` 子目录包含部分Qemu RISC-V虚拟化平台验证的OpenHarmony kernel\_liteos\_m的代码，目录名为*sifive\_u*。
+`riscv32_virt/` 子目录包含部分Qemu RISC-V虚拟化平台验证的OpenHarmony kernel\_liteos\_m的代码，目录名为*virt*。
 RISC-V 虚拟化平台是一个 `qemu-system-riscv32` 的目标设备，通过它来模拟一个通用的、基于RISC-V架构的单板。
 
 这次模拟的配置是：RISC-V架构，1个CPU，128M内存。
@@ -21,7 +21,7 @@ RISC-V 虚拟化平台是一个 `qemu-system-riscv32` 的目标设备，通过�
 ## 4. 源码构建
 
 ```
-cd device/qemu/riscv32_sifive_u
+cd device/qemu/riscv32_virt
 make clean;make -j16
 ```
 
@@ -33,13 +33,22 @@ out/OHOS_Image
 ```
 ## 5. 在Qemu中运行镜像
 
-a) 如果没有安装 `qemu-system-riscv32` ，安装请参考链接 [Qemu installation](https://www.qemu.org/download/)
-
-提示: 当前引入的功能在基于qemu 4.0.90版本的目标machine已经测试过了，不能保证所有的Qemu版本都能够运行成功，因此需要保证你的qemu-system-riscv32的版本尽可能为4.0.90。
+a) 如果没有安装 `qemu-system-riscv32` ，安装请参考链接[Qemu installation](https://www.qemu.org/download/)
 
 b) 运行
 
+(1). qemu 版本 < 5.0.0 
+
 ```
-cd device/qemu/riscv32_sifive_u
+cd device/qemu/riscv32_virt
+qemu-system-riscv32 -machine virt -m 128M -kernel out/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
+```
+
+(2). qemu 版本 >= 5.0.0 
+
+```
+cd device/qemu/riscv32_virt
 ./qemu-system-riscv32 out/OHOS_Image
+或
+qemu-system-riscv32 -machine virt -m 128M -bios none -kernel out/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
 ```

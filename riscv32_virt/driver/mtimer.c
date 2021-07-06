@@ -36,9 +36,9 @@ UINT32 MTimerTickInit(OS_TICK_HANDLER handler, UINT32 period)
         return ret;
     }
 
-    WRITE_UINT32(0xffffffff, MTIMERCMP + 4);
+    WRITE_UINT32(0xffffffff, MTIMERCMP + 4); /* The high 4 bits of mtimer */
     WRITE_UINT32(period, MTIMERCMP);
-    WRITE_UINT32(0x0, MTIMERCMP + 4);
+    WRITE_UINT32(0x0, MTIMERCMP + 4); /* The high 4 bits of mtimer */
 
     HalIrqEnable(RISCV_MACH_TIMER_IRQ);
     return LOS_OK;

@@ -32,24 +32,21 @@
  * [31:3]  reserved
  */
 #define PLIC_PRIO_BASE                                 0xC000000
-#define PLIC_PEND_BASE                                 0xC001000 //interrupt 0-31
-#define PLIC_PEND_REG2                                 0xC001004 //interrupt 32-52
-#define PLIC_ENABLE_BASE                               0xC002000 //interrupt 0-31
-#define PLIC_ENABLE_REG2                               0xC002004 //interrupt 32-52
+#define PLIC_PEND_BASE                                 0xC001000 /* interrupt 0-31 */
+#define PLIC_PEND_REG2                                 0xC001004 /* interrupt 32-52 */.
+#define PLIC_ENABLE_BASE                               0xC002000 /* interrupt 0-31 */
+#define PLIC_ENABLE_REG2                               0xC002004 /* interrupt 32-52 */
 #define PLIC_REG_BASE                                  0xC200000
 
-#define UART0_BASE                                     0x10013000
-#define UART1_BASE                                     0x10023000
+#define UART0_BASE                                     0x10000000
 
 #define UART0_CLK_FREQ                                 0x32000000
-#define UART1_CLK_FREQ                                 0x32000000
 #define UART0_BAUDRAT                                  115200
 
 #define RISCV_SYS_MAX_IRQ                              11
 #define RISCV_WDOGCMP_IRQ                              (RISCV_SYS_MAX_IRQ + 1)
 #define RISCV_RTCCMP_IRQ                               (RISCV_SYS_MAX_IRQ + 2)
 #define RISCV_UART0_IRQ                                (RISCV_SYS_MAX_IRQ + 3)
-#define RISCV_UART1_IRQ                                (RISCV_SYS_MAX_IRQ + 4)
 
 #define RISCV_PLIC_VECTOR_CNT                          53
 

@@ -21,7 +21,7 @@ Quick Emulator \(QEMU\) can simulate the scenario where a kernel runs on differe
 ├── drivers                 # Platform drivers
 │   └── libs                # Driver library
 │       └── virt            # virt platform
-├── riscv32_sifive_u        # RISCV32 architecture
+├── riscv32_virt            # RISCV32 architecture
 │   ├── driver              # Driver code
 │   ├── include             # APIs exposed externally
 │   ├── libc                # Basic libc library
@@ -36,7 +36,7 @@ QEMU applies only to the OpenHarmony kernel.
 
 For details about the ARM architecture, see  [Qemu ARM Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/arm_virt/README.md).
 
-For details about the RISC-V architecture, see  [Qemu RISC-V Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/riscv32_sifive_u/README.md).
+For details about the RISC-V architecture, see  [Qemu RISC-V Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/riscv32_virt/README.md).
 
 ## Contribution<a name="section169045116136"></a>
 

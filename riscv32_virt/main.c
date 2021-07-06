@@ -77,8 +77,6 @@ LITE_OS_SEC_TEXT_INIT INT32 main(VOID)
 {
     UINT32 ret;
 
-    UartInit();
-
     PRINTK("\n OHOS start \n\r");
 
     ret = LOS_KernelInit();
