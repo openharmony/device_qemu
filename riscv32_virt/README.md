@@ -1,8 +1,8 @@
-### Qemu RISC-V sifive_u HOWTO
+### Qemu RISC-V virt HOWTO
 
 #### 1. Brief introduction
-`risc-v/` subdirectory contains part of the OpenHarmony LiteOS demonstration support for Qemu risc-v sifive_u Platform,
-here called *sifive_u*.
+`riscv32_virt/` subdirectory contains part of the OpenHarmony LiteOS demonstration support for Qemu risc-v virt Platform,
+here called *virt*.
 RISC-V Virtual platform is a `qemu-system-riscv32` machine target that provides emulation
 for a generic, riscv-based board.
 
@@ -23,7 +23,7 @@ Note: One can use `repo` to fetch code in a straightforward manner.
 #### 4. Building from sources
 
 ```
-cd device/qemu/riscv32_sifive_u
+cd device/qemu/riscv32_virt
 make clean;make -j16
 ```
 
@@ -39,13 +39,20 @@ out/OHOS_Image
 a) If not installed, please install `qemu-system-riscv32`
 For details, please refer to the HOWTO: [Qemu installation](https://www.qemu.org/download/)
 
-Note: The functionality currently introduced has been tested on the target machine based on Qemu version 4.0.90, 
-      and there is no guarantee that all Qemu versions will work successfully, so you need to make sure that your
-      qemu-system-riscv32 version is 4.0.90 as far as possible.
-
 b) Run
 
+(1) qemu version < 5.0.0
+
 ```
-cd device/qemu/riscv32_sifive_u
+cd device/qemu/riscv32_virt
+qemu-system-riscv32 -machine virt -m 128M -kernel out/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
+```
+
+(2). qemu version >= 5.0.0 
+
+```
+cd device/qemu/riscv32_virt
 ./qemu-system-riscv32 out/OHOS_Image
+or
+qemu-system-riscv32 -machine virt -m 128M -bios none -kernel out/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
 ```

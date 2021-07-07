@@ -44,6 +44,8 @@ STATIC VOID OsMachineExternalInterrupt(VOID *arg)
     WRITE_UINT32(saveIrqNum, plicReg);
 }
 
+#define OS_PLIC_MAX ((OS_RISCV_CUSTOM_IRQ_VECTOR_CNT >> 5) + 1)
+
 VOID PlicIrqInit()
 {
     volatile UINT32 *plicPrioReg = (volatile UINT32 *)PLIC_PRIO_BASE;
@@ -52,7 +54,7 @@ VOID PlicIrqInit()
     INT32 i;
     UINT32 ret;
 
-    for (i = 0; i < ((OS_RISCV_CUSTOM_IRQ_VECTOR_CNT >> 5) + 1); i++) {
+    for (i = 0; i < OS_PLIC_MAX; i++) {
         WRITE_UINT32(0x0, plicEnReg);
         plicEnReg++;
     }
@@ -84,9 +86,9 @@ VOID PlicIrqEnable(UINT32 vector)
     UINT32 locIrq = vector - RISCV_SYS_MAX_IRQ;
     volatile UINT32 *plicReg = (volatile UINT32 *)PLIC_ENABLE_BASE;
 
-    plicReg += (locIrq >> 5);
+    plicReg += (locIrq >> 5); /* 5： The PLIC interrupt controls the bit width */
     READ_UINT32(irqValue, plicReg);
-    irqValue |= (1 << (locIrq & 31));
+    irqValue |= (1 << (locIrq & 31)); /* 31: plic irq mask */
     WRITE_UINT32(irqValue, plicReg);
 }
 
@@ -96,9 +98,9 @@ VOID PlicIrqDisable(UINT32 vector)
     UINT32 locIrq = vector - RISCV_SYS_MAX_IRQ;
     volatile UINT32 *plicReg = (volatile UINT32 *)PLIC_ENABLE_BASE;
 
-    plicReg += (locIrq >> 5);
+    plicReg += (locIrq >> 5); /* 5： The PLIC interrupt controls the bit width */
     READ_UINT32(irqValue, plicReg);
-    irqValue &= ~(1 << (locIrq & 31));
+    irqValue &= ~(1 << (locIrq & 31)); /* 31: plic irq mask */
     WRITE_UINT32(irqValue, plicReg);
 }
 

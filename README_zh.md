@@ -21,7 +21,7 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 ├── drivers                 # 与平台相关的驱动目录
 │   └── libs                # 驱动库
 │       └── virt            # virt平台
-├── riscv32_sifive_u         # riscv32架构相关
+├── riscv32_virt            # riscv32架构相关
 │   ├── driver              # 驱动目录
 │   ├── include             # 对外接口存放目录
 │   ├── libc                # 基础libc库
@@ -36,7 +36,7 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 
 arm架构参考[QEMU教程 for arm](https://gitee.com/openharmony/device_qemu/blob/master/arm_virt/README_zh.md)。
 
-risc-v架构参考[QEMU教程 for risc-v](https://gitee.com/openharmony/device_qemu/blob/master/riscv32_sifive_u/README_zh.md)。
+risc-v架构参考[QEMU教程 for risc-v](https://gitee.com/openharmony/device_qemu/blob/master/riscv32_virt/README_zh.md)。
 
 ## 贡献<a name="section169045116136"></a>
 

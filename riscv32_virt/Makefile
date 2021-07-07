@@ -31,7 +31,7 @@ endif
 MARCH := rv32imac
 MABI  := ilp32
 
-LITEOS_PLATFORM := riscv32_sifive_u
+LITEOS_PLATFORM := riscv32_virt
 
 # System default
 CFLAGS        := -I $(LITEOSTOPDIR)/utils                                  \

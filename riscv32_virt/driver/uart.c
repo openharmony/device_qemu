@@ -13,10 +13,9 @@
  * limitations under the License.
  */
 
-#ifndef _UART_H
-#define _UART_H
-
-#include "los_compiler.h"
+#include "uart.h"
+#include "soc.h"
+#include "los_reg.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -24,13 +23,39 @@ extern "C" {
 #endif
 #endif
 
-extern INT32 UartPutc(INT32 c, VOID *file);
-extern INT32 UartOut(INT32 c, VOID *file);
-extern VOID UartInit(VOID);
+/******* uart register offset *****/
+#define UART_TX_DATA         0x00
+#define UART_RX_DATA         0x04
+#define UART_TX_CTRL         0x08
+#define UART_RX_CTRL         0x0C
+#define UART_IN_ENAB         0x10
+#define UART_IN_PEND         0x14
+#define UART_BR_DIV          0x18
+
+INT32 UartPutc(INT32 c, VOID *file)
+{
+    (VOID)file;
+
+    while (GET_UINT32(UART0_BASE + UART_TX_DATA) & 0x80000000) {
+        ;
+    }
+
+    WRITE_UINT32((INT32)(c & 0xFF), UART0_BASE + UART_TX_DATA);
+
+    return c;
+}
+
+INT32 UartOut(INT32 c, VOID *file)
+{
+    if (c == '\n') {
+        return UartPutc('\r', file);
+    }
+
+    return UartPutc(c, file);
+}
 
 #ifdef __cplusplus
 #if __cplusplus
 }
 #endif /* __cplusplus */
 #endif /* __cplusplus */
-#endif

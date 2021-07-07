@@ -26,7 +26,8 @@ fi
 
 qemu-system-riscv32        \
   -m 128M                  \
+  -bios none               \
+  -machine virt            \
   -kernel $EXEFILE         \
-  -machine sifive_u        \
   -nographic               \
   -append "root=/dev/vda or console=ttyS0"
