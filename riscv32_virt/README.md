@@ -12,11 +12,14 @@ Note: System memory size is hard-coded to 128MB.
 
 #### 2. Setting up environment
 
-Refer to HOWTO guide: [Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/environment-setup.md)
+[Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/environment-setup.md)
+
+[Compiler install: gcc_riscv32](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/setting-up-the-environment.md), 
+Note: [Downloadable directly](https://repo.huaweicloud.com/harmonyos/compiler/gcc_riscv32/7.3.0/linux/gcc_riscv32-linux-7.3.0.tar.gz)
 
 #### 3. Code acquisition
 
-Refer to HOWTO guide: [Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/source-code-acquisition.md)
+[Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/source-code-acquisition.md)
 
 Note: One can use `repo` to fetch code in a straightforward manner.
 
@@ -37,7 +40,7 @@ out/OHOS_Image
 #### 5. Running image in Qemu
 
 a) If not installed, please install `qemu-system-riscv32`
-For details, please refer to the HOWTO: [Qemu installation](https://www.qemu.org/download/)
+For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/master/README.md)
 
 b) Run
 

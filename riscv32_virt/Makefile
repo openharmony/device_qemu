@@ -19,8 +19,8 @@ OPENHARMONYDIR := $(realpath $(OPENHARMONYDIR))
 export LITEOSTOPDIR
 
 # Selective compiler
-#COMPILE_NAME := riscv32-unknown-elf
-COMPILE_NAME = riscv-none-embed
+COMPILE_NAME := riscv32-unknown-elf
+#COMPILE_NAME = riscv-none-embed
 ifeq ($(COMPILE_NAME), riscv-none-embed)
 CROSS_COMPILE = riscv-none-embed-
 else
@@ -89,17 +89,17 @@ VERSION_NUM := $(shell $(CC) -dumpversion)
 
 LITEOS_SSP = -fno-stack-protector
 LITEOS_COPTS_BASE  := -march=$(MARCH) -mabi=$(MABI) -static -fno-common -O2 $(LITEOS_SSP)
-LITEOS_COPTS_EXTRA := -ffunction-sections -fdata-sections -fno-omit-frame-pointer -Wno-format-truncation #-Wall
+LITEOS_COPTS_EXTRA := -ffunction-sections -fdata-sections -fno-omit-frame-pointer -Wno-format-truncation \
+                      -fno-omit-frame-pointer -Wno-format-truncation  -nostdlib  -fno-builtin -fno-strict-aliasing \
+                      -fsigned-char -fstack-protector-all -std=c99 #-Wall
 LITEOS_ASOPTS      := -march=$(MARCH) -mabi=$(MABI) -static -O2
-LITEOS_LD_OPTS     := --build-id=none -static -nostartfiles --gc-sections
-
+LITEOS_LD_OPTS     := -Wl,-mcmodel=medany -Wl,-melf32lriscv -nostartfiles -Wl,--gc-sections
 LITEOS_COMPILER_PATH := $(realpath $(shell $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/compiler_dir.sh  $(CC)))
 LITEOS_COMPILER_CXX_PATH = $(LITEOS_COMPILER_PATH)/$(COMPILE_NAME)/include
 LITEOS_COMPILER_CXXLIB_PATH = $(LITEOS_COMPILER_PATH)/$(COMPILE_NAME)/lib/$(LITEOS_GCCLIB)
 ifeq ($(COMPILE_NAME), riscv-none-embed)
 LITEOS_COMPILER_GCCLIB_PATH = -L$(LITEOS_COMPILER_PATH)/lib/gcc/$(COMPILE_NAME)/$(VERSION_NUM)/$(MARCH)/$(MABI)/ \
                               -L$(LITEOS_COMPILER_PATH)/$(COMPILE_NAME)/lib/$(MARCH)/$(MABI)/
-LITEOS_LD_OPTS += -mcmodel=medany -melf32lriscv
 else
 LITEOS_COMPILER_GCCLIB_PATH = -L$(LITEOS_COMPILER_PATH)/lib/gcc/$(COMPILE_NAME)/$(VERSION_NUM)/ \
                               -L$(LITEOS_COMPILER_PATH)/$(COMPILE_NAME)/lib/
@@ -107,11 +107,11 @@ endif
 LITEOS_COMPILER_GCC_INCLUDE = -I $(LITEOS_COMPILER_PATH)/lib/gcc/$(COMPILE_NAME)/$(VERSION_NUM)/include  \
                               -I $(LITEOS_COMPILER_PATH)/$(COMPILE_NAME)/include
 
-LITEOS_LD_SCRIPT := $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/Liteos.ld
-LITEOS_LDFLAGS := $(LITEOS_LD_OPTS) -T$(LITEOS_LD_SCRIPT) $(LITEOS_LIBS_DIR) $(LITEOS_COMPILER_GCCLIB_PATH)
-
 LITEOS_CFLAGS  := $(LITEOS_COPTS_BASE) $(LITEOS_COPTS_EXTRA) -DLOSCFG_LIB_LIBC -DLOSCFG_TEST_DEMO=1
 LITEOS_ASFLAGS := $(LITEOS_ASOPTS)
+LITEOS_LD_SCRIPT := $(OPENHARMONYDIR)/device/qemu/$(LITEOS_PLATFORM)/Liteos.ld
+LITEOS_LDFLAGS := $(LITEOS_LD_OPTS) $(LITEOS_COPTS_BASE) -Wl,-T$(LITEOS_LD_SCRIPT) $(LITEOS_LIBS_DIR) $(LITEOS_COMPILER_GCCLIB_PATH)
+
 LOCAL_FLAGS := $(CFLAGS) $(LITEOS_COMPILER_GCC_INCLUDE)
 LOCAL_COBJS := $(patsubst %.c,$(OBJOUT)/%.o,$(LOCAL_CSRCS))
 LOCAL_ASMOBJS := $(patsubst %.S,$(OBJOUT)/%.o,$(LOCAL_ASMSRCS))
@@ -119,7 +119,7 @@ LOCAL_ASMOBJS := $(patsubst %.S,$(OBJOUT)/%.o,$(LOCAL_ASMSRCS))
 all: $(LITEOS_TARGET)
 
 $(LITEOS_TARGET): $(LIBA)
-	$(LD) $(LITEOS_LDFLAGS) $(LITEOS_TABLES_LDFLAGS) --start-group $(LITEOS_LIBDEP) --end-group -o $(OUT)/$@
+	$(CC) $(LITEOS_LDFLAGS) $(LITEOS_TABLES_LDFLAGS) -Wl,--start-group $(LITEOS_LIBDEP) -Wl,--end-group -o $(OUT)/$@
 	$(OBJCOPY) -S $(OUT)/$@ -Obinary $(OUT)/$@.bin
 	$(OBJDUMP) -hd $(OUT)/$@ >$(OUT)/$@.asm
 	$(OBJDUMP) -stD $(OUT)/$@ >$(OUT)/$@.map

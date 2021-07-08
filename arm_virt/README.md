@@ -46,7 +46,7 @@ out/qemu_arm_virt_ca7/OHOS_Image.bin
 #### 5. Running image in Qemu
 
 a) If not installed, please install `qemu-system-arm`
-For details, please refer to the HOWTO: [Qemu installation](https://www.qemu.org/download/)
+For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/master/README.md)
 
 Note: The introduced functionality was tested on virt-5.1 target machine. It is not guaranteed to work with any other version
       so make sure that your qemu-system-arm emulator is up to date.
