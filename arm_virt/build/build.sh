@@ -16,10 +16,15 @@
 set -e
 
 OUT_DIR="$2"
+SYSROOT_PATH="$3"
+ARCH_CFLAGS="$4"
 WORK_DIR=$OUT_DIR/../../../
 KERNEL_DIR=$1
 HISI_LIBS_DIR=../../../hisilicon/drivers/libs/ohos/llvm/hi3518ev300
 DRIVERS_LIBS_DIR=../../drivers/libs/virt/
+
+export SYSROOT_PATH
+export ARCH_CFLAGS
 
 function main(){
     mkdir -p $WORK_DIR/bin
