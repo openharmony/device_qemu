@@ -1,0 +1,79 @@
+# none hdf driver configs
+choice
+    prompt "Enable Uart"
+    default DRIVERS_HDF_PLATFORM_UART
+    help
+      Enable simple uart (without vfs) only for litekernel.
+      Enable general uart (with vfs) for full code.
+
+config DRIVERS_HDF_PLATFORM_UART
+    bool "Enable HDF platform uart driver"
+    depends on DRIVERS_HDF_PLATFORM
+    help
+      Answer Y to enable HDF platform uart driver.
+
+config PLATFORM_UART_WITHOUT_VFS
+    bool "Simple Uart"
+config PLATFORM_NO_UART
+    bool "NO Uart"
+endchoice
+
+config DRIVERS_NETDEV
+    bool "Enable Net Device"
+    default y
+    depends on DRIVERS && NET_LWIP_SACK
+    help
+      Answer Y to enable LiteOS support net device.
+
+choice
+    depends on DRIVERS_NETDEV
+    prompt "MAC"
+    default DRIVERS_HIETH_SF
+    help
+      Select net device.
+
+config DRIVERS_HIETH_SF
+    bool "Enable hieth-sf"
+    depends on DRIVERS_NETDEV
+endchoice
+
+# mtd configs tart
+config DRIVERS_MTD
+    bool "Enable MTD"
+    default y
+    depends on DRIVERS && FS_VFS
+    help
+      Answer Y to enable LiteOS support jffs2 multipartion.
+
+# spi nor
+config DRIVERS_MTD_SPI_NOR
+    bool "Enable MTD spi_nor flash"
+    default y
+    depends on DRIVERS_MTD
+    help
+      Answer Y to support spi_nor flash.
+choice
+    depends on  DRIVERS_MTD_SPI_NOR
+    prompt "SpiNorFlash Chips"
+    default DRIVERS_MTD_SPI_NOR_HISFC350
+
+config DRIVERS_MTD_SPI_NOR_HISFC350
+    bool "Enable hisfc350"
+    help
+      Answer Y to support hisfc350.
+
+config DRIVERS_MTD_SPI_NOR_HIFMC100
+    bool "Enable hifmc100"
+    help
+      Answer Y to support hifmc100.
+endchoice
+
+#spi nand
+config DRIVERS_MTD_NAND
+    bool "Enable MTD nandflash"
+    default n
+    depends on DRIVERS_MTD
+    help
+      Answer Y to support nandflash.
+
+# mtd configs end
