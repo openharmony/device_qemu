@@ -7,7 +7,7 @@ build_ext_component("virt_make_kernel") {
   arch_cflags = string_join(" ", target_arch_cflags)
   exec_path = rebase_path("./build/", root_build_dir)
   outdir = rebase_path("./build/out/qemu_arm_virt_ca7/obj/kernel/liteos_a/")
-  command = "sh build.sh ../../../../kernel/liteos_a/ $outdir $sysroot_path \"$arch_cflags\""
+  command = "sh build.sh ../../../../kernel/liteos_a/ $outdir $sysroot_path \"$arch_cflags\" \"${device_path}\""
 }
 
 group("arm_virt") {
