@@ -16,6 +16,8 @@ SOC_PLATFORM := $(subst $\",,$(LOSCFG_PLATFORM))
 
 DRIVERS_ROOT := $(LITEOSTOPDIR)/../../device/$(SOC_COMPANY)/drivers/
 
+BUILD_FROM_SOURCE := n
+
 ifeq ($(BUILD_FROM_SOURCE), y)
     HDF_INCLUDE += -I $(LITEOSTOPDIR)/../../device/$(SOC_COMPANY)/$(SOC_PLATFORM)/liteos_a/config/board/include/
     HDF_INCLUDE += -I $(LITEOSTOPDIR)/../../device/$(SOC_COMPANY)/$(SOC_PLATFORM)/liteos_a/config/board/include/soc
@@ -37,7 +39,6 @@ endif
 ifeq ($(LOSCFG_DRIVERS_MTD), y)
     LITEOS_BASELIB    += -lmtd_common
     LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(DRIVERS_ROOT)/include/mtd/common/include
-endif
 
     ifeq ($(LOSCFG_DRIVERS_MTD_SPI_NOR), y)
     ifeq ($(LOSCFG_DRIVERS_MTD_SPI_NOR_HISFC350), y)
