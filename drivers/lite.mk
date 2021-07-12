@@ -46,6 +46,7 @@ ifeq ($(LOSCFG_DRIVERS_MTD), y)
     else ifeq ($(LOSCFG_DRIVERS_MTD_SPI_NOR_HIFMC100), y)
         NOR_DRIVER_DIR := hifmc100
     endif
+    endif
 
     LITEOS_BASELIB   += -lspinor_flash
     LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(DRIVERS_ROOT)/include/mtd/spi_nor/include
