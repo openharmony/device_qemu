@@ -46,10 +46,8 @@ endif
         NOR_DRIVER_DIR := hifmc100
     endif
 
-        LITEOS_BASELIB   += -lspinor_flash
-        LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(DRIVERS_ROOT)/include/mtd/spi_nor/include
-    endif
-
+    LITEOS_BASELIB   += -lspinor_flash
+    LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(DRIVERS_ROOT)/include/mtd/spi_nor/include
 
     ifeq ($(LOSCFG_DRIVERS_MTD_NAND), y)
         NAND_DRIVER_DIR := hifmc100
