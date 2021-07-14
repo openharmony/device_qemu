@@ -41,7 +41,7 @@ out/qemu_arm_virt_ca7/OHOS_Image.bin
 ```
 ## 5. 在Qemu中运行镜像
 
-a) 如果没有安装 `qemu-system-arm` ，安装请参考链接 [Qemu installation](https://www.qemu.org/download/)
+a) 如果没有安装 `qemu-system-arm` ，安装请参考链接 [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/master/README_zh.md)
 
 提示: 当前引入的功能在virt-5.1的目标machine已经测试过了，不能保证所有的Qemu版本都能够运行成功，因此需要保证你的qemu-system-arm版本尽可能的新。
 

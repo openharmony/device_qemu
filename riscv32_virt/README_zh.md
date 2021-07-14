@@ -10,11 +10,14 @@ RISC-V 虚拟化平台是一个 `qemu-system-riscv32` 的目标设备，通过�
 
 ## 2. 环境搭建
 
-参考链接: [环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.md)
+[环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.md)
+
+[编译器安装: gcc_riscv32](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/%E5%AE%89%E8%A3%85%E5%BC%80%E5%8F%91%E6%9D%BF%E7%8E%AF%E5%A2%83.md), 
+提示: [可直接下载](https://repo.huaweicloud.com/harmonyos/compiler/gcc_riscv32/7.3.0/linux/gcc_riscv32-linux-7.3.0.tar.gz)
 
 ## 3. 获取源码
 
-参考链接: [代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/%E6%BA%90%E7%A0%81%E8%8E%B7%E5%8F%96.md)
+[代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/%E6%BA%90%E7%A0%81%E8%8E%B7%E5%8F%96.md)
 
 提示: 可以使用 `repo` 命令来获取源码。
 
@@ -33,7 +36,7 @@ out/OHOS_Image
 ```
 ## 5. 在Qemu中运行镜像
 
-a) 如果没有安装 `qemu-system-riscv32` ，安装请参考链接[Qemu installation](https://www.qemu.org/download/)
+a) 如果没有安装 `qemu-system-riscv32` ，安装请参考链接:[Qemu安装指导](https://gitee.com/openharmony/device_qemu/blob/master/README_zh.md)
 
 b) 运行
 
