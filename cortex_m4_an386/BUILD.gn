@@ -1,0 +1,48 @@
+# Copyright (c) 2020 Huawei Device Co., Ltd. All rights reserved.
+
+static_library("board") {
+  asmflags = board_asmflags
+
+  sources = [
+      "./fs/ff_gen_drv.c",
+      "./main.c",
+      "./dprintf.c",
+      "./startup.s",
+      "./driver/uart.c"
+  ]
+
+  include_dirs = [
+    "//kernel/liteos_m/kernel/include",
+    "//kernel/liteos_m/kernel/arch/include",
+    "//kernel/liteos_m/utils",
+    "//kernel/liteos_m/kal/cmsis",
+    "//kernel/liteos_m/components/power",
+    "./driver",
+    "./include"
+  ]
+
+  deps = [ "//kernel/liteos_m/kal/posix" ]
+}
+
+executable("cortex_m4_an386") {
+  output_name = "liteos"
+  ldflags = [
+    "-specs=nano.specs",
+    "-nostartfiles",
+    "-Wl,-T"+rebase_path("Liteos.ld"),
+    "-Wl,--gc-section"
+  ]
+
+  libs = [
+    "m",
+    "nosys",
+    "c"
+  ]
+
+  deps = [
+    "//kernel/liteos_m:kernel",
+    "//device/qemu/cortex_m4_an386:board",
+    "//device/qemu/cortex_m4_an386/test:demo"
+  ]
+}
+
