@@ -18,7 +18,7 @@ static_library("board") {
 }
 
 executable("riscv32_virt") {
-  output_name = "OHOS_Image"
+  output_name = "liteos"
   ldflags = [
     "-Wl,-mcmodel=medany",
     "-Wl,-melf32lriscv",
@@ -31,6 +31,7 @@ executable("riscv32_virt") {
     "c"
   ]
   deps = [
+    "//kernel/liteos_m:kernel"
     ":board"
   ]
 }
