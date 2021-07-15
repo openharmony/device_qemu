@@ -1,10 +1,5 @@
 # Copyright (c) 2020 Huawei Device Co., Ltd. All rights reserved.
 
-import("//build/lite/config/component/lite_component.gni")
-
-group("riscv32_virt") {
-}
-
 static_library("board") {
   asmflags = board_asmflags
   sources = [
@@ -22,7 +17,8 @@ static_library("board") {
   ]
 }
 
-executable("OHOS_Image") {
+executable("riscv32_virt") {
+  output_name = "OHOS_Image"
   ldflags = [
     "-Wl,-mcmodel=medany",
     "-Wl,-melf32lriscv",
@@ -35,7 +31,6 @@ executable("OHOS_Image") {
     "c"
   ]
   deps = [
-    "//build/lite:ohos",
     ":board"
   ]
 }

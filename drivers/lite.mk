@@ -14,10 +14,9 @@
 SOC_COMPANY := $(subst $\",,$(LOSCFG_DEVICE_COMPANY))
 SOC_PLATFORM := $(subst $\",,$(LOSCFG_PLATFORM))
 
-HISILICON_DRIVERS_ROOT := $(LITEOSTOPDIR)/../../device/$(SOC_COMPANY)/drivers/
-HISILICON_DRIVERS_SOURCE_ROOT := $(LITEOSTOPDIR)/../../device/$(SOC_COMPANY)/drivers/huawei_proprietary/
+DRIVERS_ROOT := $(LITEOSTOPDIR)/../../device/$(SOC_COMPANY)/drivers/
 
-BUILD_FROM_SOURCE := $(shell if [ -d $(HISILICON_DRIVERS_SOURCE_ROOT) ]; then echo y; else echo n; fi)
+BUILD_FROM_SOURCE := n
 
 ifeq ($(BUILD_FROM_SOURCE), y)
     HDF_INCLUDE += -I $(LITEOSTOPDIR)/../../device/$(SOC_COMPANY)/$(SOC_PLATFORM)/liteos_a/config/board/include/
@@ -26,25 +25,20 @@ endif
 
 ###################### SELF-DEVELOPED DRIVER ######################
 LITEOS_BASELIB +=  -lcfiflash -lvirtnet -lfw_cfg
-LIB_SUBDIRS    += $(HISILICON_DRIVERS_ROOT)/cfiflash
-LIB_SUBDIRS    += $(HISILICON_DRIVERS_ROOT)/virtnet
-LIB_SUBDIRS    += $(HISILICON_DRIVERS_ROOT)/fw_cfg
+LIB_SUBDIRS    += $(DRIVERS_ROOT)/cfiflash
+LIB_SUBDIRS    += $(DRIVERS_ROOT)/virtnet
+LIB_SUBDIRS    += $(DRIVERS_ROOT)/fw_cfg
 
 ###################### HDF DRIVER ######################
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_UART), y)
     LITEOS_BASELIB += -lhdf_uart
-    LIB_SUBDIRS    += $(HISILICON_DRIVERS_ROOT)/uart
+    LIB_SUBDIRS    += $(DRIVERS_ROOT)/uart
 endif
 
 # mtd drivers
 ifeq ($(LOSCFG_DRIVERS_MTD), y)
     LITEOS_BASELIB    += -lmtd_common
-ifeq ($(BUILD_FROM_SOURCE), y)
-    LIB_SUBDIRS       += $(HISILICON_DRIVERS_SOURCE_ROOT)/mtd/common
-    LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(HISILICON_DRIVERS_SOURCE_ROOT)/mtd/common/include
-else
-    LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(HISILICON_DRIVERS_ROOT)/include/mtd/common/include
-endif
+    LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(DRIVERS_ROOT)/include/mtd/common/include
 
     ifeq ($(LOSCFG_DRIVERS_MTD_SPI_NOR), y)
     ifeq ($(LOSCFG_DRIVERS_MTD_SPI_NOR_HISFC350), y)
@@ -52,26 +46,17 @@ endif
     else ifeq ($(LOSCFG_DRIVERS_MTD_SPI_NOR_HIFMC100), y)
         NOR_DRIVER_DIR := hifmc100
     endif
-
-    ifeq ($(BUILD_FROM_SOURCE), y)
-        LITEOS_BASELIB   += -lspinor_flash
-        LIB_SUBDIRS      += $(HISILICON_DRIVERS_SOURCE_ROOT)/mtd/spi_nor
-        LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(HISILICON_DRIVERS_SOURCE_ROOT)/mtd/spi_nor/include
-    else
-        LITEOS_BASELIB   += -lspinor_flash
-        LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(HISILICON_DRIVERS_ROOT)/include/mtd/spi_nor/include
     endif
 
-    endif
+    LITEOS_BASELIB   += -lspinor_flash
+    LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(DRIVERS_ROOT)/include/mtd/spi_nor/include
 
     ifeq ($(LOSCFG_DRIVERS_MTD_NAND), y)
         NAND_DRIVER_DIR := hifmc100
-
         LITEOS_BASELIB   += -lnand_flash
-        LIB_SUBDIRS      += $(HISILICON_DRIVERS_SOURCE_ROOT)/mtd/nand
-        LITEOS_MTD_NAND_INCLUDE  +=  -I $(HISILICON_DRIVERS_ROOT)/mtd/nand/include
+        LITEOS_MTD_NAND_INCLUDE  +=  -I $(DRIVERS_ROOT)/mtd/nand/include
     endif
 endif
 ifeq ($(BUILD_FROM_SOURCE), n)
-LITEOS_LD_PATH += -L$(HISILICON_DRIVERS_ROOT)/libs/$(SOC_PLATFORM)
+LITEOS_LD_PATH += -L$(DRIVERS_ROOT)/libs/$(SOC_PLATFORM)
 endif

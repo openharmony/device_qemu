@@ -20,7 +20,7 @@ MODULE_NAME := hdf_uart
 
 LOCAL_CFLAGS += $(HDF_INCLUDE)
 
-LOCAL_SRCS += uart_hi35xx.c \
+LOCAL_SRCS += uart.c \
               uart_pl011.c \
 
 LOCAL_CFLAGS += -fstack-protector-strong
