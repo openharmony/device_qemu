@@ -1,7 +1,7 @@
 # Qemu RISC-V virt 教程
 
 ## 1. 简介
-`riscv32_virt/` 子目录包含部分Qemu RISC-V虚拟化平台验证的OpenHarmony kernel\_liteos\_m的代码，目录名为*virt*。
+`riscv32_virt/` 子目录包含部分Qemu RISC-V虚拟化平台验证的OpenHarmony kernel\_liteos\_m的代码，目录名为*riscv32_virt*。
 RISC-V 虚拟化平台是一个 `qemu-system-riscv32` 的目标设备，通过它来模拟一个通用的、基于RISC-V架构的单板。
 
 这次模拟的配置是：RISC-V架构，1个CPU，128M内存。
@@ -25,14 +25,14 @@ RISC-V 虚拟化平台是一个 `qemu-system-riscv32` 的目标设备，通过�
 
 ```
 cd device/qemu/riscv32_virt
-make clean;make -j16
+hb build -f
 ```
 
-这个命令构建会产生 `OHOS_Image` 的镜像文件。
+这个命令构建会产生 `liteos` 的镜像文件。
 
 在构建完成之后，对应的镜像文件在如下目录：
 ```
-out/OHOS_Image
+../../../out/riscv32_virt/bin/liteos
 ```
 ## 5. 在Qemu中运行镜像
 
@@ -40,18 +40,20 @@ a) 如果没有安装 `qemu-system-riscv32` ，安装请参考链接:[Qemu安装
 
 b) 运行
 
+```
+cd device/qemu/riscv32_virt
+```
+
 (1). qemu 版本 < 5.0.0 
 
 ```
-cd device/qemu/riscv32_virt
-qemu-system-riscv32 -machine virt -m 128M -kernel out/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
+qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
 ```
 
 (2). qemu 版本 >= 5.0.0 
 
 ```
-cd device/qemu/riscv32_virt
-./qemu-system-riscv32 out/OHOS_Image
+./qemu_run.sh ../../../out/riscv32_virt/bin/liteos
 或
-qemu-system-riscv32 -machine virt -m 128M -bios none -kernel out/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
+qemu-system-riscv32 -machine virt -m 128M -bios none -kernel ../../../out/riscv32_virt/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
 ```

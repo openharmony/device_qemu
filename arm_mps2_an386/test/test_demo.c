@@ -30,8 +30,9 @@
  */
 
 #include "los_task.h"
+#include "los_debug.h"
 
-static TaskSampleEntry2(void)
+static void TaskSampleEntry2(void)
 {
     while(1) {
         printf("TaskSampleEntry2 running...\n\r");
@@ -46,7 +47,6 @@ static void TaskSampleEntry1(void)
         printf("TaskSampleEntry1 running...\n\r");
         LOS_TaskDelay(1000);
     }
-
 }
 
 unsigned int LosAppInit(VOID)

@@ -51,6 +51,7 @@ board_cflags = [
   "-fno-omit-frame-pointer",
   "-Wno-format-truncation",
   "-D__RISC_V__",
+  "-D__LITEOS_M__",
 ]
 
 board_asmflags = [
@@ -68,11 +69,15 @@ board_include_dirs = [
   "//device/qemu/riscv32_virt",
   "//device/qemu/riscv32_virt/include",
   "//device/qemu/riscv32_virt/include/asm",
+  "//device/qemu/riscv32_virt/fs",
   "//kernel/liteos_m/kernel/include",
   "//kernel/liteos_m/kernel/arch/include",
   "//kernel/liteos_m/kernel/arch/risc-v/riscv32/gcc",
   "//kernel/liteos_m/kernel/arch/risc-v/riscv32/gcc/asm",
   "//kernel/liteos_m/utils",
+  "//kernel/liteos_m/components/fs/fatfs",
+  "//third_party/FatFs/source",
+  "//third_party/musl/porting/liteos_m/kernel/include",
   "//third_party/bounds_checking_function/include",
 ]
 

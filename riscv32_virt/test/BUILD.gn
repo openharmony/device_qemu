@@ -1,0 +1,14 @@
+# Copyright (c) 2020 Huawei Device Co., Ltd. All rights reserved.
+
+static_library("demo") {
+  sources = [
+      "./test_demo.c",
+  ]
+
+  include_dirs = [
+    "//kernel/liteos_m/kernel/include",
+    "//kernel/liteos_m/kernel/arch/include",
+    "//kernel/liteos_m/utils",
+    "//kernel/liteos_m/kal/cmsis",
+  ]
+}

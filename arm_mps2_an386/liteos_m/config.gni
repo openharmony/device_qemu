@@ -67,9 +67,9 @@ board_ld_flags = []
 
 # Board related headfiles search path.
 board_include_dirs = [
-    "//device/qemu/cortex_m4_an386",
-    "//device/qemu/cortex_m4_an386/fs",
-    "//device/qemu/cortex_m4_an386/include",
+    "//device/qemu/arm_mps2_an386",
+    "//device/qemu/arm_mps2_an386/fs",
+    "//device/qemu/arm_mps2_an386/include",
     "//kernel/liteos_m/kal/posix/include",
     "//third_party/bounds_checking_function/include",
     "//kernel/liteos_m/components/fs/fatfs",

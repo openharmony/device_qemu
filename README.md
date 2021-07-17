@@ -22,10 +22,19 @@ Quick Emulator \(QEMU\) can simulate the scenario where a kernel runs on differe
 ├── drivers                 # Platform drivers
 │   └── libs                # Driver library
 │       └── virt            # virt platform
-├── riscv32_virt            # RISCV32 architecture
+├── riscv32_virt            # RISCV32 virt board
 │   ├── driver              # Driver code
 │   ├── include             # APIs exposed externally
 │   ├── libc                # Basic libc library
+│   ├── fs                  # fs configuration
+│   ├── test                # Test the demo
+│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
+├── arm_mps2_an386          # cortex-m4 mps2_an386 board
+│   ├── driver              # Driver code
+│   ├── include             # APIs exposed externally
+│   ├── libc                # Basic libc library
+│   ├── fs                  # fs configuration
+│   ├── test                # Test the demo
 │   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
 ```
 
@@ -82,6 +91,8 @@ QEMU applies only to the OpenHarmony kernel.
 ## Usage<a name="section169045116126"></a>
 
 For details about the ARM architecture, see  [Qemu ARM Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/arm_virt/README.md).
+
+For details about the Cortex-m4 architecture, see  [Qemu Cortex-m4 mps2-an386 HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/arm_mps2_an386/README.md).
 
 For details about the RISC-V architecture, see  [Qemu RISC-V Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/riscv32_virt/README.md).
 

@@ -26,45 +26,7 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#if (LOSCFG_TEST_DEMO == 1)
-VOID TaskSampleEntry2(VOID)
-{
-    while(1) {
-        printf("TaskSampleEntry2 running...\n\r");
-        LOS_TaskDelay(1000);
-    }
-}
-
-
-VOID TaskSampleEntry1(VOID)
-{
-    while(1) {
-        printf("TaskSampleEntry1 running...\n\r");
-        LOS_TaskDelay(1000);
-    }
-
-}
-
-UINT32 TaskSample(VOID)
-{
-    UINT32  ret;
-    UINT32  taskID1, taskID2;
-    TSK_INIT_PARAM_S task1 = { 0 };
-    task1.pfnTaskEntry = (TSK_ENTRY_FUNC)TaskSampleEntry1;
-    task1.uwStackSize  = 0x1000;
-    task1.pcName       = "TaskSampleEntry1";
-    task1.usTaskPrio   = 6;
-    ret = LOS_TaskCreate(&taskID1, &task1);
-
-    task1.pfnTaskEntry = (TSK_ENTRY_FUNC)TaskSampleEntry2;
-    task1.uwStackSize  = 0x1000;
-    task1.pcName       = "TaskSampleEntry2";
-    task1.usTaskPrio   = 7;
-    ret = LOS_TaskCreate(&taskID2, &task1);
-
-    return ret;
-}
-#endif
+UINT32 LosAppInit(VOID);
 
 /*****************************************************************************
  Function    : main
@@ -77,20 +39,18 @@ LITE_OS_SEC_TEXT_INIT INT32 main(VOID)
 {
     UINT32 ret;
 
-    PRINTK("\n OHOS start \n\r");
+    printf("\n OHOS start \n\r");
 
     ret = LOS_KernelInit();
     if (ret != LOS_OK) {
+        printf("Liteos kernel init failed! ERROR: 0x%x\n", ret);
         goto START_FAILED;
     }
 
-#if (LOSCFG_TEST_DEMO == 1)
-    TaskSample();
-#else
-    extern UINT32 LosAppInit(VOID);
-    LosAppInit();
-#endif
-    PRINTK("\n OHOS scheduler!!! \n\r");
+    ret = LosAppInit();
+    if (ret != LOS_OK) {
+        printf("LosAppInit failed! ERROR: 0x%x\n", ret);
+    }
 
     LOS_Start();
 
