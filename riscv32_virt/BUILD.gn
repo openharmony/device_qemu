@@ -9,6 +9,7 @@ static_library("board") {
     "driver/mtimer.c",
     "driver/plic.c",
     "driver/uart.c",
+    "fs/ff_gen_drv.c",
     "los_start.S",
   ]
 
@@ -31,7 +32,8 @@ executable("riscv32_virt") {
     "c"
   ]
   deps = [
-    "//kernel/liteos_m:kernel"
-    ":board"
+    "//kernel/liteos_m:kernel",
+    ":board",
+    "test:demo"
   ]
 }

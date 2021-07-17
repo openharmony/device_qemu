@@ -20,6 +20,7 @@
 #ifndef _TARGET_CONFIG_H
 #define _TARGET_CONFIG_H
 
+#include "stdint.h"
 #include "soc.h"
 #include "los_compiler.h"
 

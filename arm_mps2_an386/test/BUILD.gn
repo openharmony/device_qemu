@@ -1,7 +1,5 @@
 # Copyright (c) 2020 Huawei Device Co., Ltd. All rights reserved.
 
-import("//build/lite/config/component/lite_component.gni")
-
 static_library("demo") {
   sources = [
       "./test_demo.c",

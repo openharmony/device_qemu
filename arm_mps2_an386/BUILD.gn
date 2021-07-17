@@ -6,7 +6,7 @@ static_library("board") {
   sources = [
       "./fs/ff_gen_drv.c",
       "./main.c",
-      "./dprintf.c",
+      "./libc/dprintf.c",
       "./startup.s",
       "./driver/uart.c"
   ]
@@ -24,7 +24,7 @@ static_library("board") {
   deps = [ "//kernel/liteos_m/kal/posix" ]
 }
 
-executable("cortex_m4_an386") {
+executable("arm_mps2_an386") {
   output_name = "liteos"
   ldflags = [
     "-specs=nano.specs",
@@ -41,8 +41,8 @@ executable("cortex_m4_an386") {
 
   deps = [
     "//kernel/liteos_m:kernel",
-    "//device/qemu/cortex_m4_an386:board",
-    "//device/qemu/cortex_m4_an386/test:demo"
+    ":board",
+    "test:demo"
   ]
 }
 

@@ -22,10 +22,19 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 ├── drivers                 # 与平台相关的驱动目录
 │   └── libs                # 驱动库
 │       └── virt            # virt平台
-├── riscv32_virt            # riscv32架构相关
+├── riscv32_virt            # riscv32 virt单板
 │   ├── driver              # 驱动目录
 │   ├── include             # 对外接口存放目录
 │   ├── libc                # 基础libc库
+│   ├── fs                  # fs 配置
+│   ├── test                # 测试样例
+│   └── liteos_m            # 与liteos_m内核相关的配置
+├── arm_mps2_an386          # cortex-m4 mps2_an386单板
+│   ├── driver              # 驱动目录
+│   ├── include             # 对外接口存放目录
+│   ├── libc                # 基础libc库
+│   ├── fs                  # fs 配置
+│   ├── test                # 测试样例
 │   └── liteos_m            # 与liteos_m内核相关的配置
 ```
 
@@ -82,6 +91,8 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 ## 使用说明<a name="section169045116126"></a>
 
 arm架构参考[QEMU教程 for arm](https://gitee.com/openharmony/device_qemu/blob/master/arm_virt/README_zh.md)。
+
+cortex-m4架构参考[QEMU教程 for cortex-m4](https://gitee.com/openharmony/device_qemu/blob/master/arm_mps2_an386/README_zh.md)。
 
 risc-v架构参考[QEMU教程 for risc-v](https://gitee.com/openharmony/device_qemu/blob/master/riscv32_virt/README_zh.md)。
 

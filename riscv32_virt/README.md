@@ -2,7 +2,7 @@
 
 #### 1. Brief introduction
 `riscv32_virt/` subdirectory contains part of the OpenHarmony LiteOS demonstration support for Qemu risc-v virt Platform,
-here called *virt*.
+here called *riscv32_virt*.
 RISC-V Virtual platform is a `qemu-system-riscv32` machine target that provides emulation
 for a generic, riscv-based board.
 
@@ -27,15 +27,15 @@ Note: One can use `repo` to fetch code in a straightforward manner.
 
 ```
 cd device/qemu/riscv32_virt
-make clean;make -j16
+hb build -f
 ```
 
-This will build `OHOS_Image` for Qemu ARM virt machine.
+This will build `liteos` for Qemu RISC-V virt machine.
 
 
 After build is finished, the resulting image can be found in:
 ```
-out/OHOS_Image
+../../../out/riscv32_virt/liteos
 ```
 #### 5. Running image in Qemu
 
@@ -44,18 +44,20 @@ For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/op
 
 b) Run
 
+```
+cd device/qemu/riscv32_virt
+```
+
 (1) qemu version < 5.0.0
 
 ```
-cd device/qemu/riscv32_virt
-qemu-system-riscv32 -machine virt -m 128M -kernel out/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
+qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/liteos -nographic -append "root=dev/vda or console=ttyS0"
 ```
 
 (2). qemu version >= 5.0.0 
 
 ```
-cd device/qemu/riscv32_virt
-./qemu-system-riscv32 out/OHOS_Image
+./qemu_run.sh ../../../out/riscv32_virt/liteos
 or
-qemu-system-riscv32 -machine virt -m 128M -bios none -kernel out/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
+qemu-system-riscv32 -machine virt -m 128M -bios none -kernel ../../../out/riscv32_virt/liteos -nographic -append "root=dev/vda or console=ttyS0"
 ```
