@@ -24,8 +24,8 @@ RISC-V 虚拟化平台是一个 `qemu-system-riscv32` 的目标设备，通过�
 ## 4. 源码构建
 
 ```
-cd device/qemu/riscv32_virt
-hb build -f
+$ cd device/qemu/riscv32_virt
+$ hb build -f
 ```
 
 这个命令构建会产生 `liteos` 的镜像文件。
@@ -41,19 +41,64 @@ a) 如果没有安装 `qemu-system-riscv32` ，安装请参考链接:[Qemu安装
 b) 运行
 
 ```
-cd device/qemu/riscv32_virt
+$ cd device/qemu/riscv32_virt
 ```
 
 (1). qemu 版本 < 5.0.0 
 
 ```
-qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
+$ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
 ```
 
 (2). qemu 版本 >= 5.0.0 
 
 ```
-./qemu_run.sh ../../../out/riscv32_virt/bin/liteos
+$ ./qemu_run.sh ../../../out/riscv32_virt/bin/liteos
 或
-qemu-system-riscv32 -machine virt -m 128M -bios none -kernel ../../../out/riscv32_virt/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
+$ qemu-system-riscv32 -machine virt -m 128M -bios none -kernel ../../../out/riscv32_virt/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
 ```
+## 6. gdb调试
+
+```
+$ cd device/qemu/riscv32_virt
+$ vim liteos_m/config.gni
+```
+
+将 `board_opt_flags` 中的
+
+```
+board_opt_flags = [ "-O2" ]
+```
+
+编译选项修改为:
+
+```
+board_opt_flags = [
+  "-g",
+  "-O0",
+]
+```
+
+保存并退出，重新编译:
+
+```
+$ hb build -f
+```
+
+在一个窗口中输入命令：
+
+```
+$ ./qemu_run.sh gdb ../../../out/riscv32_virt/unstripped/bin/liteos
+```
+
+在另一个窗口中输入命令：
+
+```
+$ riscv32-unknown-elf-gdb ../../../out/riscv32_virt/unstripped/bin/liteos
+(gdb) target remote localhost:1234
+(gdb) b main
+```
+
+提示: 采用gdb调试时，可执行文件必须选择 `out/riscv32_virt/unstripped/bin` 目录下的可执行文件。
+
+更多gdb相关的调试可以查阅：[gdb指导手册](https://sourceware.org/gdb/current/onlinedocs/gdb)。
