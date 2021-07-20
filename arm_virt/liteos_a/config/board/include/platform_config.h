@@ -26,7 +26,6 @@ extern "C" {
 
 #define LOSCFG_PLATFORM_HWI_LIMIT       96
 #define OS_SYS_CLOCK                    50000000
-#define LOSCFG_BASE_CORE_TICK_HW_TIME   NO
 
 #ifdef __cplusplus
 #if __cplusplus
