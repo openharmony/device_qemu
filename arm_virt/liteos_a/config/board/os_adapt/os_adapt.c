@@ -22,6 +22,7 @@
 #ifdef LOSCFG_FS_VFS
 #include "disk.h"
 #endif
+#include "los_bootargs.h"
 #include "los_rootfs.h"
 #ifdef LOSCFG_SHELL
 #include "shell.h"
@@ -97,7 +98,15 @@ void SystemInit(void)
 
 #ifdef LOSCFG_PLATFORM_ROOTFS
     dprintf("OsMountRootfs start ...\n");
-    OsMountRootfs();
+    if (LOS_GetCmdLine()) {
+        PRINT_ERR("get cmdline error!\n");
+    }
+    if (LOS_ParseBootargs()) {
+        PRINT_ERR("parse bootargs error!\n");
+    }
+    if (OsMountRootfs()) {
+        PRINT_ERR("mount rootfs error!\n");
+    }
     dprintf("OsMountRootfs end ...\n");
 #endif
 
