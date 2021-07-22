@@ -22,43 +22,51 @@ Qemu中machine为 **virt** 的单板就是这种可配置的，例如：选择�
 在已经获取的源码根目录，请输入：
 
 ```
-hb set -root $PWD
+hb set
 ```
 
-完成根目录设置后，在**device/qemu/arm_virt**目录下进行构建：
+选择ohemu下的`display_qemu`选项。
 
 ```
-cd device/qemu/arm_virt
 hb build
 ```
 
-这个命令构建会产生 `OHOS_Image.bin` 的镜像文件。
+这个命令构建会产生 `liteos.bin`、`rootfs_jffs2.bin` 和 `userfs_jffs2.bin`  的镜像文件。
 提示："debug" 构建类型是当前的默认类型，因为参考其他构建类型，它包含Shell的App，当前没有release版本。
 
 在构建完成之后，对应的镜像文件在如下目录：
 ```
-out/qemu_arm_virt_ca7/OHOS_Image.bin
+out/arm_virt/display_qemu/liteos.bin
+out/arm_virt/display_qemu/rootfs_jffs2.img
+out/arm_virt/display_qemu/userfs_jffs2.img
 ```
+
 ## 5. 在Qemu中运行镜像
 
 a) 如果没有安装 `qemu-system-arm` ，安装请参考链接 [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/master/README_zh.md)
 
 提示: 当前引入的功能在virt-5.1的目标machine已经测试过了，不能保证所有的Qemu版本都能够运行成功，因此需要保证你的qemu-system-arm版本尽可能的新。
 
-b) 准备flash映像文件。目前系统硬编码flash容量64M，分三个分区：分区一10M-256K用于内核映像，分区二256K用于启动参数，分区三54M用于rootfs。Linux系统可参考如下命令：
+b) 准备flash映像文件。目前系统硬编码flash容量64M，分四个分区：
+分区一10M-256K用于内核映像，
+分区二256K用于启动参数，
+分区三10M-32M用于rootfs，
+分区四32M-64M用于userfs。Linux系统可参考如下命令：
 ```
+OUT_DIR="out/arm_virt/display_qemu/"
 sudo modprobe mtdram total_size=65536 erase_size=256
 sudo mtdpart add /dev/mtd0 kernel 0 10223616
-sudo mtdpart add /dev/mtd0 bootarg 10223616 262144
-sudo mtdpart add /dev/mtd0 root 10485760 56623104
-sudo nandwrite -p /dev/mtd1 out/qemu_arm_virt_ca7/OHOS_Image.bin
-echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=10M rootsize=27M useraddr=37M usersize=27M\x0" | sudo nandwrite -p /dev/mtd2 -
-sudo nandwrite -p /dev/mtd3 out/qemu_arm_virt_ca7/rootfs_jffs2.img
+sudo mtdpart add /dev/mtd0 bootargs 10223616 262144
+sudo mtdpart add /dev/mtd0 root 10485760 23068672
+sudo mtdpart add /dev/mtd0 user 33554432 33554432
+sudo nandwrite -p /dev/mtd1 $OUT_DIR/liteos.bin
+echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=10M rootsize=22M useraddr=32M usersize=32M\x0" | sudo nandwrite -p /dev/mtd2 -
+sudo nandwrite -p /dev/mtd3 $OUT_DIR/rootfs_jffs2.img
+sudo nandwrite -p /dev/mtd4 $OUT_DIR/userfs_jffs2.img
 sudo dd if=/dev/mtd0 of=flash.img
-sudo chown USERNAME flash.img
+sudo chown `whoami` flash.img
 sudo rmmod mtdram
 ```
-提示：bootargs中仅rootsize可调整，分区三rootsize以外空间安装在/storage目录，可读可写。
 
 c) 配置主机网桥设备。Linux系统可参考以下命令：
 ```
