@@ -1,16 +1,4 @@
 # Copyright (c) 2020 Huawei Device Co., Ltd. All rights reserved.
 
-import("//build/lite/config/component/lite_component.gni")
-
-if (product_path == "") {
-  build_ext_component("virt_make_kernel") {
-    sysroot_path = rebase_path(ohos_current_sysroot)
-    arch_cflags = string_join(" ", target_arch_cflags)
-    exec_path = rebase_path("./build/", root_build_dir)
-    outdir = rebase_path("./build/out/qemu_arm_virt_ca7/obj/kernel/liteos_a/")
-    command = "sh build.sh ../../../../kernel/liteos_a/ $outdir $sysroot_path \"$arch_cflags\" \"${device_path}\""
-  }
-}
-
 group("arm_virt") {
 }
