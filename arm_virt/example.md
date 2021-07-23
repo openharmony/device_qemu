@@ -48,6 +48,7 @@ qemu-system-arm ...(正常运行参数) \
 
 1. 准备FAT映像
 ```
+
 dd if=/dev/zero of=fat.img bs=64M count=1
 sudo losetup /dev/loop0 fat.img
 sudo fdisk /dev/loop0    # 磁盘分区选择MBR格式, FAT16或FAT32
@@ -78,4 +79,123 @@ sudo umount some_dir
 
 sudo losetup -d /dev/loop1    # 宿主机时
 sudo losetup -d /dev/loop0    # 宿主机时
+```
+
+## 添加一个HelloWorld程序<a name="addhelloworld"></a>
+---
+1. 创建helloworld目录
+```
+helloworld目录结构如下：
+applications/sample/helloworld
+applications/sample/helloworld/src
+```
+
+2. 创建helloworld.c文件
+```
+在 applications/sample/helloworld/src下创建helloworld.c文件，并添加如下代码：
+```
+```
+#include <stdio.h>
+
+int main(int argc, char **argv)
+{
+    printf("\n************************************************\n");
+    printf("\n\t\tHello OHOS!\n");
+    printf("\n************************************************\n\n");
+
+    return 0;
+}
+```
+
+3. 为helloword创建BUILD.gn文件
+```
+在 applications/sample/helloworld下添加BUILD.gn文件，并添加如下代码：
+```
+```
+import("//build/lite/config/component/lite_component.gni")
+lite_component("hello-OHOS") {
+  features = [ ":helloworld" ]
+}
+executable("helloworld") {
+  output_name = "helloworld"
+  sources = [ "src/helloworld.c" ]
+  include_dirs = []
+  defines = []
+  cflags_c = []
+  ldflags = []
+}
+```
+
+**提示**：hellworld最后目录结构为
+```
+applications/sample/helloworld
+applications/sample/helloworld/BUILD.gn
+applications/sample/helloworld/src
+applications/sample/helloworld/src/helloworld.c
+```
+
+4. 在build/lite/components中新建配置文件helloworld.json，并添加如下代码：
+```
+{
+  "components": [
+    {
+      "component": "hello_world_app",
+      "description": "Communication related samples.",
+      "optional": "true",
+      "dirs": [
+        "applications/sample/helloworld"
+      ],
+      "targets": [
+        "//applications/sample/helloworld:hello-OHOS"
+      ],
+      "rom": "",
+      "ram": "",
+      "output": [],
+      "adapted_kernel": [ "liteos_a" ],
+      "features": [],
+      "deps": {
+        "components": [],
+        "third_party": []
+      }
+    }
+  ]
+}
+```
+
+**注意**：helloworld.json中dirs和targets的属性值是不带src的
+
+5. 在vendor/ohemu/display_qemu_liteos_a/config.json配置文件中找到subsystems属性，并下面追加helloworld的subsystem配置，配置参考如下：
+```
+    {
+      "subsystem": "helloworld",
+       "components": [
+        { "component": "hello_world_app", "features":[] }
+      ]
+    }
+```
+
+**注意**：vendor/ohemu/display_qemu_liteos_a/config.json对应的编译模板为 display_qemu，后面编译时需要选择这个模板；另外修改JSON配置的时候一定要将多余的逗号去掉，否则编译时会报错
+
+6. 编译并构建qemu虚拟环境
+
+参考链接: [编译方法](README_zh.md) 
+
+**注意**：helloworld 正常编译后会出现在 out/arm_virt/display_qemu/bin中，如果没有，请返回检查相关配置文件中的路径和名称是否有误，并尝试重新编译直到出现helloword
+
+```
+提示: qemu-init和qemu-run两个文件已经包含qemu相关的操作指令，可以先执行./qemu-init 然后再执行./qemu-run
+```
+
+7. 运行helloworld
+
+helloworld在qemu虚拟机的bin目录下面，进入qemu虚拟机环境后，在bin目录下执行 ./helloword，会出现如下信息，表示Hello World程序添加成功
+
+```
+OHOS # ./helloworld
+OHOS #
+************************************************
+
+                Hello OHOS!
+
+************************************************
 ```
