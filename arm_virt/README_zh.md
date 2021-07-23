@@ -105,3 +105,5 @@ Explanation for our system configuration:
 - [向内核传递调试参数](example.md#sectiondebug)
 
 - [用FAT映像传递文件](example.md#sectionfatfs)
+
+- [添加一个Hello World程序](example.md#addhelloworld)
