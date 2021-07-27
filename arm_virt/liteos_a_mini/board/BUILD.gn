@@ -27,18 +27,22 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-group("liteos_a") {
-  deps = [
-    "board",
-    "config",
-    "drivers",
+import("//kernel/liteos_a/liteos.gni")
+
+module_name = "bsp_config"
+
+kernel_module(module_name) {
+  sources = [
+    "amba_pl011/amba_pl011.c",
+#    "platform.c",
   ]
 }
 
+group("board") {
+  public_deps = [ ":$module_name" ]
+}
+
 config("public") {
-  configs = [
-    "board:public",
-    "config:public",
-    "drivers:public",
-  ]
+  include_dirs = [ "." ]
+#  include_dirs += [ "include" ]
 }
