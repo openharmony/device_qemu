@@ -10,11 +10,11 @@ Qemu中machine为 **virt** 的单板就是这种可配置的，例如：选择�
 
 ## 2. 环境搭建
 
-参考链接: [环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.md)
+参考链接: [环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-env-setup.md)
 
 ## 3. 获取源码
 
-参考链接: [代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/%E6%BA%90%E7%A0%81%E8%8E%B7%E5%8F%96.md)
+参考链接: [代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/sourcecode-acquire.md)
 提示: 可以使用 `repo` 命令来获取源码。
 
 ## 4. 源码构建
@@ -25,7 +25,14 @@ Qemu中machine为 **virt** 的单板就是这种可配置的，例如：选择�
 hb set
 ```
 
-选择ohemu下的`display_qemu`选项。
+选择ohemu下的`display_qemu`选项，输出如下：
+
+```
+[OHOS INFO] Input code path: .
+OHOS Which product do you need?  display_qemu
+```
+
+然后执行构建命令如下：
 
 ```
 hb build
@@ -97,8 +104,6 @@ Explanation for our system configuration:
 -m 1G                        : defines system memory to be 1024MB. This limitation will be removed in the future but now,
                                more memory will simply not be visible in the system.
 ```
-
-提示: OHOS 构建名 `qemu_arm_virt_ca7` 来源于上述提到的命令。
 
 ## 6. 用法示例
 
