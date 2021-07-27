@@ -15,11 +15,11 @@ Note: System memory size is hard-coded to 32MB.
 
 #### 2. Setting up environment
 
-Refer to HOWTO guide: [Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/environment-setup.md)
+Refer to HOWTO guide: [Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/quickstart-lite-env-setup.md)
 
 #### 3. Code acquisition
 
-Refer to HOWTO guide: [Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/source-code-acquisition.md)
+Refer to HOWTO guide: [Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/sourcecode-acquire.md)
 Note: One can use `repo` to fetch code in a straightforward manner.
 
 #### 4. Building from sources
@@ -30,7 +30,14 @@ While being in the fetched source tree root directory, please type:
 hb set
 ```
 
-Please select the `display_qemu` target under ohemu
+Please select the `display_qemu` target under ohemu, output is:
+
+```
+[OHOS INFO] Input code path: .
+OHOS Which product do you need?  display_qemu
+```
+
+Then type:
 
 ```
 hb build
@@ -106,9 +113,6 @@ Explanation for our system configuration:
 -m 1G                        : defines system memory to be 1024MB. This limitation will be removed in the future but now,
                                more memory will simply not be visible in the system.
 ```
-
-
-Note: OHOS build target name `qemu_arm_virt_ca7` is derived from the above mentioned command.
 
 #### 6. Usage examples
 
