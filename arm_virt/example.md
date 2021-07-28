@@ -183,8 +183,10 @@ applications/sample/helloworld/src/helloworld.c
 **注意**：helloworld 正常编译后会出现在 out/arm_virt/display_qemu/bin中，如果没有，请返回检查相关配置文件中的路径和名称是否有误，并尝试重新编译直到出现helloword
 
 ```
-提示: qemu-init和qemu-run两个文件已经包含qemu相关的操作指令，可以先执行./qemu-init 然后再执行./qemu-run
+提示：编译完成后，代码根目录下会生成qemu-run脚本，直接运行该脚本默认以非root权限运行qemu环境(不含网络配置)。其他参数配置
+详见qemu-run --help
 ```
+
 
 7. 运行helloworld
 
