@@ -38,3 +38,6 @@ hdf_driver(module_name) {
 group("config") {
   public_deps = [ ":$module_name" ]
 }
+
+config("public") {
+}
