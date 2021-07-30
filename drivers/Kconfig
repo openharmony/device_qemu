@@ -32,9 +32,6 @@ choice
     help
       Select net device.
 
-config DRIVERS_HIETH_SF
-    bool "Enable hieth-sf"
-    depends on DRIVERS_NETDEV
 endchoice
 
 # mtd configs tart
