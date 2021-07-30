@@ -83,6 +83,7 @@ board_include_dirs = [
     "//kernel/liteos_m/kal/cmsis",
     "//third_party/FatFs/source",
     "//third_party/cmsis/CMSIS/Core/Include",
+    "//third_party/musl/porting/liteos_m/kernel/include",
 ]
 
 # Board adapter dir for OHOS components.
