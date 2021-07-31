@@ -1,7 +1,9 @@
 # Qemu ARM Virt 教程
 
 ## 1. 简介
-`arm/` 子目录包含部分Qemu ARM虚拟化平台验证的OpenHarmony kernel\_liteos\_a的代码，目录名为*virt*。
+
+`arm_virt/` 子目录包含部分Qemu ARM虚拟化平台验证的OpenHarmony kernel\_liteos\_a的适配代码，含驱动配置、板端配置等。
+
 ARM 虚拟化平台是一个 `qemu-system-arm` 的目标设备，通过它来模拟一个通用的、基于ARM架构的单板。
 Qemu中machine为 **virt** 的单板就是这种可配置的，例如：选择核的类型、核的个数、内存的大小和安全特性等，单板设备的配置。
 
@@ -15,7 +17,6 @@ Qemu中machine为 **virt** 的单板就是这种可配置的，例如：选择�
 ## 3. 获取源码
 
 参考链接: [代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/sourcecode-acquire.md)
-提示: 可以使用 `repo` 命令来获取源码。
 
 ## 4. 源码构建
 
@@ -38,10 +39,10 @@ OHOS Which product do you need?  display_qemu
 hb build
 ```
 
-这个命令构建会产生 `liteos.bin`、`rootfs_jffs2.bin` 和 `userfs_jffs2.bin`  的镜像文件。
-提示："debug" 构建类型是当前的默认类型，因为参考其他构建类型，它包含Shell的App，当前没有release版本。
+这个命令构建会产生 `liteos.bin`、`rootfs_jffs2.img` 和 `userfs_jffs2.img`  的镜像文件。
 
 在构建完成之后，对应的镜像文件在如下目录：
+
 ```
 out/arm_virt/display_qemu/liteos.bin
 out/arm_virt/display_qemu/rootfs_jffs2.img
@@ -52,58 +53,35 @@ out/arm_virt/display_qemu/userfs_jffs2.img
 
 a) 如果没有安装 `qemu-system-arm` ，安装请参考链接 [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/master/README_zh.md)
 
-提示: 当前引入的功能在virt-5.1的目标machine已经测试过了，不能保证所有的Qemu版本都能够运行成功，因此需要保证你的qemu-system-arm版本尽可能的新。
+提示：当前引入的功能在virt-5.1的目标machine已经完成测试，不保证所有的Qemu版本都能够运行成功，因此需要保证你的qemu-system-arm
+版本尽可能在5.1及以上。
 
-b) 准备flash映像文件。目前系统硬编码flash容量64M，分四个分区：
-分区一10M-256K用于内核映像，
-分区二256K用于启动参数，
-分区三10M-32M用于rootfs，
-分区四32M-64M用于userfs。Linux系统可参考如下命令：
-```
-OUT_DIR="out/arm_virt/display_qemu/"
-sudo modprobe mtdram total_size=65536 erase_size=256
-sudo mtdpart add /dev/mtd0 kernel 0 10223616
-sudo mtdpart add /dev/mtd0 bootargs 10223616 262144
-sudo mtdpart add /dev/mtd0 root 10485760 23068672
-sudo mtdpart add /dev/mtd0 user 33554432 33554432
-sudo nandwrite -p /dev/mtd1 $OUT_DIR/liteos.bin
-echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=10M rootsize=22M useraddr=32M usersize=32M\x0" | sudo nandwrite -p /dev/mtd2 -
-sudo nandwrite -p /dev/mtd3 $OUT_DIR/rootfs_jffs2.img
-sudo nandwrite -p /dev/mtd4 $OUT_DIR/userfs_jffs2.img
-sudo dd if=/dev/mtd0 of=flash.img
-sudo chown `whoami` flash.img
-sudo rmmod mtdram
-```
+b) 制作以及运行镜像
 
-c) 配置主机网桥设备。Linux系统可参考以下命令：
-```
-sudo modprobe tun tap
-sudo ip link add br0 type bridge
-sudo ip address add 10.0.2.2/24 dev br0
-sudo ip link set dev br0 up
+在代码根目录下，编译后会生成qemu-run脚本，可直接运行该脚本，根据脚本提示制作、运行镜像。
 
-# 以下命令执行一次后即可注释掉
-sudo mkdir -p /etc/qemu
-echo 'allow br0' | sudo tee -a /etc/qemu/bridge.conf
-
-# 如果这个文件不存在可删除此命令
-echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
-```
-提示：系统网络硬编码为10.0.2.0/24，网关10.0.2.2，默认网址10.0.2.15。不同的客户机实例应使用不同的MAC和IP地址(flash映像文件也最好不同)，MAC地址可通过QEMU命令行传递，IP地址可在OHOS命令行中调整，如`ifconfig vn0 inet 10.0.2.30`，或使用其它方法。
-
-d) 运行`qemu-system-arm`，进入用户态命令行。
+执行`./qemu-run --help`提示如下：
 
 ```
-qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw -netdev bridge,id=net0 -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 -global virtio-mmio.force-legacy=false
+Usage: ./qemu-run [OPTION]...
+Make a qemu image(flash.img) for OHOS, and run the image in qemu according
+to the options.
+
+    Options:
+
+    -f, --force                rebuild flash.img
+    -n, --net-enable           enable net
+    -h, --help                 print help info
+
+    By default, flash.img will not be rebuilt if exists, and net will not
+    be enabled.
 ```
 
-```
-Explanation for our system configuration:
--M virt,gic-version=2,secure : runs ARM virtual platform with ARM Generic Interrupt Controller version 2 and security extensions enabled
--smp cpus=1                  : defines 1 CPU system
--m 1G                        : defines system memory to be 1024MB. This limitation will be removed in the future but now,
-                               more memory will simply not be visible in the system.
-```
+默认不加参数的情况下，网络不会自动配置。当根目录镜像文件flash.img存在时，镜像不会被重新制作。
+
+c) 退出qemu环境
+
+按下`Ctrl-A + x`可退出qemu虚拟环境。
 
 ## 6. 用法示例
 
@@ -112,3 +90,77 @@ Explanation for our system configuration:
 - [用FAT映像传递文件](example.md#sectionfatfs)
 
 - [添加一个Hello World程序](example.md#addhelloworld)
+
+## FAQ:
+1. 当网络配置出现问题时，如何排查问题？
+
+   手动配置主机网桥设备。Linux系统参考以下命令：
+
+   ```
+   sudo modprobe tun tap
+   sudo ip link add br0 type bridge
+   sudo ip address add 10.0.2.2/24 dev br0
+   sudo ip link set dev br0 up
+
+   # 以下命令执行一次后即可注释掉
+   sudo mkdir -p /etc/qemu
+   echo 'allow br0' | sudo tee -a /etc/qemu/bridge.conf
+   ```
+
+   配置完成后，用ip addr检查应有如下类似显示。当br0不存在或尖括号中为DOWN时，请重新检查配置命令。
+
+   ```
+   5: br0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+       link/ether 2e:52:52:0e:21:44 brd ff:ff:ff:ff:ff:ff
+       inet 10.0.2.2/24 scope global br0
+          valid_lft forever preferred_lft forever
+   ```
+
+   当系统安装有docker等软件时，系统防火墙可能阻止网桥访问。
+
+   `cat /proc/sys/net/bridge/bridge-nf-call-iptables`会显示结果：1
+
+   这时，可用如下命令打开访问许可：
+
+   ```
+   echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
+   ```
+
+   提示：系统网络硬编码为10.0.2.0/24，网关10.0.2.2，默认网址10.0.2.15。不同的客户机实例应使用不同的MAC和IP地址(flash映像文件也最好不同)，MAC地址可通过QEMU命令行传递，IP地址可在OHOS命令行中调整，如`ifconfig vn0 inet 10.0.2.30`，或使用其它方法。
+
+2. qemu-run提示`qemu-system-arm`运行出错时，如何排查问题？
+
+   qemu-run脚本中，完整的执行命令及参数解释如下：
+
+   ```
+   qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw -netdev bridge,id=net0 -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 -global virtio-mmio.force-legacy=false
+   ```
+
+   ```
+   Explanation for our system configuration:
+   -M virt,gic-version=2,secure=on : runs ARM virtual platform with ARM Generic Interrupt Controller version 2 and security extensions enabled
+   -smp cpus=1                  : defines 1 CPU system
+   -m 1G                        : defines system memory to be 1024MB. This limitation will be removed in the future but now,
+                                  more memory will simply not be visible in the system.
+   ```
+
+   运行时，qemu-run遇到报错如下报错： failed to parse default acl file
+
+   可能是qemu安装方式不同，导致qemu配置文件路径存在一定差异：
+
+   - 使用源码安装默认在/usr/local/qemu/etc/qemu
+
+   - 使用部分Linux发行版安装工具进行安装时，默认在/ect/qemu/目录下
+
+   可根据实际情况，确认具体配置目录，并进行如下修改：
+
+   ```
+   echo 'allow br0' | sudo tee -a <配置文件路径>
+   ```
+
+
+3. 1.1.0LTS版本qemu运行无输出?
+
+   LTS的代码存在一个内核启动缺陷，可以参考如下PR尝试解决问题：
+
+   https://gitee.com/openharmony/kernel_liteos_a/pulls/324
