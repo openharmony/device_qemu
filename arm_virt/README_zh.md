@@ -133,15 +133,28 @@ c) 退出qemu环境
    qemu-run脚本中，完整的执行命令及参数解释如下：
 
    ```
-   qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw -netdev bridge,id=net0 -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 -global virtio-mmio.force-legacy=false
+   qemu-system-arm -M virt,gic-version=2,secure=on -cpu cortex-a7 -smp cpus=1 -m 1G \
+        -drive if=pflash,file=flash.img,format=raw \
+        -netdev bridge,id=net0 \
+        -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
+        -device virtio-gpu-device,xres=800,yres=480 \
+        -device virtio-mouse-device \
+        -vnc :20 \
+        -global virtio-mmio.force-legacy=false
    ```
 
    ```
-   Explanation for our system configuration:
-   -M virt,gic-version=2,secure=on : runs ARM virtual platform with ARM Generic Interrupt Controller version 2 and security extensions enabled
-   -smp cpus=1                  : defines 1 CPU system
-   -m 1G                        : defines system memory to be 1024MB. This limitation will be removed in the future but now,
-                                  more memory will simply not be visible in the system.
+   -M                           虚拟机类型，ARM virt，GIC 2中断控制器，有安全扩展
+   -cpu                         CPU型号
+   -smp                         SMP设置，单核
+   -m                           虚拟机可使用的内存限制
+   -drive if=pflash             CFI闪存盘设置
+   -netdev                      [可选]网卡后端设置，桥接类型
+   -device virtio-net-device    [可选]网卡设备
+   -device virtio-gpu-device    [可选]GPU设备
+   -device virtio-mouse-device  [可选]鼠标设备
+   -vnc :20                     [可选]远程桌面连接，端口5920
+   -global                      QEMU配置参数，不可调整
    ```
 
    运行时，qemu-run遇到报错如下报错： failed to parse default acl file
