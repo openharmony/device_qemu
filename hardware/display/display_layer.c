@@ -176,8 +176,6 @@ static int32_t Flush(uint32_t devId, uint32_t layerId, LayerBuffer *buffer)
         return DISPLAY_FAILURE;
     }
 
-    HDF_LOGD("%s: width = %d, height = %d, pixFormat = %d, pitch = %d", __func__, buffer->width,
-        buffer->height, buffer->pixFormat, buffer->pitch);
     struct LayerPrivate *priv = GetLayerInstance();
     ret = memcpy_s(priv->fbAddr, priv->fbSize, buffer->data.virAddr, priv->fbSize);
     if (ret != EOK) {

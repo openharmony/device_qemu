@@ -79,6 +79,12 @@ void SystemInit(void)
     mem_dev_register();
 #endif
 
+#ifdef LOSCFG_DRIVERS_MMZ_CHAR_DEVICE
+    dprintf("DevMmzRegister...\n");
+    extern int DevMmzRegister(void);
+    DevMmzRegister();
+#endif
+
     dprintf("Date:%s.\n", __DATE__);
     dprintf("Time:%s.\n", __TIME__);
 

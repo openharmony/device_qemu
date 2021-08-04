@@ -27,39 +27,10 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import("//drivers/adapter/khdf/liteos/hdf.gni")
+include $(LITEOSTOPDIR)/config.mk
 
-hdf_driver("mtd_common") {
-  module_switch = defined(LOSCFG_DRIVERS_MTD)
-  libs = [ "libs/virt/libmtd_common.a" ]
-}
+MODULE_NAME := platform_char
 
-hdf_driver("spinor_flash") {
-  module_switch = defined(LOSCFG_DRIVERS_MTD_SPI_NOR)
-  libs = [ "libs/virt/libspinor_flash.a" ]
-}
+LOCAL_SRCS :=  mmz/mmz.c
 
-group("drivers") {
-  public_deps = [
-    ":mtd_common",
-    ":spinor_flash",
-  ]
-  deps = [
-    "cfiflash",
-    "fw_cfg",
-    "uart",
-    "virtio",
-    "char",
-  ]
-}
-
-config("public") {
-  configs = [ "cfiflash:public" ]
-  include_dirs = []
-  if (defined(LOSCFG_DRIVERS_MTD)) {
-    include_dirs += [ "include/mtd/common/include" ]
-  }
-  if (defined(LOSCFG_DRIVERS_MTD_SPI_NOR)) {
-    include_dirs += [ "include/mtd/spi_nor/include" ]
-  }
-}
+include $(MODULE)

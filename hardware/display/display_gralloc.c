@@ -156,10 +156,115 @@ static int32_t AllocShm(BufferHandle *buffer)
     buffer->key = key;
     ((PriBufferHandle*)buffer)->shmid = shmid;
     key++;
+    (void)memset_s(pBase, buffer->size, 0x0, buffer->size);
     if (key >= SHM_MAX_KEY) {
         key = SHM_START_KEY;
     }
     return DISPLAY_SUCCESS;
+}
+
+typedef enum {
+    MMZ_CACHE = 1,                  /* allocate mmz with cache attribute */
+    MMZ_NOCACHE,                    /* allocate mmz with nocache attribute */
+    MMZ_FREE,                       /* free mmz */
+    MAP_CACHE,
+    MAP_NOCACHE,
+    UNMAP,
+    FLUSH_CACHE,
+    FLUSH_NOCACHE,
+    INVALIDATE,
+    MMZ_MAX
+} MMZ_TYPE;
+
+typedef struct {
+    void *vaddr;
+    uint64_t paddr;
+    int32_t size;
+} MmzMemory;
+
+#define MMZ_IOC_MAGIC               'M'
+#define MMZ_CACHE_TYPE              _IOR(MMZ_IOC_MAGIC, MMZ_CACHE, MmzMemory)
+#define MMZ_NOCACHE_TYPE            _IOR(MMZ_IOC_MAGIC, MMZ_NOCACHE, MmzMemory)
+#define MMZ_FREE_TYPE               _IOR(MMZ_IOC_MAGIC, MMZ_FREE, MmzMemory)
+#define MMZ_MAP_CACHE_TYPE          _IOR(MMZ_IOC_MAGIC, MAP_CACHE, MmzMemory)
+#define MMZ_MAP_NOCACHE_TYPE        _IOR(MMZ_IOC_MAGIC, MAP_NOCACHE, MmzMemory)
+#define MMZ_UNMAP_TYPE              _IOR(MMZ_IOC_MAGIC, UNMAP, MmzMemory)
+#define MMZ_FLUSH_CACHE_TYPE        _IOR(MMZ_IOC_MAGIC, FLUSH_CACHE, MmzMemory)
+#define MMZ_FLUSH_NOCACHE_TYPE      _IOR(MMZ_IOC_MAGIC, FLUSH_NOCACHE, MmzMemory)
+#define MMZ_INVALIDATE_TYPE         _IOR(MMZ_IOC_MAGIC, INVALIDATE, MmzMemory)
+
+#define MMZ_NODE                    "/dev/mmz"
+
+static int SendCmd(int cmd, unsigned long arg)
+{
+    int fd = open(MMZ_NODE, O_RDONLY);
+    if (fd != -1) {
+        int ret = ioctl(fd, cmd, arg);
+        if (ret == -1) {
+            printf("[Init] 1 [ERR] %d!\n", errno);
+        }
+        close(fd);
+        return ret;
+    }
+    return fd;
+}
+
+static int32_t AllocMmz(BufferHandle *buffer)
+{
+    int32_t ret;
+
+    MmzMemory mmz = {0};
+    mmz.size = buffer->size;
+    switch (buffer->usage) {
+        case HBM_USE_MEM_MMZ_CACHE:
+            printf("req size(%#x), ret:%d \n", buffer->size, SendCmd(MMZ_CACHE_TYPE, (uintptr_t)&mmz));
+            printf("vaddr %#x, paddr: %#x\n", mmz.vaddr, mmz.paddr);
+            ret = 0;
+            break;
+        case HBM_USE_MEM_MMZ:
+            printf("req size(%#x), ret:%d \n", buffer->size, SendCmd(MMZ_NOCACHE_TYPE, (uintptr_t)&mmz));
+            printf("vaddr %#x, paddr: %#x\n", mmz.vaddr, mmz.paddr);
+            ret = 0;
+            break;
+        default:
+            HDF_LOGE("%s: not support memory usage: 0x%" PRIx64 "", __func__, buffer->usage);
+            return DISPLAY_NOT_SUPPORT;
+    }
+    if (ret != DISPLAY_SUCCESS) {
+        HDF_LOGE("%s: mmzalloc failure, usage = 0x%" PRIx64 ", ret 0x%x", __func__,
+            buffer->usage, ret);
+        return DISPLAY_FAILURE;
+    }
+    (void)memset_s(mmz.vaddr, buffer->size, 0x0, buffer->size);
+    buffer->phyAddr = mmz.paddr;
+    buffer->virAddr = mmz.vaddr;
+    return DISPLAY_SUCCESS;
+}
+
+static int32_t FreeMmz(uint64_t paddr, void* vaddr)
+{
+    MmzMemory mmz = {0};
+    mmz.vaddr = vaddr;
+    mmz.paddr = paddr;
+    return SendCmd(MMZ_FREE_TYPE, (uintptr_t)&mmz);
+}
+
+static int32_t MmzFlushCache(BufferHandle *buffer)
+{
+    MmzMemory mmz = {0};
+    mmz.paddr = buffer->phyAddr;
+    mmz.size = buffer->size;
+    mmz.vaddr = buffer->virAddr;
+    return SendCmd(MMZ_FLUSH_CACHE_TYPE, (uintptr_t)&mmz);
+}
+
+static int32_t MmzInvalidateCache(BufferHandle *buffer)
+{
+    MmzMemory mmz = {0};
+    mmz.paddr = buffer->phyAddr;
+    mmz.size = buffer->size;
+    mmz.vaddr = buffer->virAddr;
+    return SendCmd(MMZ_INVALIDATE_TYPE, (uintptr_t)&mmz);
 }
 
 static int32_t AllocMem(const AllocInfo* info, BufferHandle **buffer)
@@ -181,8 +286,7 @@ static int32_t AllocMem(const AllocInfo* info, BufferHandle **buffer)
     if (bufferHdl->usage == HBM_USE_MEM_SHARE) {
         ret = AllocShm(bufferHdl);
     } else if ((bufferHdl->usage == HBM_USE_MEM_DMA ) || (bufferHdl->usage == HBM_USE_MEM_MMZ )) {
-        // todo: 增加DMA内存分配，仿照MMZ来，需要增加驱动，获取物理地址
-        ret = AllocShm(bufferHdl);
+        ret = AllocMmz(bufferHdl);
     } else {
         HDF_LOGE("%s: not support memory usage: 0x%" PRIx64 "", __func__, bufferHdl->usage);
         ret = DISPLAY_NOT_SUPPORT;
@@ -210,29 +314,35 @@ static void FreeShm(BufferHandle *buffer)
 
 static void FreeMem(BufferHandle *buffer)
 {
+    int ret;
+
     CHECK_NULLPOINTER_RETURN(buffer);
     if ((buffer->size > MAX_MALLOC_SIZE) || (buffer->size == 0)) {
         HDF_LOGE("%s: size is invalid, buffer->size = %d", __func__, buffer->size);
         return;
     }
 
-    if (buffer->usage == HBM_USE_MEM_SHARE) {
-        FreeShm(buffer);
-        return;
-    } else {
-        HDF_LOGE("%s, %d: not support memory usage: 0x%" PRIx64 "", __func__, __LINE__, buffer->usage);
+    switch (buffer->usage) {
+        case HBM_USE_MEM_MMZ_CACHE:
+        case HBM_USE_MEM_MMZ:
+            ret = FreeMmz(buffer->phyAddr, buffer->virAddr);
+            if (ret != DISPLAY_SUCCESS) {
+                HDF_LOGE("%s: HI_MPI_SYS_MmzFree failure, ret 0x%x", __func__, ret);
+            }
+            break;
+        case HBM_USE_MEM_SHARE:
+            FreeShm(buffer);
+            break;
+        default:
+            HDF_LOGE("%s: not support memory usage: 0x%" PRIx64 "", __func__, buffer->usage);
     }
 }
 
-static void *Mmap(BufferHandle *buffer)
+static void *MmapShm(BufferHandle *buffer)
 {
-    CHECK_NULLPOINTER_RETURN_VALUE(buffer, NULL);
-    if ((buffer->size > MAX_MALLOC_SIZE) || (buffer->size == 0)) {
-        HDF_LOGE("%s: size is invalid, buffer->size = %d", __func__, buffer->size);
-        return NULL;
-    }
+    int32_t shmid;
 
-    int32_t shmid = shmget(buffer->key, buffer->size, IPC_EXCL | DEFAULT_READ_WRITE_PERMISSIONS);
+    shmid = shmget(buffer->key, buffer->size, IPC_EXCL | DEFAULT_READ_WRITE_PERMISSIONS);
     if (shmid < 0) {
         HDF_LOGE("%s: Fail to mmap the shared memory, errno = %d", __func__, errno);
         return NULL;
@@ -247,15 +357,72 @@ static void *Mmap(BufferHandle *buffer)
     return pBase;
 }
 
-static int32_t Unmap(BufferHandle *buffer)
+static void *MmapMmzNoCache(uint64_t paddr, int32_t size)
 {
-    CHECK_NULLPOINTER_RETURN_VALUE(buffer, DISPLAY_NULL_PTR);
-    CHECK_NULLPOINTER_RETURN_VALUE(buffer->virAddr, DISPLAY_NULL_PTR);
+    MmzMemory mmz = {0};
+    mmz.paddr = paddr;
+    mmz.size = size;
+    SendCmd(MMZ_MAP_NOCACHE_TYPE, (uintptr_t)&mmz);
+    return (void *)mmz.vaddr;
+}
+
+static int32_t UnmapMmz(BufferHandle *buffer)
+{
+    MmzMemory mmz = {0};
+    mmz.paddr = buffer->phyAddr;
+    mmz.size = buffer->size;
+    mmz.vaddr = buffer->virAddr;
+    return SendCmd(MMZ_UNMAP_TYPE, (uintptr_t)&mmz);
+}
+
+static void *MmapMmzCache(uint64_t paddr, int32_t size)
+{
+    MmzMemory mmz = {0};
+    mmz.paddr = paddr;
+    mmz.size = size;
+    SendCmd(MMZ_MAP_CACHE_TYPE, (uintptr_t)&mmz);
+    return (void *)mmz.vaddr;
+}
+
+static void *MmapCache(BufferHandle *buffer)
+{
+    CHECK_NULLPOINTER_RETURN_VALUE(buffer, NULL);
     if ((buffer->size > MAX_MALLOC_SIZE) || (buffer->size == 0)) {
         HDF_LOGE("%s: size is invalid, buffer->size = %d", __func__, buffer->size);
-        return DISPLAY_FAILURE;
+        return NULL;
+    }
+    if (buffer->usage == HBM_USE_MEM_MMZ_CACHE) {
+        return MmapMmzCache(buffer->phyAddr, buffer->size);
+    } else {
+        HDF_LOGE("%s: buffer usage error, buffer->usage = 0x%" PRIx64 "", __func__, buffer->usage);
+        return NULL;
+    }
+}
+
+static void *Mmap(BufferHandle *buffer)
+{
+    CHECK_NULLPOINTER_RETURN_VALUE(buffer, NULL);
+    if ((buffer->size > MAX_MALLOC_SIZE) || (buffer->size == 0)) {
+        HDF_LOGE("%s: size is invalid, buffer->size = %d", __func__, buffer->size);
+        return NULL;
     }
 
+    switch (buffer->usage) {
+        case HBM_USE_MEM_MMZ_CACHE:
+            return MmapMmzCache(buffer->phyAddr, buffer->size);
+        case HBM_USE_MEM_MMZ:
+            return MmapMmzNoCache(buffer->phyAddr, buffer->size);
+        case HBM_USE_MEM_SHARE:
+            return MmapShm(buffer);
+        default:
+            HDF_LOGE("%s: not support memory usage: 0x%" PRIx64 "", __func__, buffer->usage);
+            break;
+    }
+    return NULL;
+}
+
+static int32_t UnmapShm(BufferHandle *buffer)
+{
     if (shmdt(buffer->virAddr) == -1) {
         HDF_LOGE("%s: Fail to unmap shared memory errno =  %d", __func__, errno);
         return DISPLAY_FAILURE;
@@ -263,6 +430,78 @@ static int32_t Unmap(BufferHandle *buffer)
     int32_t shmid = ((PriBufferHandle*)buffer)->shmid;
     if ((shmid != INVALID_SHMID) && (shmctl(shmid, IPC_RMID, 0) == -1)) {
         HDF_LOGE("%s: Fail to free shmid, errno = %d", __func__, errno);
+    }
+    return DISPLAY_SUCCESS;
+}
+
+static int32_t Unmap(BufferHandle *buffer)
+{
+    int32_t ret;
+
+    CHECK_NULLPOINTER_RETURN_VALUE(buffer, DISPLAY_NULL_PTR);
+    CHECK_NULLPOINTER_RETURN_VALUE(buffer->virAddr, DISPLAY_NULL_PTR);
+    if ((buffer->size > MAX_MALLOC_SIZE) || (buffer->size == 0)) {
+        HDF_LOGE("%s: size is invalid, buffer->size = %d", __func__, buffer->size);
+        return DISPLAY_FAILURE;
+    }
+    switch (buffer->usage) {
+        case HBM_USE_MEM_MMZ_CACHE:
+        case HBM_USE_MEM_MMZ:
+            ret = UnmapMmz(buffer);
+            break;
+        case  HBM_USE_MEM_SHARE:
+            ret = UnmapShm(buffer);
+            break;
+        default:
+            HDF_LOGE("%s: not support memory usage: 0x%" PRIx64 "", __func__, buffer->usage);
+            ret = DISPLAY_FAILURE;
+            break;
+    }
+    return ret;
+}
+
+static int32_t FlushCache(BufferHandle *buffer)
+{
+    int32_t ret;
+
+    CHECK_NULLPOINTER_RETURN_VALUE(buffer, DISPLAY_NULL_PTR);
+    CHECK_NULLPOINTER_RETURN_VALUE(buffer->virAddr, DISPLAY_NULL_PTR);
+    if ((buffer->size > MAX_MALLOC_SIZE) || (buffer->size == 0)) {
+        HDF_LOGE("%s: size is invalid, buffer->size = %d", __func__, buffer->size);
+        return DISPLAY_FAILURE;
+    }
+    if (buffer->usage == HBM_USE_MEM_MMZ_CACHE) {
+        ret = MmzFlushCache(buffer);
+        if (ret != DISPLAY_SUCCESS) {
+            HDF_LOGE("%s: MmzFlushCache failure, ret 0x%x", __func__, ret);
+            return DISPLAY_FAILURE;
+        }
+    } else {
+        HDF_LOGE("%s: buffer usage error, usage = 0x%" PRIx64"", __func__, buffer->usage);
+        return DISPLAY_FAILURE;
+    }
+    return DISPLAY_SUCCESS;
+}
+
+static int32_t InvalidateCache(BufferHandle *buffer)
+{
+    int32_t ret;
+
+    CHECK_NULLPOINTER_RETURN_VALUE(buffer, DISPLAY_NULL_PTR);
+    CHECK_NULLPOINTER_RETURN_VALUE(buffer->virAddr, DISPLAY_NULL_PTR);
+    if ((buffer->size > MAX_MALLOC_SIZE) || (buffer->size == 0)) {
+        HDF_LOGE("%s: size is invalid, buffer->size = %d", __func__, buffer->size);
+        return DISPLAY_FAILURE;
+    }
+    if (buffer->usage == HBM_USE_MEM_MMZ_CACHE) {
+        ret = MmzInvalidateCache(buffer);
+        if (ret != DISPLAY_SUCCESS) {
+            HDF_LOGE("%s: MmzFlushCache failure, ret 0x%x", __func__, ret);
+            return DISPLAY_FAILURE;
+        }
+    } else {
+        HDF_LOGE("%s: buffer usage error, usage = 0x%" PRIx64"", __func__, buffer->usage);
+        return DISPLAY_FAILURE;
     }
     return DISPLAY_SUCCESS;
 }
@@ -282,7 +521,11 @@ int32_t GrallocInitialize(GrallocFuncs **funcs)
     gFuncs->AllocMem = AllocMem;
     gFuncs->FreeMem = FreeMem;
     gFuncs->Mmap = Mmap;
+    gFuncs->MmapCache = MmapCache;
     gFuncs->Unmap = Unmap;
+    gFuncs->FlushCache = FlushCache;
+    gFuncs->FlushMCache = FlushCache;
+    gFuncs->InvalidateCache = InvalidateCache;
     *funcs = gFuncs;
     HDF_LOGI("%s: gralloc initialize success", __func__);
     return DISPLAY_SUCCESS;
