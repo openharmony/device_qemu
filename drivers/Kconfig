@@ -18,6 +18,21 @@ config PLATFORM_NO_UART
     bool "NO Uart"
 endchoice
 
+# platform char dev drivers config
+config DRIVERS_PLATFORM_CHAR_DEVICE
+    bool "Enable Platform Char Device Drivers"
+    default y
+    depends on FS_VFS
+    help
+      Enable Platform Char Device Drivers.
+
+config DRIVERS_MMZ_CHAR_DEVICE
+    bool "Enable MMZ Platform Char Device Drivers"
+    default y
+    depends on DRIVERS_PLATFORM_CHAR_DEVICE && FS_VFS
+    help
+      Enable MMZ Platform Char Device Drivers.
+
 config DRIVERS_NETDEV
     bool "Enable Net Device"
     default y
