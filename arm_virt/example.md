@@ -201,3 +201,57 @@ OHOS #
 
 ************************************************
 ```
+
+## 运行简单图形demo程序<a name="simple_ui_demo"></a>
+---
+
+说明：这次操作指导主要是基于noVNC的方式进行vnc链接，用作屏幕显示。
+
+1. 在一个terminal中运行qemu程序
+
+```
+./qemu-run
+```
+
+2. 在另外一个terminal中运行noVNC程序代理VNC server，以便远端浏览器通过链接地址
+访问vnc server，需要知道本机的IP
+
+```
+wget https://github.com/novnc/noVNC/archive/refs/tags/v1.2.0.tar.gz
+tar -zxvf v1.2.0.tar.gz
+cd noVNC-1.2.0/
+./utils/launch.sh --vnc localhost:5920
+```
+
+后面会显示一个链接，用于vnc访问
+
+```
+Navigate to this URL:
+
+    http://ubuntu:6080/vnc.html?host=ubuntu&port=6080
+```
+
+其中ubuntu表示域名，需要替换为对应的本机IP，例如本机IP是192.168.66.106，那么访
+问的链接地址为
+
+```
+http://192.168.66.106:6080/vnc.html?host=192.168.66.106&port=6080
+```
+
+3. 在第一个terminal中运行`simple_ui_demo`程序
+
+```
+./bin/simple_ui_demo
+```
+
+console每秒输出为图形的帧率
+
+```
+01-01 00:00:46.990 10 44 D 00000/UiDemo: 53 fps
+```
+
+4. 在浏览器中看到的vnc输出即为`960*480`的屏幕显示输出，并且能够用鼠标按钮点击。
+
+5. 退出
+
+在terminal中输入`Ctrl + c`
