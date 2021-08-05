@@ -91,6 +91,8 @@ c) 退出qemu环境
 
 - [添加一个Hello World程序](example.md#addhelloworld)
 
+- [运行图形demo](example.md#simple_ui_demo)
+
 ## FAQ:
 1. 当网络配置出现问题时，如何排查问题？
 
