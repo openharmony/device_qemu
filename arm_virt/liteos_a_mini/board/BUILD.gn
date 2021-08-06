@@ -38,11 +38,6 @@ kernel_module(module_name) {
   ]
 }
 
-group("board") {
-  public_deps = [ ":$module_name" ]
-}
-
 config("public") {
   include_dirs = [ "." ]
-#  include_dirs += [ "include" ]
 }
