@@ -27,15 +27,28 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-static_library("demo") {
-  sources = [
-      "./test_demo.c",
-  ]
+import("//kernel/liteos_a/liteos.gni")
 
-  include_dirs = [
-    "//kernel/liteos_m/kernel/include",
-    "//kernel/liteos_m/kernel/arch/include",
-    "//kernel/liteos_m/utils",
-    "//kernel/liteos_m/kal/cmsis",
+module_name = "bsp_config"
+
+kernel_module(module_name) {
+  sources = [
+    "amba_pl011/amba_pl011.c",
+    "platform.c",
   ]
+  if (defined(LOSCFG_SHELL)) {
+    sources += [ "extcmd/reset_shell.c" ]
+  }
+  if (defined(LOSCFG_PLATFORM_ADAPT)) {
+    sources += [ "os_adapt/os_adapt.c" ]
+  }
+}
+
+group("board") {
+  public_deps = [ ":$module_name" ]
+}
+
+config("public") {
+  include_dirs = [ "." ]
+  include_dirs += [ "include" ]
 }

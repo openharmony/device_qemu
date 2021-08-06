@@ -30,6 +30,29 @@
                 }
             }
         }
+        display :: host {
+            hostName = "display_host";
+            device_hdf_disp :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 200;
+                    permission = 0660;
+                    moduleName = "HDF_DISP";
+                    serviceName = "hdf_disp";
+                }
+            }
+            virtio_gpu :: device {
+                device0 :: deviceNode {
+                    policy = 0;
+                    priority = 100;
+                    preload = 0;
+                    permission = 0660;
+                    moduleName = "HDF_VIRTIO_GPU";
+                    serviceName = "hdf_virtio_gpu";
+                    deviceMatchAttr = "";
+                }
+            }
+        }
         network :: host {
         }
         storage :: host {
@@ -46,6 +69,42 @@
             }
         }
         media :: host {
+        }
+        input :: host {
+            hostName = "input_host";
+            priority = 100;
+            device_input_manager :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 100;
+                    preload = 0;
+                    permission = 0660;
+                    moduleName = "HDF_INPUT_MANAGER";
+                    serviceName = "input_dev_manager";
+                    deviceMatchAttr = "";
+                }
+            }
+            device_hdf_hid :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 140;
+                    preload = 0;
+                    permission = 0660;
+                    moduleName = "HDF_HID";
+                    serviceName = "event2";
+                }
+            }
+            virt_mouse :: device {
+                virt_mouse0 :: deviceNode {
+                    policy = 0;
+                    priority = 130;
+                    preload = 0;
+                    permission = 0660;
+                    moduleName = "HDF_VIRTIO_MOUSE";
+                    serviceName = "hdf_virtio_mouse";
+                    deviceMatchAttr = "";
+                }
+            }
         }
     }
 }

@@ -27,15 +27,16 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-static_library("demo") {
-  sources = [
-      "./test_demo.c",
-  ]
+import("//kernel/liteos_a/liteos.gni")
 
-  include_dirs = [
-    "//kernel/liteos_m/kernel/include",
-    "//kernel/liteos_m/kernel/arch/include",
-    "//kernel/liteos_m/utils",
-    "//kernel/liteos_m/kal/cmsis",
-  ]
+module_switch = defined(LOSCFG_DRIVERS_MMZ_CHAR_DEVICE)
+module_name = get_path_info(rebase_path("."), "name")
+kernel_module(module_name) {
+  sources = [ "mmz.c" ]
+
+  public_configs = [ ":public" ]
+}
+
+config("public") {
+  include_dirs = [ "include" ]
 }

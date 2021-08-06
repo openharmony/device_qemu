@@ -15,13 +15,28 @@
 
 set -e
 
-EXEFILE=$1
+function help_func() {
+  echo "For example:"
+  echo "./qemu_run.sh [Executable file]"
+  echo "./qemu_run.sh gdb [Executable file]"
+}
+
+if [ $# == 1 ]; then
+  EXEFILE=$1
+elif [ $# == 2 ]; then
+  EXEFILE=$2
+  if [ "$1" == "gdb" ]; then
+    GDBOPTIONS="-s -S"
+  else
+    help_func
+    exit
+  fi
+fi
 
 if [ "$EXEFILE" == "" ]; then
-echo "Specify the path to the executable file"
-echo "For example:"
-echo "./qemu_sifive_run.sh out/OHOS_Image"
-exit
+  echo "Specify the path to the executable file"
+  help_func
+  exit
 fi
 
 qemu-system-arm                                   \
@@ -29,4 +44,5 @@ qemu-system-arm                                   \
   -m 16M                                          \
   -kernel $EXEFILE                                \
   -nographic                                      \
+  $GDBOPTIONS                                     \
   -append "root=dev/vda or console=ttyS0"

@@ -27,15 +27,17 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-static_library("demo") {
-  sources = [
-      "./test_demo.c",
-  ]
+import("//drivers/adapter/khdf/liteos/hdf.gni")
 
-  include_dirs = [
-    "//kernel/liteos_m/kernel/include",
-    "//kernel/liteos_m/kernel/arch/include",
-    "//kernel/liteos_m/utils",
-    "//kernel/liteos_m/kal/cmsis",
-  ]
+module_switch = defined(LOSCFG_DRIVERS_HDF)
+module_name = "hdf_config"
+hdf_driver(module_name) {
+  hcs_sources = [ "hdf.hcs" ]
+}
+
+group("config") {
+  public_deps = [ ":$module_name" ]
+}
+
+config("public") {
 }

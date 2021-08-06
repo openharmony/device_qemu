@@ -15,33 +15,43 @@ Note: System memory size is hard-coded to 32MB.
 
 #### 2. Setting up environment
 
-Refer to HOWTO guide: [Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/environment-setup.md)
+Refer to HOWTO guide: [Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/quickstart-lite-env-setup.md)
 
 #### 3. Code acquisition
 
-Refer to HOWTO guide: [Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/source-code-acquisition.md)
+Refer to HOWTO guide: [Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/sourcecode-acquire.md)
 Note: One can use `repo` to fetch code in a straightforward manner.
 
 #### 4. Building from sources
 
 While being in the fetched source tree root directory, please type:
-```
-hb set -root $PWD
-```
-After setting on the root direcotory, please change directory to **device/qemu/arm_virt** to build:
 
 ```
-cd device/qemu/arm_virt
+hb set
+```
+
+Please select the `display_qemu` target under ohemu, output is:
+
+```
+[OHOS INFO] Input code path: .
+OHOS Which product do you need?  display_qemu
+```
+
+Then type:
+
+```
 hb build
 ```
 
-This will build `OHOS_Image.bin` for Qemu ARM virt machine.
+This will build `liteos.bin`、`rootfs_jffs2.bin` and `userfs_jffs2.bin` for Qemu ARM virt machine.
 Note: "debug" type of build is currently a default type since, as for other supported debug targets, it incorporates Shell app.
       There is no release build available at this time.
 
 After build is finished, the resulting image can be found in:
 ```
-out/qemu_arm_virt_ca7/OHOS_Image.bin
+out/arm_virt/display_qemu/liteos.bin
+out/arm_virt/display_qemu/rootfs_jffs2.img
+out/arm_virt/display_qemu/userfs_jffs2.img
 ```
 #### 5. Running image in Qemu
 
@@ -51,20 +61,27 @@ For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/op
 Note: The introduced functionality was tested on virt-5.1 target machine. It is not guaranteed to work with any other version
       so make sure that your qemu-system-arm emulator is up to date.
 
-b) Prepare flash image file. Now its capacity was hard-coded 64M with 3 partitions, 1st 10M-256K for kernel image, 2nd 256K for bootargs, 3rd 54M for rootfs. Linux host can reference following commands:
+b) Prepare flash image file. Now its capacity was hard-coded 64M with 4 partitions,
+    1st 10M-256K for kernel image,
+    2nd 256K for bootargs,
+    3rd 10M-32M for rootfs,
+    4th 32M-64M for userfs.
+Linux host can reference following commands:
 ```
+OUT_DIR="out/arm_virt/display_qemu/"
 sudo modprobe mtdram total_size=65536 erase_size=256
 sudo mtdpart add /dev/mtd0 kernel 0 10223616
-sudo mtdpart add /dev/mtd0 bootarg 10223616 262144
-sudo mtdpart add /dev/mtd0 root 10485760 56623104
-sudo nandwrite -p /dev/mtd1 out/qemu_arm_virt_ca7/OHOS_Image.bin
-echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=10M rootsize=27M useraddr=37M usersize=27M\x0" | sudo nandwrite -p /dev/mtd2 -
-sudo nandwrite -p /dev/mtd3 out/qemu_arm_virt_ca7/rootfs_jffs2.img
+sudo mtdpart add /dev/mtd0 bootargs 10223616 262144
+sudo mtdpart add /dev/mtd0 root 10485760 23068672
+sudo mtdpart add /dev/mtd0 user 33554432 33554432
+sudo nandwrite -p /dev/mtd1 $OUT_DIR/liteos.bin
+echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=10M rootsize=22M useraddr=32M usersize=32M\x0" | sudo nandwrite -p /dev/mtd2 -
+sudo nandwrite -p /dev/mtd3 $OUT_DIR/rootfs_jffs2.img
+sudo nandwrite -p /dev/mtd4 $OUT_DIR/userfs_jffs2.img
 sudo dd if=/dev/mtd0 of=flash.img
-sudo chown USERNAME flash.img
+sudo chown `whoami` flash.img
 sudo rmmod mtdram
 ```
-Note: bootargs only rootsize is adjustable. 3nd partition beyond it mounted at /storage, writable.
 
 c) Config host net bridge device. In Linux we can do like this:
 ```
@@ -96,9 +113,6 @@ Explanation for our system configuration:
 -m 1G                        : defines system memory to be 1024MB. This limitation will be removed in the future but now,
                                more memory will simply not be visible in the system.
 ```
-
-
-Note: OHOS build target name `qemu_arm_virt_ca7` is derived from the above mentioned command.
 
 #### 6. Usage examples
 

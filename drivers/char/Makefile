@@ -27,15 +27,10 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-static_library("demo") {
-  sources = [
-      "./test_demo.c",
-  ]
+include $(LITEOSTOPDIR)/config.mk
 
-  include_dirs = [
-    "//kernel/liteos_m/kernel/include",
-    "//kernel/liteos_m/kernel/arch/include",
-    "//kernel/liteos_m/utils",
-    "//kernel/liteos_m/kal/cmsis",
-  ]
-}
+MODULE_NAME := platform_char
+
+LOCAL_SRCS :=  mmz/mmz.c
+
+include $(MODULE)

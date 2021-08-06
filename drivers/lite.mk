@@ -24,10 +24,11 @@ ifeq ($(BUILD_FROM_SOURCE), y)
 endif
 
 ###################### SELF-DEVELOPED DRIVER ######################
-LITEOS_BASELIB +=  -lcfiflash -lvirtnet -lfw_cfg
+LITEOS_BASELIB +=  -lcfiflash -lvirtio -lfw_cfg -lplatform_char
 LIB_SUBDIRS    += $(DRIVERS_ROOT)/cfiflash
-LIB_SUBDIRS    += $(DRIVERS_ROOT)/virtnet
+LIB_SUBDIRS    += $(DRIVERS_ROOT)/virtio
 LIB_SUBDIRS    += $(DRIVERS_ROOT)/fw_cfg
+LIB_SUBDIRS    += $(DRIVERS_ROOT)/char
 
 ###################### HDF DRIVER ######################
 ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_UART), y)
