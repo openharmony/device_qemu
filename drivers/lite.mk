@@ -16,13 +16,6 @@ SOC_PLATFORM := $(subst $\",,$(LOSCFG_PLATFORM))
 
 DRIVERS_ROOT := $(LITEOSTOPDIR)/../../device/$(SOC_COMPANY)/drivers/
 
-BUILD_FROM_SOURCE := n
-
-ifeq ($(BUILD_FROM_SOURCE), y)
-    HDF_INCLUDE += -I $(LITEOSTOPDIR)/../../device/$(SOC_COMPANY)/$(SOC_PLATFORM)/liteos_a/config/board/include/
-    HDF_INCLUDE += -I $(LITEOSTOPDIR)/../../device/$(SOC_COMPANY)/$(SOC_PLATFORM)/liteos_a/config/board/include/soc
-endif
-
 ###################### SELF-DEVELOPED DRIVER ######################
 LITEOS_BASELIB +=  -lcfiflash -lvirtio -lfw_cfg -lplatform_char
 LIB_SUBDIRS    += $(DRIVERS_ROOT)/cfiflash
@@ -58,6 +51,5 @@ ifeq ($(LOSCFG_DRIVERS_MTD), y)
         LITEOS_MTD_NAND_INCLUDE  +=  -I $(DRIVERS_ROOT)/mtd/nand/include
     endif
 endif
-ifeq ($(BUILD_FROM_SOURCE), n)
-LITEOS_LD_PATH += -L$(DRIVERS_ROOT)/libs/$(SOC_PLATFORM)
-endif
+
+LITEOS_LD_PATH += -L$(LITEOSTOPDIR)/../../device/hisilicon/drivers/libs/ohos/llvm/hi3518ev300
