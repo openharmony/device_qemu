@@ -31,12 +31,12 @@ import("//drivers/adapter/khdf/liteos/hdf.gni")
 
 hdf_driver("mtd_common") {
   module_switch = defined(LOSCFG_DRIVERS_MTD)
-  libs = [ "libs/virt/libmtd_common.a" ]
+  libs = [ "//device/hisilicon/drivers/libs/ohos/llvm/hi3518ev300/libmtd_common.a" ]
 }
 
 hdf_driver("spinor_flash") {
   module_switch = defined(LOSCFG_DRIVERS_MTD_SPI_NOR)
-  libs = [ "libs/virt/libspinor_flash.a" ]
+  libs = [ "//device/hisilicon/drivers/libs/ohos/llvm/hi3518ev300/libspinor_flash.a" ]
 }
 
 group("drivers") {
@@ -55,11 +55,4 @@ group("drivers") {
 
 config("public") {
   configs = [ "cfiflash:public" ]
-  include_dirs = []
-  if (defined(LOSCFG_DRIVERS_MTD)) {
-    include_dirs += [ "include/mtd/common/include" ]
-  }
-  if (defined(LOSCFG_DRIVERS_MTD_SPI_NOR)) {
-    include_dirs += [ "include/mtd/spi_nor/include" ]
-  }
 }
