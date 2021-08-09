@@ -30,7 +30,7 @@
 group("liteos_a") {
   deps = [
     "board",
-    "config",
+    "hdf_config",
     "drivers",
   ]
 }
@@ -38,7 +38,6 @@ group("liteos_a") {
 config("public") {
   configs = [
     "board:public",
-    "config:public",
     "drivers:public",
   ]
 }

@@ -34,10 +34,3 @@ module_name = "hdf_config"
 hdf_driver(module_name) {
   hcs_sources = [ "hdf.hcs" ]
 }
-
-group("config") {
-  public_deps = [ ":$module_name" ]
-}
-
-config("public") {
-}
