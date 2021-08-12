@@ -10,7 +10,7 @@ Arm Cortex-m4 虚拟化平台是一个 `qemu-system-arm` 的目标设备，通�
 
 ## 2. 环境搭建
 
-[环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.md)
+[环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-env-setup.md)
 
 编译器安装
 
@@ -47,7 +47,7 @@ $ export PATH=$PATH:install_path/gcc-arm-none-eabi-6-2017-q2-update/bin
 
 ## 3. 获取源码
 
-[代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/%E6%BA%90%E7%A0%81%E8%8E%B7%E5%8F%96.md)
+[代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/sourcecode-acquire.md)
 
 提示: 可以使用 `repo` 命令来获取源码。
 
