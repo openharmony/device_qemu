@@ -12,7 +12,7 @@ Note: System memory size is hard-coded to 16MB.
 
 #### 2. Setting up environment
 
-[Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/environment-setup.md)
+[Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/quickstart-lite-env-setup.md)
 
 Compiler install
 
@@ -50,7 +50,7 @@ $ export PATH=$PATH:install_path/gcc-arm-none-eabi-6-2017-q2-update/bin
 
 #### 3. Code acquisition
 
-[Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/source-code-acquisition.md)
+[Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/sourcecode-acquire.md)
 
 Note: One can use `repo` to fetch code in a straightforward manner.
 
