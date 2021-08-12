@@ -31,11 +31,11 @@ static_library("board") {
   asmflags = board_asmflags
 
   sources = [
-      "./fs/ff_gen_drv.c",
-      "./main.c",
-      "./libc/dprintf.c",
-      "./startup.s",
-      "./driver/uart.c"
+    "./driver/uart.c",
+    "./fs/ff_gen_drv.c",
+    "./libc/dprintf.c",
+    "./main.c",
+    "./startup.s",
   ]
 
   include_dirs = [
@@ -45,7 +45,7 @@ static_library("board") {
     "//kernel/liteos_m/kal/cmsis",
     "//kernel/liteos_m/components/power",
     "./driver",
-    "./include"
+    "./include",
   ]
 
   deps = [ "//kernel/liteos_m/kal/posix" ]
@@ -54,22 +54,20 @@ static_library("board") {
 executable("arm_mps2_an386") {
   output_name = "liteos"
   ldflags = [
-    "-specs=nano.specs",
     "-nostartfiles",
-    "-Wl,-T"+rebase_path("Liteos.ld"),
-    "-Wl,--gc-section"
+    "-Wl,-T" + rebase_path("Liteos.ld"),
+    "-Wl,--gc-section",
+    "-nostdlib",
   ]
 
   libs = [
-    "m",
     "nosys",
-    "c"
+    "gcc",
   ]
 
   deps = [
-    "//kernel/liteos_m:kernel",
     ":board",
-    "test:demo"
+    "test:demo",
+    "//kernel/liteos_m:kernel",
   ]
 }
-

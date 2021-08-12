@@ -55,6 +55,8 @@ LITE_OS_SEC_TEXT_INIT int main(void)
         goto EXIT;
     }
 
+    extern void ExecCmdline(const char *cmdline);
+            ExecCmdline("date");
     ret = LosAppInit();
     if (ret != LOS_OK) {
         printf("LosAppInit failed! ERROR: 0x%x\n", ret);
