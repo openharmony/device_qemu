@@ -27,6 +27,7 @@ board_arch = "rv32imac"
 # For example: gcc-arm-none-eabi, arm-linux-ohoseabi-gcc, ohos-clang,  riscv32-unknown-elf.
 # Note: The default toolchain is "ohos-clang". It's not mandatory if you use the default toolchain.
 board_toolchain = "riscv32-unknown-elf"
+
 #board_toolchain = "riscv-none-embed"
 
 # The path which toolchain installed, it's not mandatory if toolchain path has been added to your ~/.bashrc.
@@ -34,6 +35,7 @@ board_toolchain_path = ""
 
 # Compiler prefix.
 board_toolchain_prefix = "riscv32-unknown-elf-"
+
 #board_toolchain_prefix = "riscv-none-embed-"
 
 # Compiler type, "gcc" or "clang".
@@ -60,7 +62,7 @@ board_cflags += board_opt_flags
 board_asmflags = [
   "-march=rv32imac",
   "-mabi=ilp32",
-  "-static"
+  "-static",
 ]
 board_asmflags += board_opt_flags
 board_cxx_flags = board_cflags
@@ -84,7 +86,7 @@ board_include_dirs = [
 ]
 
 # Board adapter dir for OHOS components.
-board_adapter_dir = ""
+board_adapter_dir = "//device/qemu/riscv32_virt/driver"
 
 # Sysroot path.
 board_configed_sysroot = ""
