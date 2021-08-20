@@ -1,121 +1,179 @@
-### Qemu ARM Virt HOWTO
+# QEMU Arm Virt Tutorial
 
-#### 1. Brief introduction
-`arm/` subdirectory contains part of the OpenHarmony LiteOS demonstration support for Qemu ARM Virtual Platform,
-here called *virt*.
-ARM Virtual platform is a `qemu-system-arm` machine target that provides emulation
-for a generic, ARM-based board. Virt is somehow configurable, for example
-user can select core type, number of cores, amount of memory, security features
-as well as, to some extent, on-chip device configuration.
+## 1. Overview
 
-Introduced functionality adds support for Cortex-A7 (1 CPU with security extensions),
-GICv2, 1024MB memory virtual platform.
+The `arm_virt/` directory contains code that has been verified on the QEMU Arm Virt platform for adapting to OpenHarmony kernel\_liteos\_a. The code includes the driver and board configurations.
 
-Note: System memory size is hard-coded to 32MB.
+The Arm Virt platform is a `qemu-system-arm` target device that simulates a general-purpose board running on the Arm architecture.
+The board whose **machine** is **virt** in QEMU is configurable. For example, you can select the core type and quantity, memory size, and security extensions when configuring the board.
 
-#### 2. Setting up environment
+This tutorial guides you through the configuration of a board based on the Cortex-A7 architecture, with one CPU, extended secure features, Generic Interrupt Controller versions 2 (GICv2), and 1 GB memory.
+The system memory is hardcoded to 32 MB.
 
-Refer to HOWTO guide: [Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/quickstart-lite-env-setup.md)
+## 2. Setting Up the Environment
 
-#### 3. Code acquisition
+For details, see [Environment Setup](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/quickstart-lite-env-setup.md).
 
-Refer to HOWTO guide: [Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/sourcecode-acquire.md)
-Note: One can use `repo` to fetch code in a straightforward manner.
+## 3. Obtaining the Source Code
 
-#### 4. Building from sources
+For details, see [Source Code Acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/sourcecode-acquire.md).
 
-While being in the fetched source tree root directory, please type:
+## 4. Building the Source Code
+
+In the root directory of the obtained source code, run the following command:
 
 ```
 hb set
 ```
 
-Please select the `display_qemu` target under ohemu, output is:
+Select `display_qemu` under **ohemu**. The output is as follows:
 
 ```
 [OHOS INFO] Input code path: .
 OHOS Which product do you need?  display_qemu
 ```
 
-Then type:
+Run the following build command:
 
 ```
 hb build
 ```
 
-This will build `liteos.bin`、`rootfs_jffs2.bin` and `userfs_jffs2.bin` for Qemu ARM virt machine.
-Note: "debug" type of build is currently a default type since, as for other supported debug targets, it incorporates Shell app.
-      There is no release build available at this time.
+After this command is executed, the image files `liteos.bin`, `rootfs_jffs2.img`, and `userfs_jffs2.img` are generated in the following directories:
 
-After build is finished, the resulting image can be found in:
 ```
 out/arm_virt/display_qemu/liteos.bin
 out/arm_virt/display_qemu/rootfs_jffs2.img
 out/arm_virt/display_qemu/userfs_jffs2.img
 ```
-#### 5. Running image in Qemu
 
-a) If not installed, please install `qemu-system-arm`
-For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/master/README.md)
+## 5. Running an Image in QEMU
 
-Note: The introduced functionality was tested on virt-5.1 target machine. It is not guaranteed to work with any other version
-      so make sure that your qemu-system-arm emulator is up to date.
+a) If `qemu-system-arm` has not been installed, install it. For details, see [Qemu Installation](https://gitee.com/openharmony/device_qemu/blob/master/README.md).
 
-b) Prepare flash image file. Now its capacity was hard-coded 64M with 4 partitions,
-    1st 10M-256K for kernel image,
-    2nd 256K for bootargs,
-    3rd 10M-32M for rootfs,
-    4th 32M-64M for userfs.
-Linux host can reference following commands:
-```
-OUT_DIR="out/arm_virt/display_qemu/"
-sudo modprobe mtdram total_size=65536 erase_size=256
-sudo mtdpart add /dev/mtd0 kernel 0 10223616
-sudo mtdpart add /dev/mtd0 bootargs 10223616 262144
-sudo mtdpart add /dev/mtd0 root 10485760 23068672
-sudo mtdpart add /dev/mtd0 user 33554432 33554432
-sudo nandwrite -p /dev/mtd1 $OUT_DIR/liteos.bin
-echo -e "bootargs=root=cfi-flash fstype=jffs2 rootaddr=10M rootsize=22M useraddr=32M usersize=32M\x0" | sudo nandwrite -p /dev/mtd2 -
-sudo nandwrite -p /dev/mtd3 $OUT_DIR/rootfs_jffs2.img
-sudo nandwrite -p /dev/mtd4 $OUT_DIR/userfs_jffs2.img
-sudo dd if=/dev/mtd0 of=flash.img
-sudo chown `whoami` flash.img
-sudo rmmod mtdram
-```
+Note: The introduced functions have been tested on the target machine of virt-5.1, but are not available for all QEMU versions. Therefore, you must ensure that the qemu-system-arm version is 5.1 or later.
 
-c) Config host net bridge device. In Linux we can do like this:
-```
-sudo modprobe tun tap
-sudo ip link add br0 type bridge
-sudo ip address add 10.0.2.2/24 dev br0
-sudo ip link set dev br0 up
 
-# comment these if already done
-sudo mkdir -p /etc/qemu
-echo 'allow br0' | sudo tee -a /etc/qemu/bridge.conf
+b) Create and run an image.
 
-# comment this if the file doesn't exist
-echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
-```
-Note: The guest network is hardcoded as 10.0.2.0/24, gateway 10.0.2.2, default ip 10.0.2.15. Different guest instance should use different MAC and IP(better use different flash image). MAC can be assigned through command line. IP can be changed in OHOS command line, e.g. `ifconfig vn0 inet 10.0.2.30`, or whatever method.
+After the source code is built, the **qemu-run** script is generated in the root directory of the code. You can run the script to create and run an image as prompted.
 
-d) Run `qemu-system-arm`, enter user-space command line.
+Run the `./qemu-run --help` command. The following information is displayed:
 
 ```
-qemu-system-arm -M virt,gic-version=2,secure -cpu cortex-a7 -smp cpus=1 -nographic -m 1G -drive if=pflash,file=flash.img,format=raw -netdev bridge,id=net0 -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 -global virtio-mmio.force-legacy=false
+Usage: ./qemu-run [OPTION]...
+Make a qemu image(flash.img) for OHOS, and run the image in qemu according
+to the options.
+
+    Options:
+
+    -f, --force                rebuild flash.img
+    -n, --net-enable           enable net
+    -h, --help                 print help info
+
+    By default, flash.img will not be rebuilt if exists, and net will not
+    be enabled.
 ```
 
+By default, the network will not be automatically configured if no parameter is specified. If the root directory image file **flash.img** exists, the image will not be re-created.
 
-```
-Explanation for our system configuration:
--M virt,gic-version=2,secure : runs ARM virtual platform with ARM Generic Interrupt Controller version 2 and security extensions enabled
--smp cpus=1                  : defines 1 CPU system
--m 1G                        : defines system memory to be 1024MB. This limitation will be removed in the future but now,
-                               more memory will simply not be visible in the system.
-```
+c) Exit QEMU.
 
-#### 6. Usage examples
+Press `Ctrl-A + x` to exit the QEMU virtual environment.
 
-- [passing debug arguments from command line](example.md#sectiondebug)
+## 6. Example
 
-- [passing files through FAT image](example.md#sectionfatfs)
+- [Transferring Debugging Parameters to the Kernel](example.md#sectiondebug)
+
+- [Transferring Files Using FAT Images](example.md#sectionfatfs)
+
+- [Adding a Hello World Program](example.md#addhelloworld)
+
+- [Running the Graphic Demo](example.md#simple_ui_demo)
+
+## FAQ:
+1. How do I locate a network configuration problem?
+
+   Manually configure a host network bridge. For Linux, run the following commands:
+
+   ```
+   sudo modprobe tun tap
+   sudo ip link add br0 type bridge
+   sudo ip address add 10.0.2.2/24 dev br0
+   sudo ip link set dev br0 up
+
+   # The following commands can be commented out after being executed:
+   sudo mkdir -p /etc/qemu
+   echo 'allow br0' | sudo tee -a /etc/qemu/bridge.conf
+   ```
+
+   Run the **ip addr** command to check the configuration. If **br0** does not exist or the value in the angle brackets is **DOWN**, check the configuration commands again.
+
+   ```
+   5: br0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+       link/ether 2e:52:52:0e:21:44 brd ff:ff:ff:ff:ff:ff
+       inet 10.0.2.2/24 scope global br0
+          valid_lft forever preferred_lft forever
+   ```
+
+   If software such as Docker has been installed in the system, the system firewall may prevent the bridge from accessing the system. Run the following command:
+
+   `cat /proc/sys/net/bridge/bridge-nf-call-iptables`
+
+   The output in **1** is displayed. Run the following command to allow the access from the network bridge:
+
+   ```
+   echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
+   ```
+
+   Note: The system network configuration is hardcoded to **10.0.2.0/24** for the IP address, **10.0.2.2** for the gateway, and **10.0.2.15** for the default IP address. Use different MAC addresses, IP addresses, and flash image (recommended) for different client instances. The MAC address can be transferred using the QEMU command line. The IP address can be adjusted in the OHOS command line, for example, using `ifconfig vn0 inet 10.0.2.30` or other methods.
+
+2. How do I troubleshoot the error when running `qemu-system-arm`?
+
+   The commands and parameters in the **qemu-run** script are as follows:
+
+   ```
+   qemu-system-arm -M virt,gic-version=2,secure=on -cpu cortex-a7 -smp cpus=1 -m 1G \
+        -drive if=pflash,file=flash.img,format=raw \
+        -netdev bridge,id=net0 \
+        -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
+        -device virtio-gpu-device,xres=800,yres=480 \
+        -device virtio-mouse-device \
+        -vnc :20 \
+        -global virtio-mmio.force-legacy=false
+   ```
+
+   ```
+   -M                           Virtual machine type, ARM virt, GICv2, and extended security features
+   -cpu                         CPU model
+   -smp                        SMP setting, single core
+   -m                           Maximum memory size that can be used by the virtual machines
+   -drive if=pflash      CFI flash drive setting
+   -netdev                  [optional] NIC bridge type
+   -device virtio-net-device    [optional] NIC device
+   -device virtio-gpu-device    [optional] GPU device
+   -device virtio-mouse-device [optional] Mouse device
+   -VNC: 20                   [optional] Remote desktop connection, port 5920
+   -Global                    QEMU configuration parameter, which cannot be changed
+   ```
+
+   If the error message "failed to parse default acl file" is displayed when **qemu-run** is executed:
+
+   The error may be caused by the QEMU configuration file path, which varies with the QEMU installation mode. The default QEMU configuration file path is:
+
+   - **/usr/local/qemu/etc/qemu** if QEMU is installed from the source code.
+
+   - **/ect/qemu/** if QEMU is installed by using a Linux distribution installation tool.
+
+   Determine the configuration file path and run the following command:
+
+   ```
+   echo 'allow br0' | sudo tee -a <Configuration file path>
+   ```
+
+
+3. What do I do if there is no output after QEMU of LTS 1.1.0 is executed?
+
+   The LTS code has a kernel startup defect. You can try to resolve the problem by referring to the following:
+
+   https://gitee.com/openharmony/kernel_liteos_a/pulls/324
