@@ -23,6 +23,10 @@
 #ifdef LOSCFG_DRIVERS_RANDOM
 #include "soc/random.h"
 #endif
+#include "los_vm_map.h"
+#include "los_vm_zone.h"
+#include "los_vm_boot.h"
+#include "los_mmu_descriptor_v6.h"
 
 UINT32 OsRandomStackGuard(VOID)
 {
@@ -47,3 +51,44 @@ void InitRebootHook(void)
 {
     OsSetRebootHook(OsReboot);
 }
+
+#ifdef LOSCFG_KERNEL_MMU
+LosArchMmuInitMapping g_archMmuInitMapping[] = {
+    {
+        .phys = SYS_MEM_BASE,
+        .virt = KERNEL_VMM_BASE,
+        .size = KERNEL_VMM_SIZE,
+        .flags = MMU_DESCRIPTOR_KERNEL_L1_PTE_FLAGS,
+        .name = "KernelCached",
+    },
+    {
+        .phys = SYS_MEM_BASE,
+        .virt = UNCACHED_VMM_BASE,
+        .size = UNCACHED_VMM_SIZE,
+        .flags = MMU_INITIAL_MAP_NORMAL_NOCACHE,
+        .name = "KernelUncached",
+    },
+    {
+        .phys = PERIPH_PMM_BASE,
+        .virt = PERIPH_DEVICE_BASE,
+        .size = PERIPH_DEVICE_SIZE,
+        .flags = MMU_INITIAL_MAP_DEVICE,
+        .name = "PeriphDevice",
+    },
+    {
+        .phys = PERIPH_PMM_BASE,
+        .virt = PERIPH_CACHED_BASE,
+        .size = PERIPH_CACHED_SIZE,
+        .flags = MMU_DESCRIPTOR_KERNEL_L1_PTE_FLAGS,
+        .name = "PeriphCached",
+    },
+    {
+        .phys = PERIPH_PMM_BASE,
+        .virt = PERIPH_UNCACHED_BASE,
+        .size = PERIPH_UNCACHED_SIZE,
+        .flags = MMU_INITIAL_MAP_STRONGLY_ORDERED,
+        .name = "PeriphStronglyOrdered",
+    },
+    {0}
+};
+#endif
