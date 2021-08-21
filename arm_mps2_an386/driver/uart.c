@@ -14,8 +14,12 @@
  */
 
 #include "uart.h"
+#include "arm_uart_drv.h"
+#include "stdio.h"
 #include "los_config.h"
 #include "los_reg.h"
+#include "los_interrupt.h"
+#include "los_event.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -23,54 +27,48 @@ extern "C" {
 #endif
 #endif
 
-/******* uart register offset *****/
-#define UART_TX_DATA         0x00
-#define UART_RX_DATA         0x04
-#define UART_TX_CTRL         0x08
-#define UART_RX_CTRL         0x0C
-#define UART_IN_ENAB         0x10
-#define UART_IN_PEND         0x14
-#define UART_BR_DIV          0x18
+static const struct arm_uart_dev_cfg_t g_uartCfg = {UART0_BASE, 115200};
+static struct arm_uart_dev_data_t g_uartData = {0};
+struct arm_uart_dev_t g_uartDev;
 
-INT32 UartPutc(INT32 c, VOID *file)
+INT32 UartGetc()
 {
-    (VOID)file;
-
-    while (GET_UINT32(UART0_BASE + UART_TX_DATA) & 0x80000000) {
-        ;
+    UINT8 c;
+    if (arm_uart_read(&g_uartDev, &c) == ARM_UART_ERR_NOT_READY) {
+        return 0;
     }
-
-    WRITE_UINT32((INT32)(c & 0xFF), UART0_BASE + UART_TX_DATA);
 
     return c;
 }
 
-INT32 UartOut(INT32 c, VOID *file)
+INT32 UartPutc(INT32 c, VOID *file)
 {
-    if (c == '\n') {
-        return UartPutc('\r', file);
-    }
+    return arm_uart_write(&g_uartDev, (UINT8)c);
+}
 
-    return UartPutc(c, file);
+VOID UartReciveHandler(VOID)
+{
+    if (arm_uart_get_interrupt_status(&g_uartDev) == ARM_UART_IRQ_RX) {
+        (void)LOS_EventWrite(&g_shellInputEvent, 0x1);
+        (void)arm_uart_clear_interrupt(&g_uartDev, ARM_UART_IRQ_RX);
+    }
+    return;
 }
 
 VOID UartInit()
 {
-
-    UINT32 uartDiv;
-
-    /* Enable TX and RX channels */
-    WRITE_UINT32(1 << 0, UART0_BASE + UART_TX_CTRL);
-    WRITE_UINT32(1 << 0, UART0_BASE + UART_RX_CTRL);
-
-    /* Set baud rate */
-    uartDiv = UART0_CLK_FREQ / UART0_BAUDRAT - 1;
-    WRITE_UINT32(uartDiv, UART0_BASE + UART_BR_DIV);
-
-    /* Ensure that uart IRQ is disabled initially */
-    WRITE_UINT32(0, UART0_BASE + UART_IN_ENAB);
+    g_uartDev.cfg = &g_uartCfg;
+    g_uartDev.data = &g_uartData;
+    (void)arm_uart_init(&g_uartDev, UART0_CLK_FREQ);
+    return;
 }
 
+VOID Uart0RxIrqRegister()
+{
+    (void)arm_uart_irq_rx_enable(&g_uartDev);
+    (void)HalHwiCreate(Uart0_Rx_IRQn, 0, 0, (HWI_PROC_FUNC)UartReciveHandler, 0);
+    return;
+}
 #ifdef __cplusplus
 #if __cplusplus
 }

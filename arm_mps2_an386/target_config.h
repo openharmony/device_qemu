@@ -119,4 +119,10 @@ extern unsigned int __heap_size;
 
 #define LOS_KERNEL_TEST_NOT_SMOKE                           0
 
+/*=============================================================================
+                                       shell module configuration
+=============================================================================*/
+#define LOSCFG_USE_SHELL                                    1
+#define LOSCFG_SHELL_PRIO                                   3
+
 #endif /* _TARGET_CONFIG_H */

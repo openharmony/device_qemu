@@ -48,6 +48,8 @@
 #define UsageFault_IRQn        (-10)
 #define SVCall_IRQn            (-5)
 
+#define Uart0_Rx_IRQn          0
+
 #define SYSCLK_FREQ    25000000
 
 #define UART0_BASE     0x40004000
