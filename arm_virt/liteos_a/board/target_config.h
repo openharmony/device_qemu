@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef __BOARD_CONFIG_H__
-#define __BOARD_CONFIG_H__
+#ifndef _TARGET_CONFIG_H
+#define _TARGET_CONFIG_H
 
 
 #ifdef __cplusplus
