@@ -31,6 +31,7 @@ static_library("board") {
   asmflags = board_asmflags
 
   sources = [
+    "./driver/arm_uart_drv.c",
     "./driver/uart.c",
     "./fs/ff_gen_drv.c",
     "./libc/dprintf.c",

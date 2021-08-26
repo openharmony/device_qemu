@@ -33,7 +33,7 @@
 #include "uart.h"
 
 unsigned int LosAppInit(VOID);
-
+extern unsigned int LosShellInit(void);
 /*****************************************************************************
  Function    : main
  Description : Main function entry
@@ -47,16 +47,21 @@ LITE_OS_SEC_TEXT_INIT int main(void)
 
     UartInit();
 
-    printf("\n\rhello world!!\n");
-
     ret = LOS_KernelInit();
     if (ret != LOS_OK) {
         printf("Liteos kernel init failed! ERROR: 0x%x\n", ret);
         goto EXIT;
     }
 
-    extern void ExecCmdline(const char *cmdline);
-            ExecCmdline("date");
+    Uart0RxIrqRegister();
+
+#if (LOSCFG_USE_SHELL == 1)
+    ret = LosShellInit();
+    if (ret != LOS_OK) {
+        printf("LosAppInit failed! ERROR: 0x%x\n", ret);
+    }
+#endif
+
     ret = LosAppInit();
     if (ret != LOS_OK) {
         printf("LosAppInit failed! ERROR: 0x%x\n", ret);

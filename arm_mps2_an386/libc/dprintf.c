@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include "uart.h"
 #include "los_debug.h"
+#include "los_interrupt.h"
 
 #define fputc UartPutc
 
@@ -53,113 +54,17 @@ static void dputs(char const *s, int (*pFputc)(int n, FILE *cookie), void *cooki
     }
 }
 
-void __dprintf(char const *fmt, va_list ap,
-        int (*pFputc)(int n, FILE *cookie),
-        void *cookie)
-{
-    char scratch[256];
-
-    for(;;){
-        switch(*fmt){
-            case 0:
-                va_end(ap);
-                return;
-            case '%':
-                switch(fmt[1]) {
-                    case 'c': {
-                                  unsigned n = va_arg(ap, unsigned);
-                                  pFputc(n, cookie);
-                                  fmt += 2;
-                                  continue;
-                              }
-                    case 'h': {
-                                  unsigned n = va_arg(ap, unsigned);
-                                  pFputc(hex2asc(n >> 12), cookie);
-                                  pFputc(hex2asc(n >> 8), cookie);
-                                  pFputc(hex2asc(n >> 4), cookie);
-                                  pFputc(hex2asc(n >> 0), cookie);
-                                  fmt += 2;
-                                  continue;
-                              }
-                    case 'b': {
-                                  unsigned n = va_arg(ap, unsigned);
-                                  pFputc(hex2asc(n >> 4), cookie);
-                                  pFputc(hex2asc(n >> 0), cookie);
-                                  fmt += 2;
-                                  continue;
-                              }
-                    case 'p':
-                    case 'X':
-                    case 'x': {
-                                  unsigned n = va_arg(ap, unsigned);
-                                  char *p = scratch + 15;
-                                  *p = 0;
-                                  do {
-                                      *--p = hex2asc(n);
-                                      n = n >> 4;
-                                  } while(n != 0);
-                                  while(p > (scratch + 7)) *--p = '0';
-                                  dputs(p, pFputc, cookie);
-                                  fmt += 2;
-                                  continue;
-                              }
-                    case 'd': {
-                                  int n = va_arg(ap, int);
-                                  char *p = scratch + 15;
-                                  *p = 0;
-                                  if(n < 0) {
-                                      pFputc('-', cookie);
-                                      n = -n;
-                                  }
-                                  do {
-                                      *--p = (n % 10) + '0';
-                                      n /= 10;
-                                  } while(n != 0);
-                                  dputs(p, pFputc, cookie);
-                                  fmt += 2;
-                                  continue;
-                              }
-                    case 'u': {
-                                  unsigned int n = va_arg(ap, unsigned int);
-                                  char *p = scratch + 15;
-                                  *p = 0;
-                                  do {
-                                      *--p = (n % 10) + '0';
-                                      n /= 10;
-                                  } while(n != 0);
-                                  dputs(p, pFputc, cookie);
-                                  fmt += 2;
-                                  continue;
-                              }
-                    case 's': {
-                                  char *s = va_arg(ap, char*); /*lint !e64*/
-                                  if(s == 0) s = "(null)";
-                                  dputs(s, pFputc, cookie);
-                                  fmt += 2;
-                                  continue;
-                              }
-                }
-                pFputc(*fmt++, cookie);
-                break;
-            case '\n':
-                pFputc('\r', cookie);
-            default: /*lint !e616*/
-                pFputc(*fmt++, cookie);
-        }
-    }
-}
-
-void HalConsoleOutput(LogModuleType type, const char *fmt, va_list ap)
-{
-    (void)type;
-    __dprintf(fmt, ap, fputc, 0);
-}
-
+#define SIZEBUF  256
 int printf(char const  *fmt, ...)
 {
+    char buf[SIZEBUF] = {0};
+    unsigned int intSave;
     va_list ap;
     va_start(ap, fmt); /*lint !e1055 !e534 !e530*/
-    __dprintf(fmt, ap, fputc, 0); /*lint !e611 !e64*/
+    int len = vsnprintf_s(buf, sizeof(buf), SIZEBUF - 1, fmt, ap);
     va_end(ap);
-    return 0;
+    intSave = LOS_IntLock();
+    dputs(buf, fputc, 0);
+    LOS_IntRestore(intSave);
+    return len;
 }

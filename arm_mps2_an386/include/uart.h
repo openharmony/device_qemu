@@ -16,6 +16,7 @@
 #ifndef _UART_H
 #define _UART_H
 
+#include "los_event.h"
 #include "los_compiler.h"
 
 #ifdef __cplusplus
@@ -26,7 +27,10 @@ extern "C" {
 
 extern VOID UartInit(VOID);
 extern INT32 UartPutc(INT32 c, VOID *file);
-extern INT32 UartOut(INT32 c, VOID *file);
+extern INT32 UartGetc(VOID);
+extern VOID Uart0RxIrqRegister(VOID);
+
+extern EVENT_CB_S g_shellInputEvent;
 
 #ifdef __cplusplus
 #if __cplusplus
