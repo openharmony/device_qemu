@@ -248,6 +248,11 @@ static void RequestNoResponse(unsigned queue, const void *req, size_t reqSize, b
     struct Virtq *q = &g_virtGpu->dev.vq[queue];
     uint16_t head = q->last % q->qsz;   /* `last` record next writable desc entry for request */
 
+    /* QEMU is busy for the full queue, give up this request */
+    if (abs(q->avail->index - (volatile uint16_t)q->used->index) >= VIRTQ_CONTROL_QSZ) {
+        return;
+    }
+
     /* other fields initiated by PopulateVirtQ */
     q->desc[head].pAddr = VMM_TO_DMA_ADDR((VADDR_T)req);
     q->desc[head].len = reqSize;
@@ -471,13 +476,13 @@ static bool VirtgpuBeginNormDisplay(void)
         return false;
     }
 
+    /* now we can fix queue entries to avoid redundant when do normal OPs */
+    PopulateVirtQ();
+
     if ((ret = OsalTimerStartLoop(&g_virtGpu->timer)) != HDF_SUCCESS) {
         HDF_LOGE("[%s]start timer failed: %d\n", __func__, ret);
         return false;
     }
-
-    /* now we can fix queue entries to avoid redundant when do normal OPs */
-    PopulateVirtQ();
     return true;
 }
 
