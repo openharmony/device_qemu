@@ -40,15 +40,6 @@ config DRIVERS_NETDEV
     help
       Answer Y to enable LiteOS support net device.
 
-choice
-    depends on DRIVERS_NETDEV
-    prompt "MAC"
-    default DRIVERS_HIETH_SF
-    help
-      Select net device.
-
-endchoice
-
 # mtd configs tart
 config DRIVERS_MTD
     bool "Enable MTD"
