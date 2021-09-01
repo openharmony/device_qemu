@@ -26,12 +26,8 @@ Qemu中machine为 **virt** 的单板就是这种可配置的，例如：选择�
 hb set
 ```
 
-选择ohemu下的`display_qemu`选项，输出如下：
+选择ohemu下的`qemu_small_system_demo`选项。
 
-```
-[OHOS INFO] Input code path: .
-OHOS Which product do you need?  display_qemu
-```
 
 然后执行构建命令如下：
 
@@ -39,15 +35,10 @@ OHOS Which product do you need?  display_qemu
 hb build
 ```
 
-这个命令构建会产生 `liteos.bin`、`rootfs_jffs2.img` 和 `userfs_jffs2.img`  的镜像文件。
+这个命令构建会产生 `OHOS_Image.bin`、`rootfs_jffs2.img` 和 `userfs_jffs2.img`  的镜像文件。
 
-在构建完成之后，对应的镜像文件在如下目录：
+在构建完成之后，对应的镜像文件在out/arm_virt/qemu_small_system_demo/目录。
 
-```
-out/arm_virt/display_qemu/liteos.bin
-out/arm_virt/display_qemu/rootfs_jffs2.img
-out/arm_virt/display_qemu/userfs_jffs2.img
-```
 
 ## 5. 在Qemu中运行镜像
 
@@ -71,10 +62,11 @@ to the options.
 
     -f, --force                rebuild flash.img
     -n, --net-enable           enable net
+    -l, --local-desktop        no VNC
     -h, --help                 print help info
 
     By default, flash.img will not be rebuilt if exists, and net will not
-    be enabled.
+    be enabled, gpu enabled and waiting for VNC connection at port 5920.
 ```
 
 默认不加参数的情况下，网络不会自动配置。当根目录镜像文件flash.img存在时，镜像不会被重新制作。

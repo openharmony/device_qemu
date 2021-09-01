@@ -26,12 +26,7 @@ In the root directory of the obtained source code, run the following command:
 hb set
 ```
 
-Select `display_qemu` under **ohemu**. The output is as follows:
-
-```
-[OHOS INFO] Input code path: .
-OHOS Which product do you need?  display_qemu
-```
+Select `qemu_small_system_demo` under **ohemu**.
 
 Run the following build command:
 
@@ -39,13 +34,7 @@ Run the following build command:
 hb build
 ```
 
-After this command is executed, the image files `liteos.bin`, `rootfs_jffs2.img`, and `userfs_jffs2.img` are generated in the following directories:
-
-```
-out/arm_virt/display_qemu/liteos.bin
-out/arm_virt/display_qemu/rootfs_jffs2.img
-out/arm_virt/display_qemu/userfs_jffs2.img
-```
+After this command is executed, the image files `OHOS_Image.bin`, `rootfs_jffs2.img`, and `userfs_jffs2.img` are generated in out/arm_virt/qemu_small_system_demo/ directory.
 
 ## 5. Running an Image in QEMU
 
@@ -69,10 +58,11 @@ to the options.
 
     -f, --force                rebuild flash.img
     -n, --net-enable           enable net
+    -l, --local-desktop        no VNC
     -h, --help                 print help info
 
     By default, flash.img will not be rebuilt if exists, and net will not
-    be enabled.
+    be enabled, gpu enabled and waiting for VNC connection at port 5920.
 ```
 
 By default, the network will not be automatically configured if no parameter is specified. If the root directory image file **flash.img** exists, the image will not be re-created.
