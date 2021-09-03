@@ -110,7 +110,7 @@ Press `Ctrl-A + x` to exit the QEMU virtual environment.
 
    `cat /proc/sys/net/bridge/bridge-nf-call-iptables`
 
-   The output in **1** is displayed. Run the following command to allow the access from the network bridge:
+   **1** is displayed. Run the following command to allow the access from the network bridge:
 
    ```
    echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
