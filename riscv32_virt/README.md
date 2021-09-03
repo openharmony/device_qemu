@@ -14,7 +14,7 @@ Note: System memory size is hard-coded to 128MB.
 
 [Setting up a development environment](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/quick-start/quickstart-lite-env-setup.md)
 
-[Compiler install:gcc_riscv32](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/quick-start/quickstart-lite-steps-board3861-setting.md#section34435451256),
+[Compiler install:gcc_riscv32](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/quick-start/quickstart-lite-steps-hi3861-setting.md#section34435451256),
 Note: [Downloadable directly](https://repo.huaweicloud.com/harmonyos/compiler/gcc_riscv32/7.3.0/linux/gcc_riscv32-linux-7.3.0.tar.gz)
 
 #### 3. Code acquisition
@@ -25,18 +25,27 @@ Note: One can use `repo` to fetch code in a straightforward manner.
 
 #### 4. Building from sources
 
+In the root directory of the obtained source code, run the following command:
+
 ```
-$ cd device/qemu/riscv32_virt
-$ hb build -f
+hb set
+```
+
+Select `qemu_riscv_mini_system_demo` under **ohemu**.
+
+Run the following build command:
+
+```
+hb build
 ```
 
 This will build `liteos` for Qemu RISC-V virt machine.
 
-
 After build is finished, the resulting image can be found in:
 ```
-../../../out/riscv32_virt/liteos
+out/riscv32_virt/qemu_riscv_mini_system_demo/bin
 ```
+
 #### 5. Running image in Qemu
 
 a) If not installed, please install `qemu-system-riscv32`
@@ -46,21 +55,36 @@ b) Run
 
 ```
 $ cd device/qemu/riscv32_virt
+
 ```
 
 (1) qemu version < 5.0.0
 
 ```
-$ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/liteos -nographic -append "root=dev/vda or console=ttyS0"
+$ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
 ```
 
-(2). qemu version >= 5.0.0 
+(2). qemu version >= 5.0.0
+
+Run the `./qemu_run.sh --help` command. The following information is displayed:
 
 ```
-$ ./qemu_run.sh ../../../out/riscv32_virt/liteos
-or
-$ qemu-system-riscv32 -machine virt -m 128M -bios none -kernel ../../../out/riscv32_virt/liteos -nographic -append "root=dev/vda or console=ttyS0"
+Usage: ./qemu_run.sh [OPTION]...
+Run a OHOS image in qemu according to the options.
+
+    Options:
+
+    -f, --file [file_name]   kernel exec file name
+    -n, --net-enable         enable net
+    -g, --gdb                enable gdb for kernel
+    -h, --help               print help info
+
+    By default, the kernel exec file is: ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos, 
+    and net will not be enabled.
 ```
+By default, the network will not be automatically configured if no parameter is specified, and the default kernel exec file will be used.
+If you want to use other kernel exec file, please try `./qemu_run.sh -f [file_name]` to change it.
+
 #### 6. gdb debug
 
 ```
@@ -83,24 +107,24 @@ board_opt_flags = [ "-g" ]
 Save and exit, recompile:
 
 ```
-$ hb build -f
+$ hb build
 ```
 
 In a window to enter the command:
 
 ```
-$ ./qemu_run.sh gdb ../../../out/riscv32_virt/unstripped/bin/liteos
+$ ./qemu_run.sh -g -f ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
 ```
 
 In another window to enter the command:
 
 ```
-$ riscv32-unknown-elf-gdb ../../../out/riscv32_virt/unstripped/bin/liteos
+$ riscv32-unknown-elf-gdb ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
 (gdb) target remote localhost:1234
 (gdb) b main
 ```
 
-Note: Using the GDB debugging, executable must choose `out/riscv32_virt/unstripped/bin` executable files in the
+Note: Using the GDB debugging, executable must choose `out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin` executable files in the
 directory.
 
 More GDB related debugging can refer to [GDB instruction manual](https://sourceware.org/gdb/current/onlinedocs/gdb).
