@@ -63,6 +63,7 @@ to the options.
     -f, --force                rebuild flash.img
     -n, --net-enable           enable net
     -l, --local-desktop        no VNC
+    -b, --bootargs             additional boot arguments(-bk1=v1,k2=v2...)
     -h, --help                 print help info
 
     By default, flash.img will not be rebuilt if exists, and net will not
@@ -77,7 +78,7 @@ c) 退出qemu环境
 
 ## 6. 用法示例
 
-- [向内核传递调试参数](example.md#sectiondebug)
+- [向内核传递参数](example.md#sectiondebug)
 
 - [用FAT映像传递文件](example.md#sectionfatfs)
 

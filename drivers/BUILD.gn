@@ -46,7 +46,6 @@ group("drivers") {
   ]
   deps = [
     "cfiflash",
-    "fw_cfg",
     "uart",
     "virtio",
     "char",

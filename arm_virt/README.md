@@ -59,6 +59,7 @@ to the options.
     -f, --force                rebuild flash.img
     -n, --net-enable           enable net
     -l, --local-desktop        no VNC
+    -b, --bootargs             additional boot arguments(-bk1=v1,k2=v2...)
     -h, --help                 print help info
 
     By default, flash.img will not be rebuilt if exists, and net will not
@@ -73,7 +74,7 @@ Press `Ctrl-A + x` to exit the QEMU virtual environment.
 
 ## 6. Example
 
-- [Transferring Debugging Parameters to the Kernel](example.md#sectiondebug)
+- [Transferring Parameters to the Kernel](example.md#sectiondebug)
 
 - [Transferring Files Using FAT Images](example.md#sectionfatfs)
 
