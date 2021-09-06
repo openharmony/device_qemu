@@ -93,7 +93,7 @@
 extern unsigned int __heap_start;
 extern unsigned int __heap_size;
 #define LOSCFG_SYS_EXTERNAL_HEAP                            1
-#define LOSCFG_SYS_HEAP_ADDR                                (unsigned int)&__heap_start
+#define LOSCFG_SYS_HEAP_ADDR                                (void *)&__heap_start
 #define LOSCFG_SYS_HEAP_SIZE                                (unsigned int)&__heap_size
 #define LOSCFG_MEM_MUL_POOL                                 1
 #define OS_SYS_MEM_NUM                                      20
