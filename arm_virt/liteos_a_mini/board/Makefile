@@ -17,6 +17,4 @@ MODULE_NAME := bsp_config
 
 LOCAL_SRCS := $(wildcard amba_pl011/*.c)
 
-LOCAL_FLAGS := $(LOCAL_INCLUDE) $(LITEOS_GCOV_OPTS)
-
 include $(MODULE)
