@@ -27,6 +27,4 @@ ifeq ($(LOSCFG_PLATFORM_ADAPT), y)
 LOCAL_SRCS += $(wildcard os_adapt/*.c)
 endif
 
-LOCAL_FLAGS := $(LOCAL_INCLUDE) $(LITEOS_GCOV_OPTS)
-
 include $(MODULE)
