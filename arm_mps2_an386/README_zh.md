@@ -85,16 +85,13 @@ $ vim liteos_m/config.gni
 将 `board_opt_flags` 中的
 
 ```
-board_opt_flags = [ "-O2" ]
+board_opt_flags = []
 ```
 
 编译选项修改为:
 
 ```
-board_opt_flags = [
-  "-g",
-  "-O0",
-]
+board_opt_flags = [ "-g" ]
 ```
 
 保存并退出，重新编译:

@@ -42,7 +42,7 @@
                                         System clock module configuration
 =============================================================================*/
 #define OS_SYS_CLOCK                                        SYSCLK_FREQ
-#define LOSCFG_BASE_CORE_TICK_PER_SECOND                    (1000UL)
+#define LOSCFG_BASE_CORE_TICK_PER_SECOND                    (100UL)
 #define LOSCFG_BASE_CORE_TICK_HW_TIME                       0
 #define LOSCFG_BASE_CORE_TICK_WTIMER                        0
 #define LOSCFG_BASE_CORE_TICK_RESPONSE_MAX                  0xFFFFFFUL

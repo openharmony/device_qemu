@@ -39,8 +39,8 @@ board_toolchain_prefix = "arm-none-eabi-"
 # Compiler type, "gcc" or "clang".
 board_toolchain_type = "gcc"
 
-#Compiler optimization level options
-board_opt_flags = [ "-O2" ]
+#Debug compiler optimization level options
+board_opt_flags = []
 
 # Board related common compile flags.
 board_cflags = [
@@ -52,6 +52,7 @@ board_cflags = [
   "-fno-strict-aliasing",
   "-fsigned-char",
   "-std=c99",
+  "-O2",
   "-DUSE_HAL_DRIVER",
   "-D__LITEOS_M__",
 ]
@@ -61,6 +62,7 @@ board_asmflags = [
   "-mcpu=cortex-m4",
   "-mthumb",
   "-static",
+  "-O2",
 ]
 board_asmflags += board_opt_flags
 
