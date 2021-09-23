@@ -41,17 +41,33 @@ board_toolchain_prefix = "riscv32-unknown-elf-"
 # Compiler type, "gcc" or "clang".
 board_toolchain_type = "gcc"
 
-#Compiler optimization level options
-board_opt_flags = [ "-O2" ]
+#Debug compiler optimization level options
+board_opt_flags = []
 
 # Board related common compile flags.
 board_cflags = [
   "-mabi=ilp32",
+  "-falign-functions=2",
+  "-msave-restore",
+  "-fno-optimize-strlen",
+  "-freorder-blocks-algorithm=simple",
+  "-fno-schedule-insns",
+  "-fno-inline-small-functions",
+  "-fno-inline-functions-called-once",
+  "-mtune=size",
+  "-mno-small-data-limit=0",
+  "-fno-aggressive-loop-optimizations",
+  "-std=c99",
+  "-Wpointer-arith",
+  "-ffunction-sections",
+  "-fdata-sections",
+  "-fno-exceptions",
+  "-fno-short-enums",
+  "-fno-builtin",
+  "-O2",
   "-static",
   "-fno-common",
   "-fno-stack-protector",
-  "-ffunction-sections",
-  "-fdata-sections",
   "-fno-omit-frame-pointer",
   "-Wno-format-truncation",
   "-D__RISC_V__",
@@ -63,6 +79,7 @@ board_asmflags = [
   "-march=rv32imac",
   "-mabi=ilp32",
   "-static",
+  "-O2",
 ]
 board_asmflags += board_opt_flags
 board_cxx_flags = board_cflags

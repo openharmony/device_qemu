@@ -71,16 +71,13 @@ $ vim liteos_m/config.gni
 In the modified `board_opt_flags` compiler options:
 
 ```
-board_opt_flags = [ "-O2" ]
+board_opt_flags = []
 ```
 
 to:
 
 ```
-board_opt_flags = [
-  "-g",
-  "-O0",
-]
+board_opt_flags = [ "-g" ]
 ```
 
 Save and exit, recompile:

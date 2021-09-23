@@ -28,6 +28,41 @@ extern "C" {
 
 UINT32 LosAppInit(VOID);
 
+UINT32 QemuCLZ(UINT32 data)
+{
+    UINT32 count = 32; /* 32-bit data length */
+    if (data == 0) {
+        return count;
+    }
+
+    if (data & 0xFFFF0000) {
+        data = data >> 16; /* 16-bit data length */
+        count -= 16; /* 16-bit data length */
+    }
+
+    if (data & 0xFF00) {
+        data = data >> 8; /* 8-bit data length */
+        count -= 8; /* 8-bit data length */
+    }
+
+    if (data & 0xF0) {
+        data = data >> 4; /* 4-bit data length */
+        count -= 4; /* 4-bit data length */
+    }
+
+    if (data & 0x8) {
+        return (count - 4); /* 4-bit data length */
+    } else if (data & 0x4) {
+        return (count - 3); /* 3-bit data length */
+    } else if (data & 0x2) {
+        return (count - 2); /* 2-bit data length */
+    } else if (data & 0x1) {
+        return (count - 1);
+    }
+
+    return 0;
+}
+
 /*****************************************************************************
  Function    : main
  Description : Main function entry
