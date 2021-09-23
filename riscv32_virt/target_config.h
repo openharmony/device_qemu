@@ -93,7 +93,10 @@ extern UINTPTR __heap_size;
 
 #define OS_HWI_WITH_ARG                                     1
 
-#define LOSCFG_BACKTRACE_TYPE                               0
+#define LOSCFG_BACKTRACE_TYPE                               2
+
+#define LOSCFG_KERNEL_PRINTF                                1
+
 #define LOSCFG_KERNEL_PM                                    1
 
 #define LOS_KERNEL_TEST_NOT_SMOKE                           0

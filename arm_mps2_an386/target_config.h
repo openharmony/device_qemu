@@ -111,11 +111,13 @@ extern unsigned int __heap_size;
 ============================================================================= */
 #define LOSCFG_KERNEL_PRINTF                                1
 
-#define LOSCFG_BACKTRACE_TYPE                               0
+#define LOSCFG_BACKTRACE_TYPE                               1
 
 #define LOSCFG_DEBUG_HOOK                                   0
 
 #define LOSCFG_KERNEL_PM                                    1
+
+#define LOSCFG_KERNEL_PM_DEBUG                              1
 
 #define LOS_KERNEL_TEST_NOT_SMOKE                           0
 

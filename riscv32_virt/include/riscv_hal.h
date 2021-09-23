@@ -34,9 +34,6 @@ extern CHAR *__text_start;
 extern CHAR *__text_end;
 extern CHAR *__bss_end;
 
-extern BOOL HalBackTraceRaCheck(UINT32 value);
-extern BOOL HalBackTraceFpCheck(UINT32 value);
-
 extern VOID HalIrqDisable(UINT32 vector);
 extern VOID HalIrqEnable(UINT32 vector);
 extern VOID HalSetLocalInterPri(UINT32 vector, UINT16 prior);
