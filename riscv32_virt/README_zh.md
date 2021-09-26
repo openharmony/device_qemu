@@ -10,14 +10,14 @@ RISC-V 虚拟化平台是一个 `qemu-system-riscv32` 的目标设备，通过�
 
 ## 2. 环境搭建
 
-[环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-env-setup.md)
+[环境搭建](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/quick-start/quickstart-lite-env-setup.md)
 
-[编译器安装:gcc_riscv32](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-steps-hi3861-setting.md#section34435451256), 
+[编译器安装:gcc_riscv32](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/quick-start/quickstart-lite-steps-hi3861-setting.md#section34435451256), 
 提示: [可直接下载](https://repo.huaweicloud.com/harmonyos/compiler/gcc_riscv32/7.3.0/linux/gcc_riscv32-linux-7.3.0.tar.gz)
 
 ## 3. 获取源码
 
-[代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/sourcecode-acquire.md)
+[代码获取](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/get-code/sourcecode-acquire.md)
 
 提示: 可以使用 `repo` 命令来获取源码。
 
@@ -36,7 +36,7 @@ $ hb build -f
 ```
 ## 5. 在Qemu中运行镜像
 
-a) 如果没有安装 `qemu-system-riscv32` ，安装请参考链接:[Qemu安装指导](https://gitee.com/openharmony/device_qemu/blob/master/README_zh.md)
+a) 如果没有安装 `qemu-system-riscv32` ，安装请参考链接:[Qemu安装指导](https://gitee.com/openharmony/device_qemu/blob/HEAD/README_zh.md)
 
 b) 运行
 

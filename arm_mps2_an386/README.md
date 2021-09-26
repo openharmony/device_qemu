@@ -12,7 +12,7 @@ Note: System memory size is hard-coded to 16MB.
 
 #### 2. Setting up environment
 
-[Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/quickstart-lite-env-setup.md)
+[Setting up a development environment](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/quick-start/quickstart-lite-env-setup.md)
 
 Compiler install
 
@@ -50,7 +50,7 @@ $ export PATH=$PATH:install_path/gcc-arm-none-eabi-6-2017-q2-update/bin
 
 #### 3. Code acquisition
 
-[Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/sourcecode-acquire.md)
+[Code acquisition](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/get-code/sourcecode-acquire.md)
 
 Note: One can use `repo` to fetch code in a straightforward manner.
 
@@ -71,7 +71,7 @@ After build is finished, the resulting image can be found in:
 #### 5. Running image in Qemu
 
 a) If not installed, please install `qemu-system-arm`
-For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/master/README.md)
+For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/HEAD/README.md)
 
 b) Run
 
