@@ -12,11 +12,11 @@ Qemu中machine为 **virt** 的单板就是这种可配置的，例如：选择�
 
 ## 2. 环境搭建
 
-参考链接: [环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-env-setup.md)
+参考链接: [环境搭建](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/quick-start/quickstart-lite-env-setup.md)
 
 ## 3. 获取源码
 
-参考链接: [代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/sourcecode-acquire.md)
+参考链接: [代码获取](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/get-code/sourcecode-acquire.md)
 
 ## 4. 源码构建
 
@@ -42,7 +42,7 @@ hb build
 
 ## 5. 在Qemu中运行镜像
 
-a) 如果没有安装 `qemu-system-arm` ，安装请参考链接 [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/master/README_zh.md)
+a) 如果没有安装 `qemu-system-arm` ，安装请参考链接 [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/HEAD/README_zh.md)
 
 提示：当前引入的功能在virt-5.1的目标machine已经完成测试，不保证所有的Qemu版本都能够运行成功，因此需要保证你的qemu-system-arm
 版本尽可能在5.1及以上。

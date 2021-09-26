@@ -12,11 +12,11 @@ The system memory is hardcoded to 32 MB.
 
 ## 2. Setting Up the Environment
 
-For details, see [Environment Setup](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/quickstart-lite-env-setup.md).
+For details, see [Environment Setup](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/quick-start/quickstart-lite-env-setup.md).
 
 ## 3. Obtaining the Source Code
 
-For details, see [Source Code Acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/sourcecode-acquire.md).
+For details, see [Source Code Acquisition](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/get-code/sourcecode-acquire.md).
 
 ## 4. Building the Source Code
 
@@ -38,7 +38,7 @@ After this command is executed, the image files `OHOS_Image.bin`, `rootfs_jffs2.
 
 ## 5. Running an Image in QEMU
 
-a) If `qemu-system-arm` has not been installed, install it. For details, see [Qemu Installation](https://gitee.com/openharmony/device_qemu/blob/master/README.md).
+a) If `qemu-system-arm` has not been installed, install it. For details, see [Qemu Installation](https://gitee.com/openharmony/device_qemu/blob/HEAD/README.md).
 
 Note: The introduced functions have been tested on the target machine of virt-5.1, but are not available for all QEMU versions. Therefore, you must ensure that the qemu-system-arm version is 5.1 or later.
 
