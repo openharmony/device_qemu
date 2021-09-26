@@ -90,24 +90,24 @@ QEMU applies only to the OpenHarmony kernel.
 
 ## Usage<a name="section169045116126"></a>
 
-For details about the ARM architecture, see  [Qemu ARM Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/arm_virt/README.md).
+For details about the ARM architecture, see  [Qemu ARM Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_virt/README.md).
 
-For details about the Cortex-m4 architecture, see  [Qemu Cortex-m4 mps2-an386 HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/arm_mps2_an386/README.md).
+For details about the Cortex-m4 architecture, see  [Qemu Cortex-m4 mps2-an386 HOWTO](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_mps2_an386/README.md).
 
-For details about the RISC-V architecture, see  [Qemu RISC-V Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/master/riscv32_virt/README.md).
+For details about the RISC-V architecture, see  [Qemu RISC-V Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/HEAD/riscv32_virt/README.md).
 
 ## Contribution<a name="section169045116136"></a>
 
-[How to involve](https://gitee.com/openharmony/docs/blob/master/en/contribute/contribution.md)
+[How to involve](https://gitee.com/openharmony/docs/blob/HEAD/en/contribute/contribution.md)
 
 [Commit message spec](https://gitee.com/openharmony/device_qemu/wikis/Commit%20message%E8%A7%84%E8%8C%83?sort_id=4042860)
 
 ## Repositories Involved<a name="section1371113476307"></a>
 
-[Kernel subsystem](https://gitee.com/openharmony/docs/blob/master/en/readme/kernel.md)
+[Kernel subsystem](https://gitee.com/openharmony/docs/blob/HEAD/en/readme/kernel.md)
 
 **device\_qemu**
 
-[kernel\_liteos\_a](https://gitee.com/openharmony/kernel_liteos_a/blob/master/README.md)
+[kernel\_liteos\_a](https://gitee.com/openharmony/kernel_liteos_a/blob/HEAD/README.md)
 
-[kernel\_liteos\_m](https://gitee.com/openharmony/kernel_liteos_m/blob/master/README.md)
+[kernel\_liteos\_m](https://gitee.com/openharmony/kernel_liteos_m/blob/HEAD/README.md)
