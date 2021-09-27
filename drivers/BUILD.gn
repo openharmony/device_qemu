@@ -29,26 +29,12 @@
 
 import("//drivers/adapter/khdf/liteos/hdf.gni")
 
-hdf_driver("mtd_common") {
-  module_switch = defined(LOSCFG_DRIVERS_MTD)
-  libs = [ "//device/hisilicon/drivers/libs/ohos/llvm/hi3518ev300/libmtd_common.a" ]
-}
-
-hdf_driver("spinor_flash") {
-  module_switch = defined(LOSCFG_DRIVERS_MTD_SPI_NOR)
-  libs = [ "//device/hisilicon/drivers/libs/ohos/llvm/hi3518ev300/libspinor_flash.a" ]
-}
-
 group("drivers") {
-  public_deps = [
-    ":mtd_common",
-    ":spinor_flash",
-  ]
   deps = [
     "cfiflash",
+    "char",
     "uart",
     "virtio",
-    "char",
   ]
 }
 
