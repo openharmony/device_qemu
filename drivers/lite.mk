@@ -27,28 +27,3 @@ ifeq ($(LOSCFG_DRIVERS_HDF_PLATFORM_UART), y)
     LITEOS_BASELIB += -lhdf_uart
     LIB_SUBDIRS    += $(DRIVERS_ROOT)/uart
 endif
-
-# mtd drivers
-ifeq ($(LOSCFG_DRIVERS_MTD), y)
-    LITEOS_BASELIB    += -lmtd_common
-    LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(DRIVERS_ROOT)/include/mtd/common/include
-
-    ifeq ($(LOSCFG_DRIVERS_MTD_SPI_NOR), y)
-    ifeq ($(LOSCFG_DRIVERS_MTD_SPI_NOR_HISFC350), y)
-        NOR_DRIVER_DIR := hisfc350
-    else ifeq ($(LOSCFG_DRIVERS_MTD_SPI_NOR_HIFMC100), y)
-        NOR_DRIVER_DIR := hifmc100
-    endif
-    endif
-
-    LITEOS_BASELIB   += -lspinor_flash
-    LITEOS_MTD_SPI_NOR_INCLUDE  +=  -I $(DRIVERS_ROOT)/include/mtd/spi_nor/include
-
-    ifeq ($(LOSCFG_DRIVERS_MTD_NAND), y)
-        NAND_DRIVER_DIR := hifmc100
-        LITEOS_BASELIB   += -lnand_flash
-        LITEOS_MTD_NAND_INCLUDE  +=  -I $(DRIVERS_ROOT)/mtd/nand/include
-    endif
-endif
-
-LITEOS_LD_PATH += -L$(LITEOSTOPDIR)/../../device/hisilicon/drivers/libs/ohos/llvm/hi3518ev300
