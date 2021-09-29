@@ -61,18 +61,6 @@ BOOL HalBackTraceFpCheck(UINT32 value)
     return FALSE;
 }
 
-BOOL HalBackTraceRaCheck(UINT32 value)
-{
-    BOOL ret = FALSE;
-
-    if ((value >= (UINT32)(UINTPTR)(&__text_start)) &&
-        (value < (UINT32)(UINTPTR)(&__text_end))) {
-        ret = TRUE;
-    }
-
-    return ret;
-}
-
 VOID HalClockInit(OS_TICK_HANDLER handler, UINT32 period)
 {
     UINT32 ret;

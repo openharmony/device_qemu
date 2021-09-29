@@ -29,42 +29,36 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "stdarg.h"
+#include <stdarg.h>
 #include <stdio.h>
+#include "securec.h"
 #include "uart.h"
 #include "los_debug.h"
 #include "los_interrupt.h"
 
-#define fputc UartPutc
-
-static int hex2asc(int n)
-{
-    n &= 15;
-    if(n > 9){
-        return ('a' - 10) + n;
-    } else {
-        return '0' + n;
-    }
-}
-
 static void dputs(char const *s, int (*pFputc)(int n, FILE *cookie), void *cookie)
 {
+    unsigned int intSave;
+
+    intSave = LOS_IntLock();
     while (*s) {
         pFputc(*s++, cookie);
     }
+    LOS_IntRestore(intSave);
 }
 
-#define SIZEBUF  256
 int printf(char const  *fmt, ...)
 {
-    char buf[SIZEBUF] = {0};
-    unsigned int intSave;
+#define BUFSIZE  256
+    char buf[BUFSIZE] = { 0 };
     va_list ap;
-    va_start(ap, fmt); /*lint !e1055 !e534 !e530*/
-    int len = vsnprintf_s(buf, sizeof(buf), SIZEBUF - 1, fmt, ap);
+    va_start(ap, fmt);
+    int len = vsnprintf_s(buf, sizeof(buf), BUFSIZE - 1, fmt, ap);
     va_end(ap);
-    intSave = LOS_IntLock();
-    dputs(buf, fputc, 0);
-    LOS_IntRestore(intSave);
+    if (len > 0) {
+        dputs(buf, UartPutc, 0);
+    } else {
+        dputs("printf error!\n", UartPutc, 0);
+    }
     return len;
 }
