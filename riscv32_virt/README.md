@@ -53,23 +53,19 @@ For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/op
 
 b) Run
 
-```
-$ cd device/qemu/riscv32_virt
-
-```
-
 (1) qemu version < 5.0.0
 
 ```
+$ cd device/qemu/riscv32_virt
 $ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
 ```
 
 (2). qemu version >= 5.0.0
 
-Run the `./qemu_run.sh --help` command. The following information is displayed:
+Run the `./qemu-run --help` command. The following information is displayed:
 
 ```
-Usage: ./qemu_run.sh [OPTION]...
+Usage: ./qemu-run [OPTION]...
 Run a OHOS image in qemu according to the options.
 
     Options:
@@ -79,11 +75,11 @@ Run a OHOS image in qemu according to the options.
     -g, --gdb                enable gdb for kernel
     -h, --help               print help info
 
-    By default, the kernel exec file is: ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos, 
+    By default, the kernel exec file is: out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos,
     and net will not be enabled.
 ```
 By default, the network will not be automatically configured if no parameter is specified, and the default kernel exec file will be used.
-If you want to use other kernel exec file, please try `./qemu_run.sh -f [file_name]` to change it.
+If you want to use other kernel exec file, please try `./qemu-run -f [file_name]` to change it.
 
 #### 6. gdb debug
 
@@ -104,22 +100,22 @@ to:
 board_opt_flags = [ "-g" ]
 ```
 
-Save and exit, recompile:
+Save and exit, recompile under OHOS root directory:
 
 ```
-$ hb build
+$ hb build -f
 ```
 
 In a window to enter the command:
 
 ```
-$ ./qemu_run.sh -g -f ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
+$ ./qemu-run -g -f out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
 ```
 
 In another window to enter the command:
 
 ```
-$ riscv32-unknown-elf-gdb ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
+$ riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
 (gdb) target remote localhost:1234
 (gdb) b main
 ```

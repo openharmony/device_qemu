@@ -26,7 +26,7 @@ $ sudo apt install gcc-arm-none-eabi
 
 2.The installation package to install
 
-Note: If you have already passed the command to install gcc-arm-none-eabi, can through the command: `$sudo apt remove 
+Note: If you have already passed the command to install gcc-arm-none-eabi, can through the command: `$sudo apt remove
 gcc-arm-none-eabi` after unloading, install again.
 
 Download toolchain: [package](https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/6-2017q2/gcc-arm-none-eabi-6-2017-q2-update-linux.tar.bz2)。
@@ -56,8 +56,16 @@ Note: One can use `repo` to fetch code in a straightforward manner.
 
 #### 4. Building from sources
 
+In the root directory of the obtained source code, run the following command:
+
 ```
-$ cd device/qemu/arm_mps2_an386
+hb set
+```
+
+Select `qemu_mini_system_demo` under **ohemu**.
+
+Run the following build command:
+```
 $ hb build -f
 ```
 
@@ -66,7 +74,7 @@ This will build `liteos` for Qemu Cortex-m4 mps2-an386 machine.
 
 After build is finished, the resulting image can be found in:
 ```
-../../../out/arm_mps2_an386/bin/liteos
+out/arm_mps2_an386/qemu_mini_system_demo/bin/
 ```
 #### 5. Running image in Qemu
 
@@ -76,8 +84,7 @@ For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/op
 b) Run
 
 ```
-$ cd device/qemu/arm_mps2_an386
-$ ./qemu_run.sh ../../../out/arm_mps2_an386/bin/liteos
+$ ./qemu-run out/arm_mps2_an386/qemu_mini_system_demo/bin/liteos
 ```
 
 #### 6. gdb debug
@@ -98,7 +105,7 @@ to:
 board_opt_flags = [ "-g" ]
 ```
 
-Save and exit, recompile:
+Save and exit, recompile under OHOS root directory:
 
 ```
 $ hb build -f
@@ -107,18 +114,18 @@ $ hb build -f
 In a window to enter the command:
 
 ```
-$ ./qemu_run.sh gdb ../../../out/arm_mps2_an386/unstripped/bin/liteos
+$ ./qemu-run gdb out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
 ```
 
 In another window to enter the command:
 
 ```
-$ arm-none-eabi-gdb ../../../out/arm_mps2_an386/unstripped/bin/liteos
+$ arm-none-eabi-gdb out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
 (gdb) target remote localhost:1234
 (gdb) b main
 ```
 
-Note: Using the GDB debugging, executable must choose `out/arm_mps2_an386/unstripped/bin` executable files in the
+Note: Using the GDB debugging, executable must choose `out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/` executable files in the
 directory.
 
 More GDB related debugging can refer to [GDB instruction manual](https://sourceware.org/gdb/current/onlinedocs/gdb).
