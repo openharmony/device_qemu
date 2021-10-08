@@ -26,6 +26,49 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
+#ifdef LOSCFG_NET_LWIP 
+
+#define IFNAMSIZ  IF_NAMESIZE
+#include "lwip/tcpip.h"
+#include "lwip/netif.h"
+#include "lwip/netifapi.h"
+
+#define SLEEP_TIME_MS 60
+#define NETIF_SETUP_OVERTIME 100
+
+void net_init(void)
+{
+    extern void tcpip_init(tcpip_init_done_fn initfunc, void *arg);
+    extern struct netif *VirtnetInit(void);
+
+    static unsigned int overtime = 0;
+
+    printf("tcpip_init start\n");
+    tcpip_init(NULL, NULL);
+    printf("tcpip_init end\n");
+
+    printf("netif init start...\n");
+    struct netif *pnetif = VirtnetInit();
+    if (pnetif) {
+        netif_set_default(pnetif);
+        (void)netifapi_netif_set_up(pnetif);
+        do {
+            LOS_UDelay(SLEEP_TIME_MS);
+            overtime++;
+            if (overtime > NETIF_SETUP_OVERTIME) {
+                printf("netif_is_link_up overtime!\n");
+                break;
+            }
+        } while (netif_is_link_up(pnetif) == 0);
+        if (overtime <= NETIF_SETUP_OVERTIME) {
+            printf("netif init succeed!\n");
+        }
+    } else {
+        printf("netif init failed!\n");
+    }
+}
+#endif /* LOSCFG_NET_LWIP */
+
 UINT32 LosAppInit(VOID);
 
 UINT32 QemuCLZ(UINT32 data)
@@ -81,6 +124,10 @@ LITE_OS_SEC_TEXT_INIT INT32 main(VOID)
         printf("Liteos kernel init failed! ERROR: 0x%x\n", ret);
         goto START_FAILED;
     }
+
+#ifdef LOSCFG_NET_LWIP 
+    net_init();
+#endif /* LOSCFG_NET_LWIP */
 
     ret = LosAppInit();
     if (ret != LOS_OK) {

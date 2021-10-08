@@ -21,6 +21,7 @@
 #define _TARGET_CONFIG_H
 
 #include "stdint.h"
+#include "stdbool.h"
 #include "soc.h"
 #include "los_compiler.h"
 

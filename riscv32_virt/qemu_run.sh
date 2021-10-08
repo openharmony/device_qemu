@@ -13,37 +13,100 @@
 #See the License for the specific language governing permissions and
 #limitations under the License.
 
-set -e
+#set -e
+GDBOPTIONS=""
+net_enable=no
+EXEFILE=../../../out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos
 
-function help_func() {
-  echo "For example:"
-  echo "./qemu_run.sh [Executable file]"
-  echo "./qemu_run.sh gdb [Executable file]"
+help_info=$(cat <<-END
+Usage: $0 [OPTION]...
+Run a OHOS image in qemu according to the options.
+
+    Options:
+
+    -f, --file [file_name]   kernel exec file name
+    -n, --net-enable         enable net
+    -g, --gdb                enable gdb for kernel
+    -h, --help               print help info
+
+    By default, the kernel exec file is: ${EXEFILE}, 
+    and net will not be enabled.
+END
+)
+
+function net_config(){
+    echo "Network config..."
+    sudo modprobe tun tap
+    sudo ip link add br0 type bridge
+    sudo ip address add 10.0.2.2/24 dev br0
+    sudo ip link set dev br0 up
 }
 
-if [ $# == 1 ]; then
-  EXEFILE=$1
-elif [ $# == 2 ]; then
-  EXEFILE=$2
-  if [ "$1" == "gdb" ]; then
-    GDBOPTIONS="-s -S"
-  else
-    help_func
-    exit
-  fi
-fi
+function start_qemu(){
+    net_enable=${1}
+    read -t 5 -p "Enter to start qemu[y/n]:" flag
+    start=${flag:-y}
+    if [ ${start} = y ]; then
+        if [ ${net_enable} = yes ]
+        then
+            net_config 2>/dev/null
+            sudo `which qemu-system-riscv32` -M virt -m 128M -bios none -nographic -kernel $EXEFILE \
+            -global virtio-mmio.force-legacy=false \
+            $GDBOPTIONS \
+            -netdev bridge,id=net0 \
+            -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
+            -append "root=/dev/vda or console=ttyS0"
+        else
+            `which qemu-system-riscv32` -M virt -m 128M -bios none -nographic -kernel $EXEFILE \
+            $GDBOPTIONS \
+            -append "root=/dev/vda or console=ttyS0"
+        fi
+    else
+        echo "Exit qemu-run"
+    fi
+}
 
-if [ "$EXEFILE" == "" ]; then
+############################## main ##############################
+ARGS=`getopt -o f:ngh --l file:,net-enable,gdb,help -n "$0" -- "$@"`
+if [ $? != 0 ]; then
+    echo "Try '$0 --help' for more information."
+    exit 1
+fi
+eval set --"${ARGS}"
+
+while true;do
+    case "${1}" in
+        -f|--file)
+        EXEFILE="${2}"
+        shift;
+        shift;
+        ;;
+        -n|--net-enable)
+        shift;
+        net_enable=yes
+        echo -e "Qemu net enable..."
+        ;;
+        -g|--gdb)
+        shift;
+        GDBOPTIONS="-s -S"
+        echo -e "Qemu kernel gdb enable..."
+        ;;
+        -h|--help)
+        shift;
+        echo -e "${help_info}"
+        exit
+        ;;
+        --)
+        shift;
+        break;
+        ;;
+    esac
+done
+
+if [ "$EXEFILE" == "" ] || [ ! -f "${EXEFILE}" ]; then
   echo "Specify the path to the executable file"
-  help_func
+  echo -e "${help_info}"
   exit
 fi
-
-qemu-system-riscv32        \
-  -m 128M                  \
-  -bios none               \
-  -machine virt            \
-  -kernel $EXEFILE         \
-  -nographic               \
-  $GDBOPTIONS              \
-  -append "root=/dev/vda or console=ttyS0"
+echo -e "EXEFILE = ${EXEFILE}"
+start_qemu ${net_enable}

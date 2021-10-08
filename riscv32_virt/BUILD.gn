@@ -30,18 +30,22 @@
 static_library("board") {
   asmflags = board_asmflags
   sources = [
-    "main.c",
-    "riscv_hal.c",
-    "libc/dprintf.c",
     "driver/mtimer.c",
     "driver/plic.c",
     "driver/uart.c",
+    "driver/virtmmio.c",
+    "driver/virtnet.c",
     "fs/ff_gen_drv.c",
+    "libc/dprintf.c",
     "los_start.S",
+    "main.c",
+    "riscv_hal.c",
   ]
 
   include_dirs = [
     "./driver",
+    "//kernel/liteos_m/components/net/lwip-2.1/porting/include",
+    "//third_party/lwip/src/include",
   ]
 }
 
@@ -51,16 +55,17 @@ executable("riscv32_virt") {
     "-Wl,-mcmodel=medany",
     "-Wl,-melf32lriscv",
     "-nostartfiles",
-    "-Wl,-T"+rebase_path("Liteos.ld"),
+    "-Wl,-T" + rebase_path("Liteos.ld"),
+    "-nostdlib",
+    "-Wl,--gc-section",
   ]
   libs = [
     "gcc",
     "nosys",
-    "c"
   ]
   deps = [
-    "//kernel/liteos_m:kernel",
     ":board",
-    "test:demo"
+    "test:demo",
+    "//kernel/liteos_m:kernel",
   ]
 }
