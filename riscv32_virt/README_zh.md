@@ -12,7 +12,7 @@ RISC-V 虚拟化平台是一个 `qemu-system-riscv32` 的目标设备，通过�
 
 [环境搭建](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/quick-start/quickstart-lite-env-setup.md)
 
-[编译器安装:gcc_riscv32](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/quick-start/quickstart-lite-steps-hi3861-setting.md#section34435451256), 
+[编译器安装:gcc_riscv32](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/quick-start/quickstart-lite-steps-hi3861-setting.md#section34435451256),
 提示: [可直接下载](https://repo.huaweicloud.com/harmonyos/compiler/gcc_riscv32/7.3.0/linux/gcc_riscv32-linux-7.3.0.tar.gz)
 
 ## 3. 获取源码
@@ -51,22 +51,19 @@ a) 如果没有安装 `qemu-system-riscv32` ，安装请参考链接:[Qemu安装
 
 b) 运行
 
+(1). qemu 版本 < 5.0.0
+
 ```
 $ cd device/qemu/riscv32_virt
-```
-
-(1). qemu 版本 < 5.0.0 
-
-```
 $ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
 ```
 
-(2). qemu 版本 >= 5.0.0 
+(2). qemu 版本 >= 5.0.0
 
-执行`./qemu_run.sh --help`提示如下：
+执行`./qemu-run --help`提示如下：
 
 ```
-Usage: ./qemu_run.sh [OPTION]...
+Usage: qemu-run [OPTION]...
 Run a OHOS image in qemu according to the options.
 
     Options:
@@ -76,10 +73,10 @@ Run a OHOS image in qemu according to the options.
     -g, --gdb                enable gdb for kernel
     -h, --help               print help info
 
-    By default, the kernel exec file is: ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos, 
+    By default, the kernel exec file is: out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos,
     and net will not be enabled.
 ```
-默认不加参数的情况下，网络不会自动配置，并使用默认镜像文件，若需更改默认镜像文件，可以利用 `./qemu_run.sh -f [file_name]` 指定
+默认不加参数的情况下，网络不会自动配置，并使用默认镜像文件，若需更改默认镜像文件，可以利用 `./qemu-run -f [file_name]` 指定
 
 ## 6. gdb调试
 
@@ -100,22 +97,22 @@ board_opt_flags = []
 board_opt_flags = [ "-g" ]
 ```
 
-保存并退出，重新编译:
+保存并退出，在OHOS根目录重新编译:
 
 ```
-$ hb build
+$ hb build -f
 ```
 
 在一个窗口中输入命令：
 
 ```
-$ ./qemu_run.sh -g -f ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
+$ ./qemu-run -g -f out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
 ```
 
 在另一个窗口中输入命令：
 
 ```
-$ riscv32-unknown-elf-gdb ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
+$ riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
 (gdb) target remote localhost:1234
 (gdb) b main
 ```
