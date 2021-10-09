@@ -1,0 +1,5 @@
+#include "device_info/device_info.hcs" 
+
+root {
+    module = "qemu,riscv32_virt_chip";
+}

@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2013-2019 Huawei Technologies Co., Ltd. All rights reserved.
- * Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+ * Copyright (c) 2021-2021 Huawei Device Co., Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -29,61 +28,37 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdarg.h>
-#include <stdio.h>
-#include "securec.h"
-#include "uart.h"
-#include "los_debug.h"
+#ifndef _FBMEM_H
+#define _FBMEM_H
+
+#include <stdint.h>
+#include "sys/types.h"
+#include "sys/stat.h"
+#include "bits/errno.h"
+#include "los_list.h"
 #include "los_interrupt.h"
+#include "los_debug.h"
+#include "los_task.h"
 
-static void dputs(char const *s, int (*pFputc)(int n, FILE *cookie), void *cookie)
-{
-    unsigned int intSave;
+#define PATH_MAX 256
+#define V_CREATE     (1 << 0)
+#define V_DUMMY      (1 << 2)
 
-    intSave = LOS_IntLock();
-    while (*s) {
-        pFputc(*s++, cookie);
-    }
-    LOS_IntRestore(intSave);
-}
+#ifndef OK
+#define OK 0
+#endif
 
-int printf(char const  *fmt, ...)
-{
-#define BUFSIZE 256
-    char buf[BUFSIZE] = { 0 };
-    va_list ap;
-    va_start(ap, fmt);
-    int len = vsnprintf_s(buf, sizeof(buf), BUFSIZE - 1, fmt, ap);
-    va_end(ap);
-    if (len > 0) {
-        dputs(buf, UartPutc, 0);
-    } else {
-        dputs("printf error!\n", UartPutc, 0);
-    }
-    return len;
-}
+struct fb_mem {
+    uint32_t hash;                      /* vnode hash */
+    uint uid;                           /* uid for dac */
+    void *data;                         /* private data */
+};
 
-#define HDF_KM_LOGV       6
-#define HDF_KM_LOGD       5
-#define HDF_KM_LOGI       4
-#define HDF_KM_LOGW       2
-#define HDF_KM_LOGE       1
-#define HDF_KM_LOG_LEVEL  HDF_KM_LOGW
+int FbMemInit(void);
+int FbMemHold(void);
+int FbMemDrop(void);
+int FbMemLookup(const char *key, struct fb_mem **result, uint32_t flags);
+int register_driver(const char *key, void *prev);
+int unregister_driver(const char *key);
 
-int hal_trace_printf(int attr, const char *fmt, ...)
-{
-    if (attr > HDF_KM_LOG_LEVEL)
-        return 1;
-
-    char buf[BUFSIZE] = { 0 };
-    va_list ap;
-    va_start(ap, fmt);
-    int len = vsnprintf_s(buf, sizeof(buf), BUFSIZE - 1, fmt, ap);
-    va_end(ap);
-    if (len > 0) {
-        dputs(buf, UartPutc, 0);
-    } else {
-        dputs("printf error!\n", UartPutc, 0);
-    }
-    return len;
-}
+#endif

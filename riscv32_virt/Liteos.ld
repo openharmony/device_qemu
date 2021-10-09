@@ -30,6 +30,9 @@ SECTIONS
     *(.rodata.* .srodata.*)
     . = ALIGN(0x20);
     __text_end = .;
+    _hdf_drivers_start = .;
+    KEEP(*(.hdf.driver))
+    _hdf_drivers_end = .;
   } > ram AT > flash
   .data : ALIGN(0x20)
   {

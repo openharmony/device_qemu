@@ -56,7 +56,7 @@ void net_init(void)
             LOS_UDelay(SLEEP_TIME_MS);
             overtime++;
             if (overtime > NETIF_SETUP_OVERTIME) {
-                printf("netif_is_link_up overtime!\n");
+                PRINT_ERR("netif_is_link_up overtime!\n");
                 break;
             }
         } while (netif_is_link_up(pnetif) == 0);
@@ -121,17 +121,29 @@ LITE_OS_SEC_TEXT_INIT INT32 main(VOID)
 
     ret = LOS_KernelInit();
     if (ret != LOS_OK) {
-        printf("Liteos kernel init failed! ERROR: 0x%x\n", ret);
+        PRINT_ERR("Liteos kernel init failed! ERROR: 0x%x\n", ret);
         goto START_FAILED;
     }
 
+    printf("\nFb init begin...\n");
+    if (fb_init() != LOS_OK) {
+        PRINT_ERR("Fb init failed!");
+    }
+    printf("Fb int end\n");
+	
+    printf("\nDeviceManagerStart start ...\n");
+    if (DeviceManagerStart()) {
+        PRINT_ERR("No drivers need load by hdf manager!");
+    }
+    printf("DeviceManagerStart end ...\n");
+	
 #ifdef LOSCFG_NET_LWIP 
     net_init();
 #endif /* LOSCFG_NET_LWIP */
 
     ret = LosAppInit();
     if (ret != LOS_OK) {
-        printf("LosAppInit failed! ERROR: 0x%x\n", ret);
+        PRINT_ERR("LosAppInit failed! ERROR: 0x%x\n", ret);
     }
 
     LOS_Start();

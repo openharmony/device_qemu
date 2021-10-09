@@ -20,6 +20,7 @@
 #include "stdint.h"
 #include "los_reg.h"
 #include "stdbool.h"
+#include "los_arch_context.h" 
 
 typedef unsigned long VADDR_T;
 typedef unsigned long PADDR_T;

@@ -27,68 +27,47 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import("//build/lite/config/component/lite_component.gni")
 import("//drivers/adapter/khdf/liteos_m/hdf.gni")
 
-static_library("board") {
-  asmflags = board_asmflags
+static_library("hdf_input_driver") {
+  FRAMEWORKS_INPUT_ROOT = "$hdf_fwk_path/model/input/driver"
   sources = [
-    "driver/mtimer.c",
-    "driver/plic.c",
-    "driver/uart.c",
-    "driver/video/fb.c",
-    "driver/video/fb_init.c",
-    "driver/video/fb_mem.c",
-    "driver/video/key_cache.c",
-    "driver/virtgpu.c",
-    "driver/virtinput.c",
-    "driver/virtmmio.c",
-    "driver/virtnet.c",
-    "fs/ff_gen_drv.c",
-    "libc/dprintf.c",
-    "los_start.S",
-    "main.c",
-    "riscv_hal.c",
+    "$FRAMEWORKS_INPUT_ROOT/event_hub.c",
+    "$FRAMEWORKS_INPUT_ROOT/hdf_hid_adapter.c",
+    "$FRAMEWORKS_INPUT_ROOT/hdf_input_device_manager.c",
+    "$FRAMEWORKS_INPUT_ROOT/hdf_key.c",
+    "$FRAMEWORKS_INPUT_ROOT/hdf_touch.c",
+    "$FRAMEWORKS_INPUT_ROOT/input_bus_ops/input_i2c_ops.c",
+    "$FRAMEWORKS_INPUT_ROOT/input_config_parser.c",
   ]
 
   include_dirs = [
-    "./driver",
-    "./driver/video",
-    "//kernel/liteos_m/components/net/lwip-2.1/porting/include",
-    "//third_party/lwip/src/include",
-    "./hardware",
-    "./hardware/adapter",
-    "//drivers/framework/model/input/driver",
-    "//third_party/FreeBSD/sys/dev/evdev",
+    "./",
+    "$FRAMEWORKS_INPUT_ROOT",
+    "$FRAMEWORKS_INPUT_ROOT/input_bus_ops",
+    "//third_party/FreeBSD/sys/dev/evdev/",
   ]
 
   deps = [
     "$khdf_path/core:hdf_core",
     "$khdf_path/osal:hdf_osal_lite",
-    "hardware:hdf_input_driver",
-    "hardware:hdf_ioservice",
-    "hardware/display:hdi_display",
-    "hardware/input:hdi_input",
-    "hdf_config:hdf_config",
   ]
 }
 
-executable("riscv32_virt") {
-  output_name = "liteos"
-  ldflags = [
-    "-Wl,-mcmodel=medany",
-    "-Wl,-melf32lriscv",
-    "-nostartfiles",
-    "-Wl,-T" + rebase_path("Liteos.ld"),
-    "-nostdlib",
-    "-Wl,--gc-section",
+static_library("hdf_ioservice") {
+  sources = [
+    "$hdf_fwk_path//core/shared/src/hdf_io_service.c",
+    "adapter/hdf_syscall_adapter.c",
   ]
-  libs = [
-    "gcc",
-    "nosys",
+
+  include_dirs = [
+    "./",
+    "./adapter",
   ]
+
   deps = [
-    ":board",
-    "test:demo",
-    "//kernel/liteos_m:kernel",
+    "$khdf_path/core:hdf_core",
+    "$khdf_path/osal:hdf_osal_lite",
   ]
 }

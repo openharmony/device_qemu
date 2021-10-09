@@ -75,6 +75,7 @@ board_cflags = [
   "-D__RISC_V__",
   "-D__LITEOS_M__",
   "-DLWIP_SUPPORT_CUSTOM_PBUF=1",
+  "-D_BSD_SOURCE",
 ]
 
 if (defined(enable_ohos_kernel_liteos_m_lwip) &&
