@@ -83,8 +83,20 @@ For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/op
 
 b) Run
 
+Run the `./qemu-run --help` command. The following information is displayed:
+
 ```
-$ ./qemu-run out/arm_mps2_an386/qemu_mini_system_demo/bin/liteos
+Usage: qemu-run [OPTION]...
+Run a OHOS image in qemu according to the options.
+
+    Options:
+
+    -f, --file file_name     kernel exec file name
+    -g, --gdb                enable gdb for kernel
+    -t, --test log.txt       test mode, exclusive with -g
+    -h, --help               print help info
+
+    By default, the kernel exec file is: out/arm_mps2_an386/qemu_mini_system_demo/bin/liteos.
 ```
 
 #### 6. gdb debug
@@ -114,7 +126,7 @@ $ hb build -f
 In a window to enter the command:
 
 ```
-$ ./qemu-run gdb out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
+$ ./qemu-run -g -f out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
 ```
 
 In another window to enter the command:

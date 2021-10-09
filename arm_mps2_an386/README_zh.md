@@ -79,8 +79,20 @@ a) 如果没有安装 `qemu-system-arm` ，安装请参考链接:[Qemu安装指�
 
 b) 运行
 
+执行`./qemu-run --help`提示如下：
+
 ```
-$ ./qemu-run out/arm_mps2_an386/qemu_mini_system_demo/bin/liteos
+Usage: qemu-run [OPTION]...
+Run a OHOS image in qemu according to the options.
+
+    Options:
+
+    -f, --file file_name     kernel exec file name
+    -g, --gdb                enable gdb for kernel
+    -t, --test log.txt       test mode, exclusive with -g
+    -h, --help               print help info
+
+    By default, the kernel exec file is: out/arm_mps2_an386/qemu_mini_system_demo/bin/liteos.
 ```
 
 ## 6. gdb调试
@@ -111,7 +123,7 @@ $ hb build -f
 在一个窗口中输入命令：
 
 ```
-$ ./qemu-run gdb out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
+$ ./qemu-run -g -f out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
 ```
 
 在另一个窗口中输入命令：
