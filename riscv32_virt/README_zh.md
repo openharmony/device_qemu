@@ -68,9 +68,10 @@ Run a OHOS image in qemu according to the options.
 
     Options:
 
-    -f, --file [file_name]   kernel exec file name
+    -e, --exec file_name     kernel exec file name
     -n, --net-enable         enable net
     -g, --gdb                enable gdb for kernel
+    -t, --test               test mode, exclusive with -g
     -h, --help               print help info
 
     By default, the kernel exec file is: out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos,
@@ -106,7 +107,7 @@ $ hb build -f
 在一个窗口中输入命令：
 
 ```
-$ ./qemu-run -g -f out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
+$ ./qemu-run -g -e out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
 ```
 
 在另一个窗口中输入命令：
