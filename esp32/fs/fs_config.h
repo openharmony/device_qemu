@@ -29,8 +29,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef FS_CONFIG_H
-#define FS_CONFIG_H
+#ifndef _FS_CONFIG_H
+#define _FS_CONFIG_H
 
 #include "los_compiler.h"
 
@@ -52,4 +52,4 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#endif /* FS_CONFIG_H */
+#endif /* _FS_CONFIG_H */

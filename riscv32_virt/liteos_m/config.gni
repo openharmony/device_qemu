@@ -11,6 +11,8 @@
 #See the License for the specific language governing permissions and
 #limitations under the License.
 
+import("//kernel/liteos_m/config.gni")
+
 # Kernel type, e.g. "linux", "liteos_a", "liteos_m".
 kernel_type = "liteos_m"
 
@@ -41,28 +43,51 @@ board_toolchain_prefix = "riscv32-unknown-elf-"
 # Compiler type, "gcc" or "clang".
 board_toolchain_type = "gcc"
 
-#Compiler optimization level options
-board_opt_flags = [ "-O2" ]
+#Debug compiler optimization level options
+board_opt_flags = []
 
 # Board related common compile flags.
 board_cflags = [
   "-mabi=ilp32",
+  "-falign-functions=2",
+  "-msave-restore",
+  "-fno-optimize-strlen",
+  "-freorder-blocks-algorithm=simple",
+  "-fno-schedule-insns",
+  "-fno-inline-small-functions",
+  "-fno-inline-functions-called-once",
+  "-mtune=size",
+  "-mno-small-data-limit=0",
+  "-fno-aggressive-loop-optimizations",
+  "-std=c99",
+  "-Wpointer-arith",
+  "-ffunction-sections",
+  "-fdata-sections",
+  "-fno-exceptions",
+  "-fno-short-enums",
+  "-fno-builtin",
+  "-O2",
   "-static",
   "-fno-common",
   "-fno-stack-protector",
-  "-ffunction-sections",
-  "-fdata-sections",
   "-fno-omit-frame-pointer",
   "-Wno-format-truncation",
   "-D__RISC_V__",
   "-D__LITEOS_M__",
+  "-DLWIP_SUPPORT_CUSTOM_PBUF=1",
 ]
+
+if (defined(enable_ohos_kernel_liteos_m_lwip) &&
+    enable_ohos_kernel_liteos_m_lwip == true) {
+  board_cflags += [ "-DLOSCFG_NET_LWIP=true" ]
+}
 board_cflags += board_opt_flags
 
 board_asmflags = [
   "-march=rv32imac",
   "-mabi=ilp32",
   "-static",
+  "-O2",
 ]
 board_asmflags += board_opt_flags
 board_cxx_flags = board_cflags
@@ -83,6 +108,9 @@ board_include_dirs = [
   "//third_party/FatFs/source",
   "//third_party/musl/porting/liteos_m/kernel/include",
   "//third_party/bounds_checking_function/include",
+  "//kernel/liteos_m/kal/cmsis",
+  "//utils/native/lite/include",
+  "//kernel/liteos_m/components/shell/include",
 ]
 
 # Board adapter dir for OHOS components.

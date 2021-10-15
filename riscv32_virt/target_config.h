@@ -21,6 +21,7 @@
 #define _TARGET_CONFIG_H
 
 #include "stdint.h"
+#include "stdbool.h"
 #include "soc.h"
 #include "los_compiler.h"
 
@@ -34,7 +35,7 @@ extern "C" {
                                         System clock module configuration
 =============================================================================*/
 #define OS_SYS_CLOCK                                        10000000UL
-#define LOSCFG_BASE_CORE_TICK_PER_SECOND                    (1000UL)
+#define LOSCFG_BASE_CORE_TICK_PER_SECOND                    (100UL)
 #define LOSCFG_BASE_CORE_TICK_HW_TIME                       0
 #define LOSCFG_BASE_CORE_TICK_WTIMER                        1
 #define LOSCFG_BASE_CORE_TICK_RESPONSE_MAX                  ((UINT64)-1)
@@ -45,7 +46,7 @@ extern "C" {
 #define LOSCFG_BASE_CORE_TSK_LIMIT                          24
 #define LOSCFG_BASE_CORE_TSK_IDLE_STACK_SIZE                (0x500U)
 #define LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE             (0x1000U)
-#define LOSCFG_BASE_CORE_TSK_MIN_STACK_SIZE                 (0x200U)
+#define LOSCFG_BASE_CORE_TSK_MIN_STACK_SIZE                 (0x500U)
 #define LOSCFG_BASE_CORE_TIMESLICE                          1
 #define LOSCFG_BASE_CORE_TIMESLICE_TIMEOUT                  20000
 #define LOSCFG_BASE_CORE_TSK_MONITOR                        1
@@ -93,11 +94,18 @@ extern UINTPTR __heap_size;
 
 #define OS_HWI_WITH_ARG                                     1
 
-#define LOSCFG_BACKTRACE_TYPE                               0
+#define LOSCFG_BACKTRACE_TYPE                               2
+
+#define LOSCFG_KERNEL_PRINTF                                1
+
 #define LOSCFG_KERNEL_PM                                    1
 
 #define LOS_KERNEL_TEST_NOT_SMOKE                           0
 #define LOS_KERNEL_HWI_TEST                                 0
+
+extern UINT32 QemuCLZ(UINT32);
+#undef CLZ
+#define CLZ(n) QemuCLZ(n)
 #ifdef __cplusplus
 #if __cplusplus
 }

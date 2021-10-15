@@ -10,53 +10,75 @@ RISC-V 虚拟化平台是一个 `qemu-system-riscv32` 的目标设备，通过�
 
 ## 2. 环境搭建
 
-[环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-env-setup.md)
+[环境搭建](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/quick-start/quickstart-lite-env-setup.md)
 
-[编译器安装:gcc_riscv32](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-steps-hi3861-setting.md#section34435451256), 
+[编译器安装:gcc_riscv32](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/quick-start/quickstart-lite-steps-hi3861-setting.md#section34435451256),
 提示: [可直接下载](https://repo.huaweicloud.com/harmonyos/compiler/gcc_riscv32/7.3.0/linux/gcc_riscv32-linux-7.3.0.tar.gz)
 
 ## 3. 获取源码
 
-[代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/sourcecode-acquire.md)
+[代码获取](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/get-code/sourcecode-acquire.md)
 
 提示: 可以使用 `repo` 命令来获取源码。
 
 ## 4. 源码构建
 
+在已经获取的源码根目录，请输入：
+
 ```
-$ cd device/qemu/riscv32_virt
-$ hb build -f
+hb set
+```
+
+选择ohemu下的`qemu_riscv_mini_system_demo`选项。
+
+
+然后执行构建命令如下：
+
+```
+hb build
 ```
 
 这个命令构建会产生 `liteos` 的镜像文件。
 
 在构建完成之后，对应的镜像文件在如下目录：
 ```
-../../../out/riscv32_virt/bin/liteos
+out/riscv32_virt/qemu_riscv_mini_system_demo/bin
 ```
+
 ## 5. 在Qemu中运行镜像
 
-a) 如果没有安装 `qemu-system-riscv32` ，安装请参考链接:[Qemu安装指导](https://gitee.com/openharmony/device_qemu/blob/master/README_zh.md)
+a) 如果没有安装 `qemu-system-riscv32` ，安装请参考链接:[Qemu安装指导](https://gitee.com/openharmony/device_qemu/blob/HEAD/README_zh.md)
 
 b) 运行
 
+(1). qemu 版本 < 5.0.0
+
 ```
 $ cd device/qemu/riscv32_virt
+$ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
 ```
 
-(1). qemu 版本 < 5.0.0 
+(2). qemu 版本 >= 5.0.0
+
+执行`./qemu-run --help`提示如下：
 
 ```
-$ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
-```
+Usage: qemu-run [OPTION]...
+Run a OHOS image in qemu according to the options.
 
-(2). qemu 版本 >= 5.0.0 
+    Options:
 
+    -e, --exec file_name     kernel exec file name
+    -n, --net-enable         enable net
+    -g, --gdb                enable gdb for kernel
+    -t, --test               test mode, exclusive with -g
+    -h, --help               print help info
+
+    By default, the kernel exec file is: out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos,
+    and net will not be enabled.
 ```
-$ ./qemu_run.sh ../../../out/riscv32_virt/bin/liteos
-或
-$ qemu-system-riscv32 -machine virt -m 128M -bios none -kernel ../../../out/riscv32_virt/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
-```
+默认不加参数的情况下，网络不会自动配置，并使用默认镜像文件，若需更改默认镜像文件，可以利用 `./qemu-run -f [file_name]` 指定
+
 ## 6. gdb调试
 
 ```
@@ -67,19 +89,16 @@ $ vim liteos_m/config.gni
 将 `board_opt_flags` 中的
 
 ```
-board_opt_flags = [ "-O2" ]
+board_opt_flags = []
 ```
 
 编译选项修改为:
 
 ```
-board_opt_flags = [
-  "-g",
-  "-O0",
-]
+board_opt_flags = [ "-g" ]
 ```
 
-保存并退出，重新编译:
+保存并退出，在OHOS根目录重新编译:
 
 ```
 $ hb build -f
@@ -88,17 +107,17 @@ $ hb build -f
 在一个窗口中输入命令：
 
 ```
-$ ./qemu_run.sh gdb ../../../out/riscv32_virt/unstripped/bin/liteos
+$ ./qemu-run -g -e out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
 ```
 
 在另一个窗口中输入命令：
 
 ```
-$ riscv32-unknown-elf-gdb ../../../out/riscv32_virt/unstripped/bin/liteos
+$ riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
 (gdb) target remote localhost:1234
 (gdb) b main
 ```
 
-提示: 采用gdb调试时，可执行文件必须选择 `out/riscv32_virt/unstripped/bin` 目录下的可执行文件。
+提示: 采用gdb调试时，可执行文件必须选择 `out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin` 目录下的可执行文件。
 
 更多gdb相关的调试可以查阅：[gdb指导手册](https://sourceware.org/gdb/current/onlinedocs/gdb)。

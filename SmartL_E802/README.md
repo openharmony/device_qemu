@@ -31,8 +31,6 @@ QEMU can simulate the kernel to run on different boards, freeing the dependence 
 
    2. Install qemu
 
-      Please refer to the installation instructions C-SKY_QEMU_User_Guide.pdf,download link: https://occ.t-head.cn/community/download?id=636946310057951232
-
       a) creat`csky_qemu`folder and enter it 
 
          ```shell
@@ -54,7 +52,17 @@ QEMU can simulate the kernel to run on different boards, freeing the dependence 
          $ source ~/.bashrc
          ```
 
-## 3.Get the harmony source code
+      d) Installation dependencies
+
+         ```shell
+         $ ldd qemu_installation_path/bin/qemu-system-cskyv2
+         ```
+
+         According to the execution result of ldd, install the missing dependent libraries
+
+         (Annotation: For more installation instructions, please refer to the following link: https://occ.t-head.cn/community/download?id=636946310057951232)
+
+## 3.Get source code
 
 [code acquisition ](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/sourcecode-acquire.md)
 
@@ -88,7 +96,7 @@ Hint : You can use the `repo` command to get the source code.
    1. Run qemu(Don't cooperate with GDB)
 
       ```shell
-      qemu-system-cskyv2 -machine smartl -kernel liteos -nographic
+      $ ./qemu-run
       ```
 
    2. Run qemu(Cooperate with GDB)
@@ -96,14 +104,14 @@ Hint : You can use the `repo` command to get the source code.
       a) Start the GDB server and wait for the connection
 
          ```shell
-         qemu-system-cskyv2 -machine smartl -kernel liteos -nographic -gdb tcp::23333 -S
+         $ ./qemu-run -g
          ```
 
       b) Create a new terminal and use GDB to connect to qemu
 
          ```shell
-         $ csky-abiv2-elf-gdb liteos -ex "target remote localhost:23333"
+         $ csky-abiv2-elf-gdb out/SmartL_E802/qemu_csky_mini_system_demo/unstripped/bin/liteos -ex "target remote localhost:1234"
          ```
 
-   Annotation: If you use GDB for debugging,it is recommended to use the elf file with a symbol table in step 2 of running the mirror.
+   Annotation: Elf files with symbol tables are used by default.
    Annotation: The way to exit qemu : press ctrl and a,then release and press x.

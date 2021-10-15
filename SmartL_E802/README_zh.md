@@ -31,8 +31,6 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 
    2. qemu安装
 
-      使用安装指导请参考C-SKY_QEMU_User_Guide.pdf，下载地址：https://occ.t-head.cn/community/download?id=636946310057951232
-
       a) 创建`csky_qemu`文件夹并进入
 
          ```shell
@@ -54,7 +52,17 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
          $ source ~/.bashrc
          ```
 
-## 3.获取harmony源码
+      d) 安装依赖
+
+         ```shell
+         $ ldd qemu_installation_path/bin/qemu-system-cskyv2
+         ```
+
+         根据ldd执行结果，安装缺少的依赖库
+
+         (注：更多使用安装指导，请参考官方指南：https://occ.t-head.cn/community/download?id=636946310057951232)
+
+## 3.获取源码
 
 [代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/sourcecode-acquire.md)
 
@@ -88,7 +96,7 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
    1. 启动qemu(不配合GDB)
 
       ```shell
-      qemu-system-cskyv2 -machine smartl -kernel liteos -nographic
+      $ ./qemu-run
       ```
 
    2. 启动qemu(配合GDB)
@@ -96,14 +104,14 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
       a) 启动GDB服务器，等待连接
 
          ```shell
-         qemu-system-cskyv2 -machine smartl -kernel liteos -nographic -gdb tcp::23333 -S
+         $ ./qemu-run -g
          ```
 
       b) 新建终端并使用GDB连接qemu
 
          ```shell
-         $ csky-abiv2-elf-gdb liteos -ex "target remote localhost:23333"
+         $ csky-abiv2-elf-gdb out/SmartL_E802/qemu_csky_mini_system_demo/unstripped/bin/liteos -ex "target remote localhost:1234"
          ```
 
-   注：如果使用GDB调试，建议在运行镜像时使用带符号表的elf文件。
+   注：默认使用带符号表的elf文件。
    注：qemu退出方式为：按下ctrl加a键，然后松开再按下x键。

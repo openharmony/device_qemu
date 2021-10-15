@@ -40,7 +40,6 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#define OS_TICK_INT_NUM                                     6
 /*=============================================================================
                                         System clock module configuration
 =============================================================================*/
@@ -54,6 +53,7 @@ extern "C" {
                                         Hardware interrupt module configuration
 =============================================================================*/
 #define LOSCFG_PLATFORM_HWI                                 1
+#define OS_TICK_INT_NUM                                     6
 #define LOSCFG_PLATFORM_HWI_LIMIT                           32
 /*=============================================================================
                                        Task module configuration

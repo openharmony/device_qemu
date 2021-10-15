@@ -48,14 +48,14 @@ QEMU can simulate the kernel to run on different boards ,eliminate dependence on
       d) Installation dependencies
 
          ```shell
-         $ ldd qemu_installation_path/qemu-system-xtensa
+         $ ldd $QEMU/qemu-system-xtensa
          ```
 
          According to the execution result of ldd, install the missing dependent libraries
 
          (Annotation: For more installation instructions, please refer to the following link: [Home · espressif/qemu Wiki · GitHub](https://github.com/espressif/qemu/wiki#configure))
 
-## 3.Get the harmony source code
+## 3.Get source code
 
 [code acquisition ](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/sourcecode-acquire.md)
 
@@ -86,52 +86,28 @@ Hint : You can use the `repo` command to get the source code.
 
 ## 5.Run the image in Qemu
 
-   1. Set the QEMU_XTENSA_CORE_REGS_ONLY environment variable
+   1. Run qemu(Don't cooperate with GDB )
 
       ```shell
-      export QEMU_XTENSA_CORE_REGS_ONLY=1
+      $ ./qemu-run
       ```
 
-   2. Use the elf2image command of esptool.py to convert the liteos file compiled under harmony into a liteos.bin file.
-
-      ```shell
-      esptool.py --chip esp32 elf2image --flash_mode dio --flash_freq 80m --flash_size 4MB -o out/esp32/qemu_xtensa_mini_system_demo/bin/liteos.bin out/esp32/qemu_xtensa_mini_system_demo/bin/liteos
-      ```
-
-      Annotation：The current liteos is an elf file without a symbol table. If you want to use an elf file with a symbol table, you can use the following command to replace this command.
-
-      ```shell
-      esptool.py --chip esp32 elf2image --flash_mode dio --flash_freq 80m --flash_size 4MB -o out/esp32/qemu_xtensa_mini_system_demo/unstripped/bin/liteos.bin out/esp32/qemu_xtensa_mini_system_demo/unstripped/bin/liteos
-      ```
-
-   3. Use the merge_bin command of esptool.py. A flash_image.bin will be generated using bootloader.bin compiled by esp-idf, partition-table.bin and liteos.bin compiled under harmony 
-
-      ```shell
-      esptool.py --chip esp32 merge_bin --fill-flash-size 4MB -o flash_image.bin 0x1000 bootloader.bin 0x8000 partition-table.bin 0x10000 liteos.bin
-      ```
-
-   4. Run qemu(Don't cooperate with GDB )
-
-      ```shell
-      $ QEMU/qemu-system-xtensa -nographic -machine esp32 -drive file=flash_image.bin,if=mtd,format=raw
-      ```
-
-   Annotation：Since the qemu-system-xtensa tool of qemu has the same name as the qemu-system-xtensa tool of esp32, the absolute path is used to execute the qemu-system-xtensa tool of esp32.
-
-   5. Run qemu(Cooperate with GDB)
+   2. Run qemu(Cooperate with GDB)
 
       a) Start the GDB server and wait for the connection
 
-         ```
-         $ QEMU/qemu-system-xtensa -nographic -s -S -machine esp32 -drive file=flash_image.bin,if=mtd,format=raw
+         ```shell
+         $ ./qemu-run -g
          ```
 
       b) Create a new terminal and use GDB to connect to qemu
-         ```
-         $ xtensa-esp32-elf-gdb liteos -ex "target remote :1234"
+
+         ```shell
+         $ xtensa-esp32-elf-gdb out/esp32/qemu_xtensa_mini_system_demo/unstripped/bin/liteos -ex "target remote :1234"
          ```
 
-   Annotation：If you use GDB for debugging, it is recommended to use the elf file with a symbol table in step 2 of running the mirror.
-  Annotation：The way to exit qemu : press ctrl and a, then release and press x.
+   Annotation：Since the qemu-system-xtensa tool of qemu has the same name as the qemu-system-xtensa tool of esp32, the absolute path is used to execute the qemu-system-xtensa tool of esp32.
+   Annotation：Elf files with symbol tables are used by default.
+   Annotation：The way to exit qemu : press ctrl and a, then release and press x.
 
 (Annotation：For more operating instructions, please refer to：[Home · espressif/qemu Wiki · GitHub](https://github.com/espressif/qemu/wiki#configure))

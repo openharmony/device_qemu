@@ -276,7 +276,7 @@ static struct file *LOS_AttachFile(int fd, uint32_t status)
      * but for now we don't know if this file is valid (FILE_STATUS_READY), if
      * this file is not valid, the f_mp may be incorrect. so
      * we must check the status first, but this file may be closed/removed
-     * after the checking if the senquence is not correct.
+     * after the checking if the consequence is not correct.
      *
      * Consider the following code:
      *
@@ -297,7 +297,7 @@ static struct file *LOS_AttachFile(int fd, uint32_t status)
      *
      * So <g_fsMutex> is acquire first and then check if it is valid: if not, just
      * return NULL (which means fail); If yes, the mutex for current mount point
-     * is qcquired. And the close operation will also set task to
+     * is acquired. And the close operation will also set task to
      * FILE_STATUS_CLOSING to prevent other tasks operate on this file (and also
      * prevent other tasks pend on the mutex of this mount point for this file).
      * At last <g_fsMutex> is released. And return the file handle (struct file *).

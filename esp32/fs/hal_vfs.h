@@ -29,8 +29,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LOS_VFS_H
-#define _LOS_VFS_H
+#ifndef _HAL_VFS_H
+#define _HAL_VFS_H
 
 #define _GNU_SOURCE 1
 #include <stdio.h>
@@ -153,4 +153,4 @@ int FileToFd(struct file *file);
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#endif
+#endif /* _HAL_VFS_H */

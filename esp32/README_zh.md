@@ -48,14 +48,14 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
       d) 安装依赖
 
          ```shell
-         $ ldd qemu_installation_path/qemu-system-xtensa
+         $ ldd $QEMU/qemu-system-xtensa
          ```
 
          根据ldd执行结果，安装缺少的依赖库
 
          (注：更多安装指导，请参考链接：[Home · espressif/qemu Wiki · GitHub](https://github.com/espressif/qemu/wiki#configure))
 
-## 3.获取harmony源码
+## 3.获取源码
 
 [代码获取](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/get-code/sourcecode-acquire.md)
 
@@ -86,52 +86,28 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 
 ## 5.在Qemu中运行镜像
 
-   1. 设置QEMU_XTENSA_CORE_REGS_ONLY环境变量
+   1. 运行qemu(不配合GDB)
 
       ```shell
-      export QEMU_XTENSA_CORE_REGS_ONLY=1
+      $ ./qemu-run
       ```
 
-   2. 使用esptool.py的elf2image命令，将harmony下编译生成的liteos文件转换成liteos.bin文件。
-
-      ```shell
-      esptool.py --chip esp32 elf2image --flash_mode dio --flash_freq 80m --flash_size 4MB -o out/esp32/qemu_xtensa_mini_system_demo/bin/liteos.bin out/esp32/qemu_xtensa_mini_system_demo/bin/liteos
-      ```
-
-      注：当前的liteos为不带符号表的elf文件，如想使用带符号表的elf文件可以使用下列指令替换该指令。
-
-      ```shell
-      esptool.py --chip esp32 elf2image --flash_mode dio --flash_freq 80m --flash_size 4MB -o out/esp32/qemu_xtensa_mini_system_demo/unstripped/bin/liteos.bin out/esp32/qemu_xtensa_mini_system_demo/unstripped/bin/liteos
-      ```
-
-   3. 使用esptool.py的merge_bin命令，将使用esp-idf编译的bootloader.bin，partition-table.bin以及harmony下编译生成的liteos.bin合成一个flash_image.bin
-
-      ```shell
-      esptool.py --chip esp32 merge_bin --fill-flash-size 4MB -o flash_image.bin 0x1000 bootloader.bin 0x8000 partition-table.bin 0x10000 liteos.bin
-      ```
-
-   4. 启动qemu(不配合GDB)
-
-      ```shell
-      $ $QEMU/qemu-system-xtensa -nographic -machine esp32 -drive file=flash_image.bin,if=mtd,format=raw
-      ```
-
-   注：由于默认安装的qemu自带qemu-system-xtensa工具与当前安装的qemu-system-xtensa工具重名，因此采用绝对路径执行当前的qemu-system-xtensa工具。
-
-   5. 启动qemu(配合GDB)
+   2. 启动qemu(配合GDB)
 
       a) 启动GDB服务器，等待连接
 
-         ```
-         $ $QEMU/qemu-system-xtensa -nographic -s -S -machine esp32 -drive file=flash_image.bin,if=mtd,format=raw
+         ```shell
+         $ ./qemu-run -g
          ```
 
       b) 新建终端并使用GDB连接qemu
-         ```
-         $ xtensa-esp32-elf-gdb liteos -ex "target remote :1234"
+
+         ```shell
+         $ xtensa-esp32-elf-gdb out/esp32/qemu_xtensa_mini_system_demo/unstripped/bin/liteos -ex "target remote :1234"
          ```
 
-   注：如果使用GDB调试，建议在运行镜像的步骤2中使用带符号表的elf文件。
+   注：由于默认安装的qemu自带qemu-system-xtensa工具与当前安装的qemu-system-xtensa工具重名，因此采用绝对路径执行当前的qemu-system-xtensa工具。
+   注：默认使用带符号表的elf文件。
    注：qemu退出方式为：按下ctrl加a键，然后松开再按下x键。
 
 (注：更多操作指导，请参考：[Home · espressif/qemu Wiki · GitHub](https://github.com/espressif/qemu/wiki#configure))

@@ -39,9 +39,6 @@ int g_system_clock = IHS_VALUE;
 #define CONFIG_SYSTICK_HZ 1000
 #endif
 
-#define TASK1_PRIORITY        6
-#define TASK2_PRIORITY        7
-
 void SystemInit(void)
 {
     csi_coret_config(drv_get_sys_freq() / CONFIG_SYSTICK_HZ, CORET_IRQn);

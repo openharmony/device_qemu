@@ -15,5 +15,5 @@ import("//build/lite/config/component/lite_component.gni")
 
 static_library("hal_driver") {
   sources = [ "hal_watchdog.c" ]
-  include_dirs = [ "//device/qemu/esp32/hals/driver/Inc" ]
+  include_dirs = [ "//device/qemu/esp32/hals/driver" ]
 }

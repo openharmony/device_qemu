@@ -18,8 +18,6 @@
  *
  ****************************************************************************/
 
-/* Default entry point: */
-
 MEMORY {
   drom   (r)    : ORIGIN = 0x3f400010, LENGTH = 0x800000
   extmem (rwx)  : ORIGIN = 0x3f800000, LENGTH = 0x400000
@@ -30,6 +28,7 @@ MEMORY {
 
 _eram = ORIGIN(dram) + LENGTH(dram);
 
+/* Default entry point: */
 ENTRY(main);
 
 SECTIONS

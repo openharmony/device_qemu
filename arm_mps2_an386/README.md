@@ -12,7 +12,7 @@ Note: System memory size is hard-coded to 16MB.
 
 #### 2. Setting up environment
 
-[Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/quickstart-lite-env-setup.md)
+[Setting up a development environment](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/quick-start/quickstart-lite-env-setup.md)
 
 Compiler install
 
@@ -26,7 +26,7 @@ $ sudo apt install gcc-arm-none-eabi
 
 2.The installation package to install
 
-Note: If you have already passed the command to install gcc-arm-none-eabi, can through the command: `$sudo apt remove 
+Note: If you have already passed the command to install gcc-arm-none-eabi, can through the command: `$sudo apt remove
 gcc-arm-none-eabi` after unloading, install again.
 
 Download toolchain: [package](https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/6-2017q2/gcc-arm-none-eabi-6-2017-q2-update-linux.tar.bz2)。
@@ -50,14 +50,22 @@ $ export PATH=$PATH:install_path/gcc-arm-none-eabi-6-2017-q2-update/bin
 
 #### 3. Code acquisition
 
-[Code acquisition](https://gitee.com/openharmony/docs/blob/master/en/device-dev/get-code/sourcecode-acquire.md)
+[Code acquisition](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/get-code/sourcecode-acquire.md)
 
 Note: One can use `repo` to fetch code in a straightforward manner.
 
 #### 4. Building from sources
 
+In the root directory of the obtained source code, run the following command:
+
 ```
-$ cd device/qemu/arm_mps2_an386
+hb set
+```
+
+Select `qemu_mini_system_demo` under **ohemu**.
+
+Run the following build command:
+```
 $ hb build -f
 ```
 
@@ -66,18 +74,29 @@ This will build `liteos` for Qemu Cortex-m4 mps2-an386 machine.
 
 After build is finished, the resulting image can be found in:
 ```
-../../../out/arm_mps2_an386/bin/liteos
+out/arm_mps2_an386/qemu_mini_system_demo/bin/
 ```
 #### 5. Running image in Qemu
 
 a) If not installed, please install `qemu-system-arm`
-For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/master/README.md)
+For details, please refer to the HOWTO: [Qemu installation](https://gitee.com/openharmony/device_qemu/blob/HEAD/README.md)
 
 b) Run
 
+Run the `./qemu-run --help` command. The following information is displayed:
+
 ```
-$ cd device/qemu/arm_mps2_an386
-$ ./qemu_run.sh ../../../out/arm_mps2_an386/bin/liteos
+Usage: qemu-run [OPTION]...
+Run a OHOS image in qemu according to the options.
+
+    Options:
+
+    -e, --exec file_name     kernel exec file name
+    -g, --gdb                enable gdb for kernel
+    -t, --test               test mode, exclusive with -g
+    -h, --help               print help info
+
+    By default, the kernel exec file is: out/arm_mps2_an386/qemu_mini_system_demo/bin/liteos.
 ```
 
 #### 6. gdb debug
@@ -90,18 +109,15 @@ $ vim liteos_m/config.gni
 In the modified `board_opt_flags` compiler options:
 
 ```
-board_opt_flags = [ "-O2" ]
+board_opt_flags = []
 ```
 to:
 
 ```
-board_opt_flags = [
-  "-g",
-  "-O0",
-]
+board_opt_flags = [ "-g" ]
 ```
 
-Save and exit, recompile:
+Save and exit, recompile under OHOS root directory:
 
 ```
 $ hb build -f
@@ -110,18 +126,18 @@ $ hb build -f
 In a window to enter the command:
 
 ```
-$ ./qemu_run.sh gdb ../../../out/arm_mps2_an386/unstripped/bin/liteos
+$ ./qemu-run -g -e out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
 ```
 
 In another window to enter the command:
 
 ```
-$ arm-none-eabi-gdb ../../../out/arm_mps2_an386/unstripped/bin/liteos
+$ arm-none-eabi-gdb out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
 (gdb) target remote localhost:1234
 (gdb) b main
 ```
 
-Note: Using the GDB debugging, executable must choose `out/arm_mps2_an386/unstripped/bin` executable files in the
+Note: Using the GDB debugging, executable must choose `out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/` executable files in the
 directory.
 
 More GDB related debugging can refer to [GDB instruction manual](https://sourceware.org/gdb/current/onlinedocs/gdb).

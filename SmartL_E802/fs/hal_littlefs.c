@@ -306,7 +306,7 @@ static int LittlefsOperationReaddir(struct dir *dir, struct dirent *dent)
     if (ret < 0) {
         return ENOENT;
     } else {
-        strncpy_s((char *)dent->name, LOS_MAX_DIR_NAME_LEN, (const char *)info.name, LOS_MAX_FILE_NAME_LEN - 1);
+        (void)strncpy_s((char *)dent->name, LOS_MAX_DIR_NAME_LEN, (const char *)info.name, LOS_MAX_FILE_NAME_LEN - 1);
         dent->name[LOS_MAX_FILE_NAME_LEN - 1] = '\0';
         dent->size = info.size;
         if (info.type == LFS_TYPE_DIR) {

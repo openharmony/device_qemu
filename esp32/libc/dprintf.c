@@ -43,7 +43,7 @@ VOID UartPutc(CHAR c)
     (VOID)uart_tx_one_char(c);
 }
 
-VOID MatchedOut(CHAR data, va_list ap)
+VOID MatchedOut(CHAR data, va_list *ap)
 {
     CHAR c = 0;
     UINT32 v, n;
@@ -54,17 +54,17 @@ VOID MatchedOut(CHAR data, va_list ap)
 
     switch (data) {
         case 'c':
-            c = va_arg(ap, UINT32);
+            c = va_arg(*ap, UINT32);
             UartPutc(c);
             break;
         case 's':
-            s = va_arg(ap, CHAR*);
+            s = va_arg(*ap, CHAR*);
             while (*s) {
                 UartPutc(*s++);
             }
             break;
         case 'd':
-            v = va_arg(ap, UINT32);
+            v = va_arg(*ap, UINT32);
             i = 0;
             while (v) {
                 n = v % DECIMALISM_NUM;
@@ -80,7 +80,7 @@ VOID MatchedOut(CHAR data, va_list ap)
             }
             break;
         case 'x':
-            v = va_arg(ap, UINT32);
+            v = va_arg(*ap, UINT32);
             i = 0;
             if (v == 0) {
                 val[i] = 0;
@@ -104,7 +104,7 @@ VOID MatchedOut(CHAR data, va_list ap)
             }
             break;
         case 'p':
-            v = va_arg(ap, UINT32);
+            v = va_arg(*ap, UINT32);
             i = 0;
             if (v == 0) {
                 val[i] = 0;
@@ -137,12 +137,11 @@ VOID MatchedOut(CHAR data, va_list ap)
 INT32 printf(const CHAR *fmt, ...)
 {
     va_list ap;
-    UINT32 intSave = LOS_IntLock();
     (VOID)va_start(ap, fmt);
     while (*fmt != '\0') {
         switch (*fmt) {
             case '%':
-                MatchedOut(fmt[1], ap);
+                MatchedOut(fmt[1], &ap);
                 fmt += PLACEHOLDER_OFFSET;
                 break;
             case '\n':
@@ -162,6 +161,5 @@ INT32 printf(const CHAR *fmt, ...)
         }
     }
     (VOID)va_end(ap);
-    (VOID)LOS_IntRestore(intSave);
     return 0;
 }

@@ -29,8 +29,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LOS_LITTLEFS_H
-#define _LOS_LITTLEFS_H
+#ifndef _HAL_LITTLEFS_H
+#define _HAL_LITTLEFS_H
 
 #include <stdint.h>
 #include "lfs.h"
@@ -52,4 +52,4 @@ int LittlefsUnmount(const char *path);
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#endif /* _LOS_LITTLEFS_H */
+#endif /* _HAL_LITTLEFS_H */

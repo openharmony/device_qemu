@@ -31,8 +31,8 @@
  * Description: Provide a task example.
  */
 
-#ifndef _TASKS_DEMO_H
-#define _TASKS_DEMO_H
+#ifndef _TASK_DEMO_H
+#define _TASK_DEMO_H
 
 #include "los_compiler.h"
 
@@ -50,4 +50,4 @@ VOID RunTaskSample(VOID);
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#endif /* _TASKS_DEMO_H */
+#endif /* _TASK_DEMO_H */

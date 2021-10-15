@@ -29,8 +29,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef FF_GEN_DRV_H
-#define FF_GEN_DRV_H
+#ifndef _FF_GEN_DRV_H
+#define _FF_GEN_DRV_H
 
 #include "stdint.h"
 #include "diskio.h"
@@ -63,4 +63,4 @@ extern DiskDrvTypeDef g_diskDrv;
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#endif /* FS_CONFIG_H */
+#endif /* _FF_GEN_DRV_H */
