@@ -1,0 +1,8 @@
+#ifndef _CSI_CONFIG_H_
+#define _CSI_CONFIG_H_
+
+#define CONFIG_CHIP_SMARTL 1
+#define CONFIG_KERNEL_NONE 1
+#define CONFIG_ARCH_INTERRUPTSTACK 4096
+
+#endif

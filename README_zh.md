@@ -36,6 +36,21 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 │   ├── fs                  # fs 配置
 │   ├── test                # 测试样例
 │   └── liteos_m            # 与liteos_m内核相关的配置
+├── esp32                   # Xtensa LX6 esp32单板
+│   ├── hals                # 硬件适配层
+│   ├── driver              # 驱动目录
+│   ├── include             # 对外接口存放目录
+│   ├── libc                # 基础libc库
+│   ├── fs                  # fs 配置
+│   ├── test                # 测试样例
+│   └── liteos_m            # 与liteos_m内核相关的配置
+├── SmartL_E802             # C-SKY SmartL虚拟单板
+│   ├── hals                # 硬件适配层
+│   ├── driver              # 驱动目录
+│   ├── libc                # 基础libc库
+│   ├── fs                  # fs 配置
+│   ├── test                # 测试样例
+│   └── liteos_m            # 与liteos_m内核相关的配置
 ```
 
 ## 约束<a name="section119744591305"></a>
@@ -95,6 +110,10 @@ arm架构参考[QEMU教程 for arm](https://gitee.com/openharmony/device_qemu/bl
 cortex-m4架构参考[QEMU教程 for cortex-m4](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_mps2_an386/README_zh.md)。
 
 risc-v架构参考[QEMU教程 for risc-v](https://gitee.com/openharmony/device_qemu/blob/HEAD/riscv32_virt/README_zh.md)。
+
+Xtensa架构参考[QEMU教程 for Xtensa](https://gitee.com/openharmony/device_qemu/blob/HEAD/esp32/README_zh.md)。
+
+C-SKY架构参考[QEMU教程 for C-SKY](https://gitee.com/openharmony/device_qemu/blob/HEAD/SmartL_E802/README_zh.md)。
 
 ## 贡献<a name="section169045116136"></a>
 
