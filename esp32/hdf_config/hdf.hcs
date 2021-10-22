@@ -1,0 +1,6 @@
+
+#include "device_info/device_info.hcs"
+
+root {
+    module = "xtensa,xtensa_chip";
+}
