@@ -29,13 +29,22 @@
 
 static_library("demo") {
   sources = [
-      "./test_demo.c",
+    "./display_test.c",
+    "./input_demo.c",
+    "./test_demo.c",
   ]
 
   include_dirs = [
+    "../driver",
     "//kernel/liteos_m/kernel/include",
     "//kernel/liteos_m/kernel/arch/include",
     "//kernel/liteos_m/utils",
     "//kernel/liteos_m/kal/cmsis",
+    "//drivers/peripheral/display/interfaces/include",
+    "//drivers/peripheral/base",
+    "//drivers/framework/include/utils",
+    "//drivers/adapter/khdf/liteos_m/osal/include",
+    "//drivers/peripheral/input/interfaces/include",
+    "//third_party/FreeBSD/sys/dev/evdev/",
   ]
 }

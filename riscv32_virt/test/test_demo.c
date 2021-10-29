@@ -29,13 +29,15 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "los_task.h"
 #include "los_debug.h"
+#include "los_task.h"
+
+extern void ExecCmdline(const char *cmdline);
 
 static void TaskSampleEntry2(void)
 {
-    while(1) {
-#ifdef LOSCFG_NET_LWIP 
+    while (1) {
+#ifdef LOSCFG_NET_LWIP
         ExecCmdline("ping 10.0.2.2");
 #endif /* LOSCFG_NET_LWIP */
         printf("\n\rTaskSampleEntry2 running...");
@@ -43,10 +45,11 @@ static void TaskSampleEntry2(void)
     }
 }
 
-
 static void TaskSampleEntry1(void)
 {
-    while(1) {
+    DisplayServiceSample();
+    InputServiceSample();
+    while (1) {
         printf("\n\rTaskSampleEntry1 running...");
         LOS_TaskDelay(1000);
     }
@@ -56,11 +59,12 @@ unsigned int LosAppInit(VOID)
 {
     unsigned int ret;
     unsigned int taskID1, taskID2;
-    TSK_INIT_PARAM_S task1 = { 0 };
+    TSK_INIT_PARAM_S task1 = {0};
+
     task1.pfnTaskEntry = (TSK_ENTRY_FUNC)TaskSampleEntry1;
-    task1.uwStackSize  = 0x1000;
-    task1.pcName       = "TaskSampleEntry1";
-    task1.usTaskPrio   = 10;
+    task1.uwStackSize = 0x1000;
+    task1.pcName = "TaskSampleEntry1";
+    task1.usTaskPrio = 6;
     ret = LOS_TaskCreate(&taskID1, &task1);
     if (ret != LOS_OK) {
         printf("Create Task failed! ERROR: 0x%x\n", ret);
@@ -68,9 +72,9 @@ unsigned int LosAppInit(VOID)
     }
 
     task1.pfnTaskEntry = (TSK_ENTRY_FUNC)TaskSampleEntry2;
-    task1.uwStackSize  = 0x1000;
-    task1.pcName       = "TaskSampleEntry2";
-    task1.usTaskPrio   = 11;
+    task1.uwStackSize = 0x1000;
+    task1.pcName = "TaskSampleEntry2";
+    task1.usTaskPrio = 7;
     ret = LOS_TaskCreate(&taskID2, &task1);
     if (ret != LOS_OK) {
         printf("Create Task failed! ERROR: 0x%x\n", ret);

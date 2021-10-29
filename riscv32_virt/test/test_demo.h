@@ -29,61 +29,23 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdarg.h>
-#include <stdio.h>
-#include "securec.h"
-#include "uart.h"
-#include "los_debug.h"
-#include "los_interrupt.h"
+#ifndef __TEST_DEMO_H__
+#define __TEST_DEMO_H__
 
-static void dputs(char const *s, int (*pFputc)(int n, FILE *cookie), void *cookie)
-{
-    unsigned int intSave;
+#include "display_gfx.h"
+#include "display_gralloc.h"
+#include "display_layer.h"
+#include "display_type.h"
+#include "hdf_log.h"
 
-    intSave = LOS_IntLock();
-    while (*s) {
-        pFputc(*s++, cookie);
-    }
-    LOS_IntRestore(intSave);
-}
+typedef struct {
+    LayerFuncs *layerFuncs;
+    GrallocFuncs *grallocFuncs;
+    GfxFuncs *gfxFuncs;
+    DisplayInfo displayInfo;
+    uint32_t devId;
+    uint32_t layerId;
+    LayerBuffer buffer;
+} DisplayTest;
 
-int printf(char const  *fmt, ...)
-{
-#define BUFSIZE 256
-    char buf[BUFSIZE] = { 0 };
-    va_list ap;
-    va_start(ap, fmt);
-    int len = vsnprintf_s(buf, sizeof(buf), BUFSIZE - 1, fmt, ap);
-    va_end(ap);
-    if (len > 0) {
-        dputs(buf, UartPutc, 0);
-    } else {
-        dputs("printf error!\n", UartPutc, 0);
-    }
-    return len;
-}
-
-#define HDF_KM_LOGV       6
-#define HDF_KM_LOGD       5
-#define HDF_KM_LOGI       4
-#define HDF_KM_LOGW       2
-#define HDF_KM_LOGE       1
-#define HDF_KM_LOG_LEVEL  HDF_KM_LOGW
-
-int hal_trace_printf(int attr, const char *fmt, ...)
-{
-    if (attr > HDF_KM_LOG_LEVEL)
-        return 1;
-
-    char buf[BUFSIZE] = { 0 };
-    va_list ap;
-    va_start(ap, fmt);
-    int len = vsnprintf_s(buf, sizeof(buf), BUFSIZE - 1, fmt, ap);
-    va_end(ap);
-    if (len > 0) {
-        dputs(buf, UartPutc, 0);
-    } else {
-        dputs("printf error!\n", UartPutc, 0);
-    }
-    return len;
-}
+#endif

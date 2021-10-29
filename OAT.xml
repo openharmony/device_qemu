@@ -30,6 +30,10 @@
             <filefilter name="defaultFilter" desc="文件属于海思的license，但是属于apache2.0">
                 <filteritem type="filepath" name="drivers/uart/.*" desc="文件属于海思的license，但是属于apache2.0"/>
             </filefilter>
+            <filefilter name="defaultFilter" desc="文件属于Nuttx的license">
+                <filteritem type="filepath" name="riscv32_virt/driver/video/fb.c" desc="文件属于Nuttx的license"/>
+                <filteritem type="filepath" name="riscv32_virt/driver/video/fb.h" desc="文件属于Nuttx的license"/>
+            </filefilter>
             <filefilter name="defaultFilter" desc="三方驱动文件，属于apache license">
 		    <filteritem type="filepath" name="arm_mps2_an386/driver/arm_uart_drv.*" desc="apache license"/>
 		    <filteritem type="filepath" name="arm_mps2_an386/driver/LICENSE-apache-2.0.txt" desc="license file"/>

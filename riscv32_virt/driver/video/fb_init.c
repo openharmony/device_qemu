@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2013-2019 Huawei Technologies Co., Ltd. All rights reserved.
- * Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+ * Copyright (c) 2021-2021 Huawei Device Co., Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -29,61 +28,27 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdarg.h>
-#include <stdio.h>
-#include "securec.h"
-#include "uart.h"
-#include "los_debug.h"
-#include "los_interrupt.h"
+#include <stdbool.h>
+#include "fb_mem.h"
+#include "key_cache.h"
 
-static void dputs(char const *s, int (*pFputc)(int n, FILE *cookie), void *cookie)
+void fb_init(void)
 {
-    unsigned int intSave;
-
-    intSave = LOS_IntLock();
-    while (*s) {
-        pFputc(*s++, cookie);
+    uint retval;
+    static bool g_fb_init = false;
+    if (g_fb_init) {
+        return;
     }
-    LOS_IntRestore(intSave);
-}
 
-int printf(char const  *fmt, ...)
-{
-#define BUFSIZE 256
-    char buf[BUFSIZE] = { 0 };
-    va_list ap;
-    va_start(ap, fmt);
-    int len = vsnprintf_s(buf, sizeof(buf), BUFSIZE - 1, fmt, ap);
-    va_end(ap);
-    if (len > 0) {
-        dputs(buf, UartPutc, 0);
-    } else {
-        dputs("printf error!\n", UartPutc, 0);
+    retval = FbMemInit();
+    if (retval != LOS_OK) {
+        PRINT_ERR("fb_init FbMemInit failed error %d\n", retval);
+        return;
     }
-    return len;
-}
 
-#define HDF_KM_LOGV       6
-#define HDF_KM_LOGD       5
-#define HDF_KM_LOGI       4
-#define HDF_KM_LOGW       2
-#define HDF_KM_LOGE       1
-#define HDF_KM_LOG_LEVEL  HDF_KM_LOGW
-
-int hal_trace_printf(int attr, const char *fmt, ...)
-{
-    if (attr > HDF_KM_LOG_LEVEL)
-        return 1;
-
-    char buf[BUFSIZE] = { 0 };
-    va_list ap;
-    va_start(ap, fmt);
-    int len = vsnprintf_s(buf, sizeof(buf), BUFSIZE - 1, fmt, ap);
-    va_end(ap);
-    if (len > 0) {
-        dputs(buf, UartPutc, 0);
-    } else {
-        dputs("printf error!\n", UartPutc, 0);
+    retval = KeyCacheInit();
+    if (retval != LOS_OK) {
+        PRINT_ERR("fb_init KeyCacheInit failed error %d\n", retval);
+        return;
     }
-    return len;
 }

@@ -70,14 +70,15 @@ Run a OHOS image in qemu according to the options.
 
     -e, --exec file_name     kernel exec file name
     -n, --net-enable         enable net
+    -l, --local-desktop      no VNC
     -g, --gdb                enable gdb for kernel
     -t, --test               test mode, exclusive with -g
     -h, --help               print help info
 
     By default, the kernel exec file is: out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos,
-    and net will not be enabled.
+    and net will not be enabled, gpu enabled and waiting for VNC connection at port 5920.
 ```
-默认不加参数的情况下，网络不会自动配置，并使用默认镜像文件，若需更改默认镜像文件，可以利用 `./qemu-run -f [file_name]` 指定
+默认不加参数的情况下，网络不会自动配置，并使用默认镜像文件，若需更改默认镜像文件，可以利用 `./qemu-run -e [file_name]` 指定
 
 ## 6. gdb调试
 

@@ -27,68 +27,36 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import("//build/lite/config/component/lite_component.gni")
 import("//drivers/adapter/khdf/liteos_m/hdf.gni")
 
-static_library("board") {
-  asmflags = board_asmflags
+static_library("hdi_input") {
   sources = [
-    "driver/mtimer.c",
-    "driver/plic.c",
-    "driver/uart.c",
-    "driver/video/fb.c",
-    "driver/video/fb_init.c",
-    "driver/video/fb_mem.c",
-    "driver/video/key_cache.c",
-    "driver/virtgpu.c",
-    "driver/virtinput.c",
-    "driver/virtmmio.c",
-    "driver/virtnet.c",
-    "fs/ff_gen_drv.c",
-    "libc/dprintf.c",
-    "los_start.S",
-    "main.c",
-    "riscv_hal.c",
+    "//drivers/peripheral/input/hal/src/input_controller.c",
+    "//drivers/peripheral/input/hal/src/input_manager.c",
+    "//drivers/peripheral/input/hal/src/input_reporter.c",
   ]
 
   include_dirs = [
-    "./driver",
-    "./driver/video",
-    "//kernel/liteos_m/components/net/lwip-2.1/porting/include",
-    "//third_party/lwip/src/include",
-    "./hardware",
-    "./hardware/adapter",
-    "//drivers/framework/model/input/driver",
+    "../",
+    "../adapter",
+    "//drivers/peripheral/input/hal/include",
+    "//drivers/peripheral/input/interfaces/include",
     "//third_party/FreeBSD/sys/dev/evdev",
   ]
 
   deps = [
     "$khdf_path/core:hdf_core",
     "$khdf_path/osal:hdf_osal_lite",
-    "hardware:hdf_input_driver",
-    "hardware:hdf_ioservice",
-    "hardware/display:hdi_display",
-    "hardware/input:hdi_input",
-    "hdf_config:hdf_config",
+    "//third_party/bounds_checking_function:libsec_static",
   ]
-}
 
-executable("riscv32_virt") {
-  output_name = "liteos"
-  ldflags = [
-    "-Wl,-mcmodel=medany",
-    "-Wl,-melf32lriscv",
-    "-nostartfiles",
-    "-Wl,-T" + rebase_path("Liteos.ld"),
-    "-nostdlib",
-    "-Wl,--gc-section",
-  ]
-  libs = [
-    "gcc",
-    "nosys",
-  ]
-  deps = [
-    ":board",
-    "test:demo",
-    "//kernel/liteos_m:kernel",
+  defines = [ "__USER__" ]
+  cflags = [
+    "-Wall",
+    "-Wextra",
+    "-fsigned-char",
+    "-fno-common",
+    "-fno-strict-aliasing",
   ]
 }
