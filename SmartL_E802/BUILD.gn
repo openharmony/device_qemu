@@ -11,50 +11,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/lite/config/component/lite_component.gni")
-
 group("SmartL_E802") {
-}
-
-static_library("board") {
-  sources = [
-    "./main.c",
-    "startup.S",
-  ]
-
-  include_dirs = [
-    "//kernel/liteos_m/kernel/include",
-    "//kernel/liteos_m/kernel/arch/include",
-    "//kernel/liteos_m/utils",
-    "./driver",
-    "./include",
-    "./hals/driver",
-    "./test",
-    "./libc",
-  ]
-
-  deps = [ "//kernel/liteos_m:kernel" ]
-}
-
-executable("SmartL_E802_target") {
-  output_name = "liteos"
-  ldflags = [
-    "-mcpu=e802",
-    "-Wl,-T" + rebase_path("liteos.ld"),
-    "-Wl,--gc-section",
-    "-nostdlib",
-  ]
-
-  libs = [
-    "gcc",
-    "c",
-    "m",
-  ]
-
-  deps = [
-    ":board",
-    "test:demo",
-    "//device/qemu/SmartL_E802/drivers/csky_driver:csky_driver",
-    "//device/qemu/SmartL_E802/libc:hal_libc",
-  ]
 }

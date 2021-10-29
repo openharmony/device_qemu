@@ -71,22 +71,7 @@ board_cxx_flags = board_cflags
 board_ld_flags = []
 
 # Board related headfiles search path.
-board_include_dirs = [
-  "//device/qemu/arm_mps2_an386",
-  "//device/qemu/arm_mps2_an386/fs",
-  "//device/qemu/arm_mps2_an386/include",
-  "//kernel/liteos_m/kal/posix/include",
-  "//third_party/bounds_checking_function/include",
-  "//kernel/liteos_m/components/fs/fatfs",
-  "//utils/native/lite/include",
-  "//kernel/liteos_m/kernel/include",
-  "//kernel/liteos_m/kernel/arch/arm/cortex-m4/gcc",
-  "//kernel/liteos_m/utils",
-  "//kernel/liteos_m/kal/cmsis",
-  "//third_party/FatFs/source",
-  "//third_party/cmsis/CMSIS/Core/Include",
-  "//third_party/musl/porting/liteos_m/kernel/include",
-]
+board_include_dirs = [ "//utils/native/lite/include" ]
 
 # Board adapter dir for OHOS components.
 board_adapter_dir = "//device/qemu/arm_mps2_an386/driver"

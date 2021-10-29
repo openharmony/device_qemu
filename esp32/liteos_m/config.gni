@@ -74,17 +74,7 @@ board_cxx_flags = board_cflags
 board_ld_flags = []
 
 # Board related headfiles search path.
-board_include_dirs = [
-  "//kernel/liteos_m/kernel/arch/xtensa/lx6/gcc",
-  "//device/qemu/esp32",
-  "//device/qemu/esp32/fs",
-  "//device/qemu/esp32/Core/Inc",
-  "//kernel/liteos_m/kernel/include",
-  "//kernel/liteos_m/kernel/arch/include",
-  "//kernel/liteos_m/utils",
-  "//third_party/musl/porting/liteos_m/kernel/include",
-  "//third_party/bounds_checking_function/include",
-]
+board_include_dirs = []
 
 # Board adapter dir for OHOS components.
 board_adapter_dir = ""

@@ -11,42 +11,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/lite/config/component/lite_component.gni")
-
 group("esp32") {
-}
-
-static_library("board") {
-  sources = [ "./main.c" ]
-
-  include_dirs = [
-    "//kernel/liteos_m/kernel/include",
-    "//kernel/liteos_m/kernel/arch/include",
-    "//kernel/liteos_m/utils",
-    "./driver",
-    "./include",
-    "./hals/driver",
-    "./test",
-  ]
-}
-
-executable("esp32_target") {
-  output_name = "liteos"
-
-  ldflags = [
-    "-Wl,-T" + rebase_path("ESP32.ld"),
-    "-nostdlib",
-  ]
-
-  libs = [
-    "gcc",
-    "c",
-    "m",
-  ]
-
-  deps = [
-    ":board",
-    "test:demo",
-    "//device/qemu/esp32/libc:hal_libc",
-  ]
 }

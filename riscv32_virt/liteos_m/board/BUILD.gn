@@ -1,0 +1,93 @@
+# Copyright (c) 2013-2019 Huawei Technologies Co., Ltd. All rights reserved.
+# Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice, this list of
+#    conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list
+#    of conditions and the following disclaimer in the documentation and/or other materials
+#    provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used
+#    to endorse or promote products derived from this software without specific prior written
+#    permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+import("//drivers/adapter/khdf/liteos_m/hdf.gni")
+import("//kernel/liteos_m/liteos.gni")
+
+hdf_driver("bsp_config") {
+  asmflags = board_asmflags
+  sources = [
+    "driver/mtimer.c",
+    "driver/plic.c",
+    "driver/uart.c",
+    "driver/video/fb.c",
+    "driver/video/fb_init.c",
+    "driver/video/fb_mem.c",
+    "driver/video/key_cache.c",
+    "driver/virtgpu.c",
+    "driver/virtinput.c",
+    "driver/virtmmio.c",
+    "driver/virtnet.c",
+    "fs/ff_gen_drv.c",
+    "libc/dprintf.c",
+    "los_start.S",
+    "main.c",
+    "riscv_hal.c",
+  ]
+  if (!defined(LOSCFG_TEST)) {
+    # kernel's testsuites not enabled, use ower's
+    sources += [
+      "test/display_test.c",
+      "test/input_demo.c",
+      "test/test_demo.c",
+    ]
+  }
+  include_dirs = [
+    "driver/video",
+    "hardware",
+    "hardware/adapter",
+    "$LITEOSTHIRDPARTY/FreeBSD/sys/dev/evdev",
+    "$HDF_FRAMEWORKS_PATH/include/utils",
+    "$HDF_FRAMEWORKS_PATH/model/input/driver",
+    "$HDF_PERIPHERAL_PATH/base",
+    "$HDF_PERIPHERAL_PATH/display/interfaces/include",
+    "$HDF_PERIPHERAL_PATH/input/interfaces/include",
+    "//drivers/adapter/khdf/liteos_m/osal/include",
+  ]
+
+  deps = [ "hardware" ]
+}
+
+config("public") {
+  include_dirs = [
+    ".",
+    "include",
+    "include/asm",
+    "driver",
+    "fs",
+  ]
+  ldflags = [
+    "-Wl,-mcmodel=medany",
+    "-Wl,-melf32lriscv",
+    "-nostartfiles",
+    "-Wl,-T" + rebase_path("liteos.ld"),
+    "-nostdlib",
+  ]
+  libs = [ "gcc" ]
+}
