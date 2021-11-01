@@ -32,52 +32,28 @@
 #include "los_debug.h"
 #include "los_task.h"
 
-extern void ExecCmdline(const char *cmdline);
+#define USER_TASK_PRIO 6
 
-static void TaskSampleEntry2(void)
-{
-    while (1) {
-#ifdef LOSCFG_NET_LWIP
-        ExecCmdline("ping 10.0.2.2");
-#endif /* LOSCFG_NET_LWIP */
-        printf("\n\rTaskSampleEntry2 running...");
-        LOS_TaskDelay(5000);
-    }
-}
-
-static void TaskSampleEntry1(void)
+static void TaskDisplaySampleEntry(void)
 {
     DisplayServiceSample();
     InputServiceSample();
-    while (1) {
-        printf("\n\rTaskSampleEntry1 running...");
-        LOS_TaskDelay(1000);
-    }
 }
 
 unsigned int LosAppInit(VOID)
 {
     unsigned int ret;
-    unsigned int taskID1, taskID2;
-    TSK_INIT_PARAM_S task1 = {0};
+    unsigned int taskID;
+    TSK_INIT_PARAM_S task = {0};
 
-    task1.pfnTaskEntry = (TSK_ENTRY_FUNC)TaskSampleEntry1;
-    task1.uwStackSize = 0x1000;
-    task1.pcName = "TaskSampleEntry1";
-    task1.usTaskPrio = 6;
-    ret = LOS_TaskCreate(&taskID1, &task1);
+    task.pfnTaskEntry = (TSK_ENTRY_FUNC)TaskDisplaySampleEntry;
+    task.uwStackSize = 0x1000;
+    task.pcName = "TaskDisplaySampleEntry";
+    task.usTaskPrio = USER_TASK_PRIO;
+    ret = LOS_TaskCreate(&taskID, &task);
     if (ret != LOS_OK) {
         printf("Create Task failed! ERROR: 0x%x\n", ret);
         return ret;
-    }
-
-    task1.pfnTaskEntry = (TSK_ENTRY_FUNC)TaskSampleEntry2;
-    task1.uwStackSize = 0x1000;
-    task1.pcName = "TaskSampleEntry2";
-    task1.usTaskPrio = 7;
-    ret = LOS_TaskCreate(&taskID2, &task1);
-    if (ret != LOS_OK) {
-        printf("Create Task failed! ERROR: 0x%x\n", ret);
     }
 
     return ret;

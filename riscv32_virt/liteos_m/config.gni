@@ -97,6 +97,7 @@ board_ld_flags = []
 # Board related headfiles search path.
 board_include_dirs = [
   "//device/qemu/riscv32_virt",
+  "//device/qemu/riscv32_virt/driver",
   "//device/qemu/riscv32_virt/include",
   "//device/qemu/riscv32_virt/include/asm",
   "//device/qemu/riscv32_virt/fs",
