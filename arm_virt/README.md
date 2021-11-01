@@ -60,6 +60,7 @@ to the options.
     -n, --net-enable           enable net
     -l, --local-desktop        no VNC
     -b, --bootargs             additional boot arguments(-bk1=v1,k2=v2...)
+    -g,  --gdb                 enable gdb for kernel
     -h, --help                 print help info
 
     By default, flash.img will not be rebuilt if exists, and net will not
@@ -72,7 +73,47 @@ c) Exit QEMU.
 
 Press `Ctrl-A + x` to exit the QEMU virtual environment.
 
-## 6. Example
+## 6. gdb debug
+
+Install `gdb-multiarch` package:
+```
+sudo apt install gdb-multiarch
+```
+Then,
+```
+$ cd ohos/vendor/ohemu/qemu_small_system_demo/kernel_configs
+$ vim debug.config
+```
+
+Modify `LOSCFG_CC_STACKPROTECTOR_ALL=y` to:
+
+```
+# LOSCFG_CC_STACKPROTECTOR_ALL is not set
+LOSCFG_COMPILE_DEBUG=y
+```
+
+Save and exit, recompile under OHOS root directory:
+
+```
+$ hb build -f
+```
+
+In a window to enter the command:
+
+```
+$ ./qemu-run -g
+```
+
+In another window to enter the command:
+
+```
+$ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
+(gdb) target remote localhost:1234
+```
+
+More GDB related debugging can refer to [GDB instruction manual](https://sourceware.org/gdb/current/onlinedocs/gdb).
+
+## 7. Example
 
 - [Transferring Parameters to the Kernel](example.md#sectiondebug)
 
@@ -131,21 +172,23 @@ Press `Ctrl-A + x` to exit the QEMU virtual environment.
         -device virtio-gpu-device,xres=800,yres=480 \
         -device virtio-mouse-device \
         -vnc :20 \
+        -s -S \
         -global virtio-mmio.force-legacy=false
    ```
 
    ```
    -M                           Virtual machine type, ARM virt, GICv2, and extended security features
    -cpu                         CPU model
-   -smp                        SMP setting, single core
+   -smp                         SMP setting, single core
    -m                           Maximum memory size that can be used by the virtual machines
-   -drive if=pflash      CFI flash drive setting
-   -netdev                  [optional] NIC bridge type
+   -drive if=pflash             CFI flash drive setting
+   -netdev                      [optional] NIC bridge type
    -device virtio-net-device    [optional] NIC device
    -device virtio-gpu-device    [optional] GPU device
-   -device virtio-mouse-device [optional] Mouse device
-   -VNC: 20                   [optional] Remote desktop connection, port 5920
-   -Global                    QEMU configuration parameter, which cannot be changed
+   -device virtio-mouse-device  [optional] Mouse device
+   -vnc: 20                     [optional] Remote desktop connection, port 5920
+   -s -S                        [optional] gdb single step debug
+   -global                      QEMU configuration parameter, which cannot be changed
    ```
 
    If the error message "failed to parse default acl file" is displayed when **qemu-run** is executed:

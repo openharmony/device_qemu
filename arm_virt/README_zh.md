@@ -64,6 +64,7 @@ to the options.
     -n, --net-enable           enable net
     -l, --local-desktop        no VNC
     -b, --bootargs             additional boot arguments(-bk1=v1,k2=v2...)
+    -g,  --gdb                 enable gdb for kernel
     -h, --help                 print help info
 
     By default, flash.img will not be rebuilt if exists, and net will not
@@ -76,7 +77,47 @@ c) 退出qemu环境
 
 按下`Ctrl-A + x`可退出qemu虚拟环境。
 
-## 6. 用法示例
+## 6. gdb调试
+
+安装`gdb-multiarch`工具包：
+```
+sudo apt install gdb-multiarch
+```
+然后，
+```
+$ cd ohos/vendor/ohemu/qemu_small_system_demo/kernel_configs
+$ vim debug.config
+```
+
+将 `LOSCFG_CC_STACKPROTECTOR_ALL=y` 修改为:
+
+```
+# LOSCFG_CC_STACKPROTECTOR_ALL is not set
+LOSCFG_COMPILE_DEBUG=y
+```
+
+保存并退出，在OHOS根目录重新编译:
+
+```
+$ hb build -f
+```
+
+在一个窗口中输入命令：
+
+```
+$ ./qemu-run -g
+```
+
+在另一个窗口中输入命令：
+
+```
+$ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
+(gdb) target remote localhost:1234
+```
+
+更多gdb相关的调试可以查阅：[gdb指导手册](https://sourceware.org/gdb/current/onlinedocs/gdb)。
+
+## 7. 用法示例
 
 - [向内核传递参数](example.md#sectiondebug)
 
@@ -135,6 +176,7 @@ c) 退出qemu环境
         -device virtio-gpu-device,xres=800,yres=480 \
         -device virtio-mouse-device \
         -vnc :20 \
+        -s -S \
         -global virtio-mmio.force-legacy=false
    ```
 
@@ -149,6 +191,7 @@ c) 退出qemu环境
    -device virtio-gpu-device    [可选]GPU设备
    -device virtio-mouse-device  [可选]鼠标设备
    -vnc :20                     [可选]远程桌面连接，端口5920
+   -s -S                        [可选]gdb单步调试
    -global                      QEMU配置参数，不可调整
    ```
 
