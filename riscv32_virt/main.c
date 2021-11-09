@@ -26,7 +26,7 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#ifdef LOSCFG_NET_LWIP 
+#ifdef LOSCFG_NET_LWIP
 
 #define IFNAMSIZ  IF_NAMESIZE
 #include "lwip/tcpip.h"
@@ -117,6 +117,7 @@ LITE_OS_SEC_TEXT_INIT INT32 main(VOID)
 {
     UINT32 ret;
 
+    UartInit();
     printf("\n OHOS start \n\r");
 
     ret = LOS_KernelInit();
@@ -125,19 +126,28 @@ LITE_OS_SEC_TEXT_INIT INT32 main(VOID)
         goto START_FAILED;
     }
 
+    Uart0RxIrqRegister();
+
+#if (LOSCFG_USE_SHELL == 1)
+    ret = LosShellInit();
+    if (ret != LOS_OK) {
+        printf("LosShellInit failed! ERROR: 0x%x\n", ret);
+    }
+#endif
+
     printf("\nFb init begin...\n");
     if (fb_init() != LOS_OK) {
         PRINT_ERR("Fb init failed!");
     }
     printf("Fb int end\n");
-	
+
     printf("\nDeviceManagerStart start ...\n");
     if (DeviceManagerStart()) {
         PRINT_ERR("No drivers need load by hdf manager!");
     }
     printf("DeviceManagerStart end ...\n");
-	
-#ifdef LOSCFG_NET_LWIP 
+
+#ifdef LOSCFG_NET_LWIP
     net_init();
 #endif /* LOSCFG_NET_LWIP */
 

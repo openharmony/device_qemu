@@ -14,8 +14,9 @@
  */
 
 #include "uart.h"
-#include "soc.h"
-#include "los_reg.h"
+
+#include "los_arch_interrupt.h"
+#include "los_interrupt.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -23,35 +24,69 @@ extern "C" {
 #endif
 #endif
 
-/******* uart register offset *****/
-#define UART_TX_DATA         0x00
-#define UART_RX_DATA         0x04
-#define UART_TX_CTRL         0x08
-#define UART_RX_CTRL         0x0C
-#define UART_IN_ENAB         0x10
-#define UART_IN_PEND         0x14
-#define UART_BR_DIV          0x18
-
 INT32 UartPutc(INT32 c, VOID *file)
 {
-    (VOID)file;
-
-    while (GET_UINT32(UART0_BASE + UART_TX_DATA) & 0x80000000) {
+    (VOID) file;
+    /* wait for Transmit Holding Empty to be set in LSR */
+    while ((ReadUartReg(UART_LSR_OFFSET) & UART_LSR_THRE) == 0) {
         ;
     }
-
-    WRITE_UINT32((INT32)(c & 0xFF), UART0_BASE + UART_TX_DATA);
-
+    WriteUartReg(UART_THR_OFFSET, (UINT8)c);
     return c;
+}
+
+INT32 UartGetc(VOID)
+{
+    if (ReadUartReg(UART_LSR_OFFSET) & UART_LSR_DR) {
+        return ReadUartReg(UART_RHR_OFFSET);
+    } else {
+        return 0;
+    }
 }
 
 INT32 UartOut(INT32 c, VOID *file)
 {
-    if (c == '\n') {
-        return UartPutc('\r', file);
-    }
+    (VOID) file;
+    return UartGetc();
+}
 
-    return UartPutc(c, file);
+INT32 UartInit(VOID)
+{
+    /* Disable all interrupts */
+    WriteUartReg(UART_IER_OFFSET, 0x00);
+
+    /* special mode to set baud rate */
+    WriteUartReg(UART_LCR_OFFSET, UART_LCR_DLAB);
+
+    /* Set divisor low byte, LSB for baud rate of 38.4K */
+    WriteUartReg(UART_DLL_OFFSET, 0x03);
+
+    /* Set divisor high byte, LSB for baud rate of 38.4K */
+    WriteUartReg(UART_DLM_OFFSET, 0x00);
+
+    /* leave set-baud mode, and set word length to 8 bits, no parity */
+    WriteUartReg(UART_LCR_OFFSET, UART_LCR_8N1);
+
+    /* reset and enable FIFOs */
+    WriteUartReg(UART_FCR_OFFSET, UART_FCR_FIFO_EN | UART_FCR_RXSR | UART_FCR_TXSR);
+}
+
+VOID UartReciveHandler(VOID)
+{
+    if (ReadUartReg(UART_LSR_OFFSET) & UART_LSR_DR) {
+        (void)LOS_EventWrite(&g_shellInputEvent, 0x1);
+    }
+    return;
+}
+
+VOID Uart0RxIrqRegister(VOID)
+{
+    WriteUartReg(UART_IER_OFFSET, ReadUartReg(UART_IER_OFFSET) | UART_IER_RDI);
+    uint32_t ret = HalHwiCreate(RISCV_UART0_Rx_IRQn, OS_HWI_PRIO_HIGHEST, 0, (HWI_PROC_FUNC)UartReciveHandler, 0);
+    if (ret != LOS_OK) {
+        return;
+    }
+    HalIrqEnable(RISCV_UART0_Rx_IRQn);
 }
 
 #ifdef __cplusplus

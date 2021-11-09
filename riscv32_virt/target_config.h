@@ -102,6 +102,11 @@ extern UINTPTR __heap_size;
 
 #define LOS_KERNEL_TEST_NOT_SMOKE                           0
 #define LOS_KERNEL_HWI_TEST                                 0
+/*=============================================================================
+                                       shell module configuration
+=============================================================================*/
+#define LOSCFG_USE_SHELL                                    1
+#define LOSCFG_SHELL_PRIO                                   3
 
 extern UINT32 QemuCLZ(UINT32);
 #undef CLZ
