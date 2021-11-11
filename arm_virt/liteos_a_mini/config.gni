@@ -26,16 +26,17 @@ board_arch = ""
 # Toolchain name used for system compiling.
 # E.g. gcc-arm-none-eabi, arm-linux-harmonyeabi-gcc, ohos-clang,  riscv32-unknown-elf.
 # Note: The default toolchain is "ohos-clang". It's not mandatory if you use the default toolchain.
-board_toolchain = ""
+board_toolchain = "arm-linux-gnueabi-gcc"
+use_board_toolchain = true
 
-# The toolchain path installed, it's not mandatory if you have added toolchain path to your ~/.bashrc.
+# The toolchain path installed, it's not mandatory if you have added toolchain path to your PATH.
 board_toolchain_path = ""
 
 # Compiler prefix.
-board_toolchain_prefix = ""
+board_toolchain_prefix = "arm-linux-gnueabi-"
 
 # Compiler type, "gcc" or "clang".
-board_toolchain_type = "clang"
+board_toolchain_type = "gcc"
 
 # Board related common compile flags.
 board_cflags = [

@@ -32,14 +32,12 @@ import("//drivers/adapter/khdf/liteos/hdf.gni")
 module_name = get_path_info(rebase_path("."), "name")
 hdf_driver(module_name) {
   sources = [
-    "virtmmio.c",
-    "virtnet.c",
     "virtgpu.c",
     "virtinput.c",
+    "virtmmio.c",
+    "virtnet.c",
   ]
-  deps = [
-    "//drivers/adapter/khdf/liteos/model/input:hdf_input_driver",
-  ]
+  deps = [ "//drivers/adapter/khdf/liteos/model/input:hdf_input_driver" ]
   include_dirs = [
     "//drivers/framework/model/input/driver/",
     "//third_party/FreeBSD/sys/dev/evdev/",

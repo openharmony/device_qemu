@@ -11,8 +11,6 @@
 #See the License for the specific language governing permissions and
 #limitations under the License.
 
-import("//kernel/liteos_m/config.gni")
-
 # Kernel type, e.g. "linux", "liteos_a", "liteos_m".
 kernel_type = "liteos_m"
 
@@ -78,10 +76,6 @@ board_cflags = [
   "-D_BSD_SOURCE",
 ]
 
-if (defined(enable_ohos_kernel_liteos_m_lwip) &&
-    enable_ohos_kernel_liteos_m_lwip == true) {
-  board_cflags += [ "-DLOSCFG_NET_LWIP=true" ]
-}
 board_cflags += board_opt_flags
 
 board_asmflags = [
@@ -95,25 +89,7 @@ board_cxx_flags = board_cflags
 board_ld_flags = []
 
 # Board related headfiles search path.
-board_include_dirs = [
-  "//device/qemu/riscv32_virt",
-  "//device/qemu/riscv32_virt/driver",
-  "//device/qemu/riscv32_virt/include",
-  "//device/qemu/riscv32_virt/include/asm",
-  "//device/qemu/riscv32_virt/fs",
-  "//kernel/liteos_m/kernel/include",
-  "//kernel/liteos_m/kernel/arch/include",
-  "//kernel/liteos_m/kernel/arch/risc-v/riscv32/gcc",
-  "//kernel/liteos_m/kernel/arch/risc-v/riscv32/gcc/asm",
-  "//kernel/liteos_m/utils",
-  "//kernel/liteos_m/components/fs/fatfs",
-  "//third_party/FatFs/source",
-  "//third_party/musl/porting/liteos_m/kernel/include",
-  "//third_party/bounds_checking_function/include",
-  "//kernel/liteos_m/kal/cmsis",
-  "//utils/native/lite/include",
-  "//kernel/liteos_m/components/shell/include",
-]
+board_include_dirs = []
 
 # Board adapter dir for OHOS components.
 board_adapter_dir = "//device/qemu/riscv32_virt/driver"

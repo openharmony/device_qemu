@@ -30,8 +30,8 @@
 group("liteos_a") {
   deps = [
     "board",
-    "hdf_config",
     "drivers",
+    "hdf_config",
   ]
 }
 

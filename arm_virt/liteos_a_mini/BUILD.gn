@@ -28,13 +28,9 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 group("liteos_a_mini") {
-  deps = [
-    "board",
-  ]
+  deps = [ "board" ]
 }
 
 config("public") {
-  configs = [
-    "board:public",
-  ]
+  configs = [ "board:public" ]
 }

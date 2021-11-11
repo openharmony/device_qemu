@@ -1,0 +1,65 @@
+# Copyright (c) 2021 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//kernel/liteos_m/liteos.gni")
+
+kernel_module("bsp_config") {
+  sources = [
+    "fs/fs_init.c",
+    "fs/hal_littlefs.c",
+    "fs/hal_vfs.c",
+    "fs/littlefs_hal.c",
+    "hals/csky_driver/src/ck_usart.c",
+    "hals/csky_driver/src/devices.c",
+    "hals/csky_driver/src/dw_gpio.c",
+    "hals/csky_driver/src/dw_timer.c",
+    "hals/csky_driver/src/isr.c",
+    "hals/csky_driver/src/pinmux.c",
+    "hals/csky_driver/src/sys_freq.c",
+    "hals/utils/file/hal_file.c",
+    "libc/dprintf.c",
+    "main.c",
+    "startup.S",
+  ]
+  if (!defined(LOSCFG_TEST)) {
+    # kernel's testsuites not enabled, use ower's
+    sources += [ "test/task_demo.c" ]
+  }
+  if (defined(LOSCFG_FS_FAT)) {
+    sources += [ "fs/ff_gen_drv.c" ]
+  }
+  include_dirs = [
+    "//utils/native/lite/include",
+    "test",
+    "libc",
+  ]
+}
+
+config("public") {
+  ldflags = [
+    "-mcpu=e802",
+    "-Wl,-T" + rebase_path("liteos.ld"),
+    "-nostdlib",
+  ]
+
+  libs = [
+    "gcc",
+    "c",
+  ]
+
+  include_dirs = [
+    ".",
+    "hals/csky_driver/include",
+    "fs",
+  ]
+}

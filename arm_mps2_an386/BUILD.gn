@@ -27,48 +27,5 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-static_library("board") {
-  asmflags = board_asmflags
-
-  sources = [
-    "./driver/arm_uart_drv.c",
-    "./driver/uart.c",
-    "./fs/ff_gen_drv.c",
-    "./libc/dprintf.c",
-    "./main.c",
-    "./startup.s",
-  ]
-
-  include_dirs = [
-    "//kernel/liteos_m/kernel/include",
-    "//kernel/liteos_m/kernel/arch/include",
-    "//kernel/liteos_m/utils",
-    "//kernel/liteos_m/kal/cmsis",
-    "//kernel/liteos_m/components/power",
-    "./driver",
-    "./include",
-  ]
-
-  deps = [ "//kernel/liteos_m/kal/posix" ]
-}
-
-executable("arm_mps2_an386") {
-  output_name = "liteos"
-  ldflags = [
-    "-nostartfiles",
-    "-Wl,-T" + rebase_path("Liteos.ld"),
-    "-Wl,--gc-section",
-    "-nostdlib",
-  ]
-
-  libs = [
-    "nosys",
-    "gcc",
-  ]
-
-  deps = [
-    ":board",
-    "test:demo",
-    "//kernel/liteos_m:kernel",
-  ]
+group("arm_mps2_an386") {
 }

@@ -34,7 +34,7 @@ module_name = "bsp_config"
 kernel_module(module_name) {
   sources = [
     "amba_pl011/amba_pl011.c",
-#    "platform.c",
+    #    "platform.c",
   ]
 }
 
