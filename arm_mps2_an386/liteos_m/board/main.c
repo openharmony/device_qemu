@@ -31,6 +31,9 @@
 
 #include "los_config.h"
 #include "uart.h"
+#include "los_debug.h"
+#include "lan9118_eth_drv.h"
+
 
 unsigned int LosAppInit(VOID);
 extern unsigned int LosShellInit(void);
@@ -54,6 +57,8 @@ LITE_OS_SEC_TEXT_INIT int main(void)
     }
 
     Uart0RxIrqRegister();
+
+    NetInit();
 
 #if (LOSCFG_USE_SHELL == 1)
     ret = LosShellInit();

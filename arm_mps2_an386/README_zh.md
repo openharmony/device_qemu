@@ -88,6 +88,7 @@ Run a OHOS image in qemu according to the options.
     Options:
 
     -e, --exec file_name     kernel exec file name
+    -n, --net-enable         enable net
     -g, --gdb                enable gdb for kernel
     -t, --test               test mode, exclusive with -g
     -h, --help               print help info

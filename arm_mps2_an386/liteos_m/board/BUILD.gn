@@ -36,6 +36,7 @@ kernel_module(module_name) {
 
   sources = [
     "driver/arm_uart_drv.c",
+    "driver/net/lan9118_eth_drv.c",
     "driver/uart.c",
     "fs/ff_gen_drv.c",
     "libc/dprintf.c",
@@ -46,6 +47,7 @@ kernel_module(module_name) {
     # kernel's testsuites not enabled, use ower's
     sources += [ "test/test_demo.c" ]
   }
+  include_dirs = [ "driver/net/" ]
 }
 
 config("public") {
