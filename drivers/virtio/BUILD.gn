@@ -37,6 +37,9 @@ hdf_driver(module_name) {
     "virtmmio.c",
     "virtnet.c",
   ]
+  if (defined(LOSCFG_HW_RANDOM_ENABLE)) {
+    sources += [ "virtrng.c" ]
+  }
   deps = [ "//drivers/adapter/khdf/liteos/model/input:hdf_input_driver" ]
   include_dirs = [
     "//drivers/framework/model/input/driver/",

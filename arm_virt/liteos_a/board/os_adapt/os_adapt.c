@@ -28,6 +28,11 @@
 #include "shcmd.h"
 #endif
 
+#ifdef LOSCFG_DRIVERS_RANDOM
+#include "los_random.h"
+#include "soc/random.h"
+#endif
+
 #ifdef LOSCFG_DRIVERS_MEM
 #include "los_dev_mem.h"
 #endif
@@ -72,6 +77,14 @@ int mem_dev_register(void)
 
 void SystemInit(void)
 {
+#ifdef LOSCFG_DRIVERS_RANDOM
+    dprintf("dev random init ...\n");
+    (void)DevRandomRegister();
+#ifdef LOSCFG_HW_RANDOM_ENABLE
+    VirtrngInit();
+#endif
+#endif
+
 #ifdef LOSCFG_DRIVERS_MEM
     dprintf("mem dev init ...\n");
     extern int mem_dev_register(void);

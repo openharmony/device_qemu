@@ -171,6 +171,7 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
         -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
         -device virtio-gpu-device,xres=800,yres=480 \
         -device virtio-mouse-device \
+        -device virtio-rng-device \
         -vnc :20 \
         -s -S \
         -global virtio-mmio.force-legacy=false
@@ -184,8 +185,9 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
    -drive if=pflash             CFI flash drive setting
    -netdev                      [optional] NIC bridge type
    -device virtio-net-device    [optional] NIC device
-   -device virtio-gpu-device    [optional] GPU device
-   -device virtio-mouse-device  [optional] Mouse device
+   -device virtio-gpu-device    GPU device
+   -device virtio-mouse-device  Mouse device
+   -device virtio-rng-device    Random generator device
    -vnc: 20                     [optional] Remote desktop connection, port 5920
    -s -S                        [optional] gdb single step debug
    -global                      QEMU configuration parameter, which cannot be changed
