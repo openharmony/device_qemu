@@ -1,0 +1,10 @@
+{
+  "parts": {
+    "device_SmartL_E802": {
+      "module_list": [
+        "//device/qemu/SmartL_E802:SmartL_E802"
+      ]
+    }
+  },
+  "subsystem": "device_SmartL_E802"
+}
