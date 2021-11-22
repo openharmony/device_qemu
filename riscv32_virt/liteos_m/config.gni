@@ -54,6 +54,7 @@ board_cflags = [
   "-fdata-sections",
   "-fno-omit-frame-pointer",
   "-Wno-format-truncation",
+  "-fno-builtin",
   "-D__RISC_V__",
   "-D__LITEOS_M__",
 ]
