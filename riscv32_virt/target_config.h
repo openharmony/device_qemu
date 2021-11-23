@@ -98,6 +98,10 @@ extern UINTPTR __heap_size;
 
 #define LOS_KERNEL_TEST_NOT_SMOKE                           0
 #define LOS_KERNEL_HWI_TEST                                 0
+
+extern UINT32 QemuCLZ(UINT32);
+#undef CLZ
+#define CLZ(n) QemuCLZ(n)
 #ifdef __cplusplus
 #if __cplusplus
 }
