@@ -1,0 +1,10 @@
+{
+  "parts": {
+    "device_arm_virt": {
+      "module_list": [
+        "//device/qemu/arm_virt:arm_virt"
+      ]
+    }
+  },
+  "subsystem": "device_arm_virt"
+}

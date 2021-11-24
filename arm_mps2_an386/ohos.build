@@ -1,0 +1,10 @@
+{
+  "parts": {
+    "device_arm_mps2_an386": {
+      "module_list": [
+        "//device/qemu/arm_mps2_an386:arm_mps2_an386"
+      ]
+    }
+  },
+  "subsystem": "device_arm_mps2_an386"
+}

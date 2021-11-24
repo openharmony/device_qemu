@@ -1,0 +1,10 @@
+{
+  "parts": {
+    "device_esp32": {
+      "module_list": [
+        "//device/qemu/esp32:esp32"
+      ]
+    }
+  },
+  "subsystem": "device_esp32"
+}

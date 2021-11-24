@@ -1,0 +1,10 @@
+{
+  "parts": {
+    "device_riscv32_virt": {
+      "module_list": [
+        "//device/qemu/riscv32_virt:riscv32_virt"
+      ]
+    }
+  },
+  "subsystem": "device_riscv32_virt"
+}
