@@ -31,7 +31,7 @@ QEMU can simulate the kernel to run on different boards, freeing the dependence 
 
    2. Install qemu
 
-      a) creat`csky_qemu`folder and enter it 
+      a) create `csky_qemu` folder and enter it
 
          ```shell
          $ mkdir csky_qemu && cd csky_qemu
@@ -72,7 +72,7 @@ Hint : You can use the `repo` command to get the source code.
 
    1. Execute the hb set command and select the project`qemu_csky_mini_system_demo`.
 
-   2. Execute the hb clean && hb build command to build the executable file that produces `liteos`.
+   2. Execute the hb clean && hb build command to build the executable file that produces `OHOS_Image`.
 
       ```shell
       $ hb set
@@ -82,13 +82,7 @@ Hint : You can use the `repo` command to get the source code.
    3. After the buildding is complete,the corresponding executable file is in the home directory:
 
       ```
-      out/SmartL_E802/qemu_csky_mini_system_demo/bin/
-      ```
-
-   Annotation: The current liteos is an elf file without a symbol table,and the path of the elf file with a symbol table is as follows:
-
-      ```
-      out/SmartL_E802/qemu_csky_mini_system_demo/unstripped/bin/
+      out/SmartL_E802/qemu_csky_mini_system_demo/
       ```
 
 ## 5.Run the image in Qemu
@@ -110,8 +104,7 @@ Hint : You can use the `repo` command to get the source code.
       b) Create a new terminal and use GDB to connect to qemu
 
          ```shell
-         $ csky-abiv2-elf-gdb out/SmartL_E802/qemu_csky_mini_system_demo/unstripped/bin/liteos -ex "target remote localhost:1234"
+         $ csky-abiv2-elf-gdb out/SmartL_E802/qemu_csky_mini_system_demo/OHOS_Image -ex "target remote localhost:1234"
          ```
 
-   Annotation: Elf files with symbol tables are used by default.
    Annotation: The way to exit qemu : press ctrl and a,then release and press x.

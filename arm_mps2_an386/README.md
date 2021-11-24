@@ -69,12 +69,12 @@ Run the following build command:
 $ hb build -f
 ```
 
-This will build `liteos` for Qemu Cortex-m4 mps2-an386 machine.
+This will build `OHOS_Image` for Qemu Cortex-m4 mps2-an386 machine.
 
 
 After build is finished, the resulting image can be found in:
 ```
-out/arm_mps2_an386/qemu_mini_system_demo/bin/
+out/arm_mps2_an386/qemu_mini_system_demo/
 ```
 #### 5. Running image in Qemu
 
@@ -96,7 +96,7 @@ Run a OHOS image in qemu according to the options.
     -t, --test               test mode, exclusive with -g
     -h, --help               print help info
 
-    By default, the kernel exec file is: out/arm_mps2_an386/qemu_mini_system_demo/bin/liteos.
+    By default, the kernel exec file is: out/arm_mps2_an386/qemu_mini_system_demo/OHOS_Image.
 ```
 
 #### 6. gdb debug
@@ -126,18 +126,15 @@ $ hb build -f
 In a window to enter the command:
 
 ```
-$ ./qemu-run -g -e out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
+$ ./qemu-run -g
 ```
 
 In another window to enter the command:
 
 ```
-$ arm-none-eabi-gdb out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
+$ arm-none-eabi-gdb out/arm_mps2_an386/qemu_mini_system_demo/OHOS_Image
 (gdb) target remote localhost:1234
 (gdb) b main
 ```
-
-Note: Using the GDB debugging, executable must choose `out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/` executable files in the
-directory.
 
 More GDB related debugging can refer to [GDB instruction manual](https://sourceware.org/gdb/current/onlinedocs/gdb).

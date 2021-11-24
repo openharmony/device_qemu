@@ -65,7 +65,7 @@ Hint : You can use the `repo` command to get the source code.
 
    1. Execute the hb set command and select the project `qemu_xtensa_mini_system_demo`.
 
-   2. Execute the hb clean && hb build command to build the executable file that produces `liteos`.
+   2. Execute the hb clean && hb build command to build the executable file that produces `OHOS_Image`.
 
       ```shell
       $ hb set
@@ -75,13 +75,7 @@ Hint : You can use the `repo` command to get the source code.
    3. After the buildding is complete, the corresponding executable file is in the home directory：
 
       ```
-      out/esp32/qemu_xtensa_mini_system_demo/bin/
-      ```
-
-   Annotation：The current liteos is an elf file without a symbol table, and the path of the elf file with a symbol table is as follows:
-
-      ```
-      out/esp32/qemu_xtensa_mini_system_demo/unstripped/bin/
+      out/esp32/qemu_xtensa_mini_system_demo/
       ```
 
 ## 5.Run the image in Qemu
@@ -103,11 +97,10 @@ Hint : You can use the `repo` command to get the source code.
       b) Create a new terminal and use GDB to connect to qemu
 
          ```shell
-         $ xtensa-esp32-elf-gdb out/esp32/qemu_xtensa_mini_system_demo/unstripped/bin/liteos -ex "target remote :1234"
+         $ xtensa-esp32-elf-gdb out/esp32/qemu_xtensa_mini_system_demo/OHOS_Image -ex "target remote :1234"
          ```
 
    Annotation：Since the qemu-system-xtensa tool of qemu has the same name as the qemu-system-xtensa tool of esp32, the absolute path is used to execute the qemu-system-xtensa tool of esp32.
-   Annotation：Elf files with symbol tables are used by default.
    Annotation：The way to exit qemu : press ctrl and a, then release and press x.
 
 (Annotation：For more operating instructions, please refer to：[Home · espressif/qemu Wiki · GitHub](https://github.com/espressif/qemu/wiki#configure))

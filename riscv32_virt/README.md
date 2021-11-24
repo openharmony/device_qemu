@@ -39,11 +39,11 @@ Run the following build command:
 hb build
 ```
 
-This will build `liteos` for Qemu RISC-V virt machine.
+This will build `OHOS_Image` for Qemu RISC-V virt machine.
 
 After build is finished, the resulting image can be found in:
 ```
-out/riscv32_virt/qemu_riscv_mini_system_demo/bin
+out/riscv32_virt/qemu_riscv_mini_system_demo/
 ```
 
 #### 5. Running image in Qemu
@@ -57,7 +57,7 @@ b) Run
 
 ```
 $ cd device/qemu/riscv32_virt
-$ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
+$ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
 ```
 
 (2). qemu version >= 5.0.0
@@ -77,7 +77,7 @@ Run a OHOS image in qemu according to the options.
     -t, --test               test mode, exclusive with -g
     -h, --help               print help info
 
-    By default, the kernel exec file is: out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos,
+    By default, the kernel exec file is: out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image,
     and net will not be enabled, gpu enabled and waiting for VNC connection at port 5920.
 ```
 By default, the network will not be automatically configured if no parameter is specified, and the default kernel exec file will be used.
@@ -111,18 +111,15 @@ $ hb build -f
 In a window to enter the command:
 
 ```
-$ ./qemu-run -g -e out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
+$ ./qemu-run -g
 ```
 
 In another window to enter the command:
 
 ```
-$ riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
+$ riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image
 (gdb) target remote localhost:1234
 (gdb) b main
 ```
-
-Note: Using the GDB debugging, executable must choose `out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin` executable files in the
-directory.
 
 More GDB related debugging can refer to [GDB instruction manual](https://sourceware.org/gdb/current/onlinedocs/gdb).

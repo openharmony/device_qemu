@@ -72,7 +72,7 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 
    1. 执行hb set命令并选择项目`qemu_csky_mini_system_demo`。
 
-   2. 执行hb clean && hb build命令构建产生 `liteos` 的可执行文件。
+   2. 执行hb clean && hb build命令构建产生 `OHOS_Image` 的可执行文件。
 
       ```shell
       $ hb set
@@ -82,13 +82,7 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
    3. 在构建完成之后，对应的可执行文件在主目录下：
 
       ```
-      out/SmartL_E802/qemu_csky_mini_system_demo/bin/
-      ```
-
-   注：当前的liteos为不带符号表的elf文件，带符号表的elf文件路径如下：
-
-      ```
-      out/SmartL_E802/qemu_csky_mini_system_demo/unstripped/bin/
+      out/SmartL_E802/qemu_csky_mini_system_demo/
       ```
 
 ## 5.在Qemu中运行镜像
@@ -110,8 +104,7 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
       b) 新建终端并使用GDB连接qemu
 
          ```shell
-         $ csky-abiv2-elf-gdb out/SmartL_E802/qemu_csky_mini_system_demo/unstripped/bin/liteos -ex "target remote localhost:1234"
+         $ csky-abiv2-elf-gdb out/SmartL_E802/qemu_csky_mini_system_demo/OHOS_Image -ex "target remote localhost:1234"
          ```
 
-   注：默认使用带符号表的elf文件。
    注：qemu退出方式为：按下ctrl加a键，然后松开再按下x键。

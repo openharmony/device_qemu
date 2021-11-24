@@ -67,11 +67,11 @@ hb set
 $ hb build -f
 ```
 
-这个命令构建会产生 `liteos` 的镜像文件。
+这个命令构建会产生 `OHOS_Image` 的镜像文件。
 
 在构建完成之后，对应的镜像文件在如下目录：
 ```
-out/arm_mps2_an386/qemu_mini_system_demo/bin/
+out/arm_mps2_an386/qemu_mini_system_demo/
 ```
 ## 5. 在Qemu中运行镜像
 
@@ -92,7 +92,7 @@ Run a OHOS image in qemu according to the options.
     -t, --test               test mode, exclusive with -g
     -h, --help               print help info
 
-    By default, the kernel exec file is: out/arm_mps2_an386/qemu_mini_system_demo/bin/liteos.
+    By default, the kernel exec file is: out/arm_mps2_an386/qemu_mini_system_demo/OHOS_Image.
 ```
 
 ## 6. gdb调试
@@ -123,17 +123,15 @@ $ hb build -f
 在一个窗口中输入命令：
 
 ```
-$ ./qemu-run -g e out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
+$ ./qemu-run -g
 ```
 
 在另一个窗口中输入命令：
 
 ```
-$ arm-none-eabi-gdb out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin/liteos
+$ arm-none-eabi-gdb out/arm_mps2_an386/qemu_mini_system_demo/OHOS_Image
 (gdb) target remote localhost:1234
 (gdb) b main
 ```
-
-提示: 采用gdb调试时，可执行文件必须选择 `out/arm_mps2_an386/qemu_mini_system_demo/unstripped/bin` 目录下的可执行文件
 
 更多gdb相关的调试可以查阅：[gdb指导手册](https://sourceware.org/gdb/current/onlinedocs/gdb)。
