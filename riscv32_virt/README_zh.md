@@ -38,11 +38,11 @@ hb set
 hb build
 ```
 
-这个命令构建会产生 `liteos` 的镜像文件。
+这个命令构建会产生 `OHOS_Image` 的镜像文件。
 
 在构建完成之后，对应的镜像文件在如下目录：
 ```
-out/riscv32_virt/qemu_riscv_mini_system_demo/bin
+out/riscv32_virt/qemu_riscv_mini_system_demo/
 ```
 
 ## 5. 在Qemu中运行镜像
@@ -55,7 +55,7 @@ b) 运行
 
 ```
 $ cd device/qemu/riscv32_virt
-$ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos -nographic -append "root=dev/vda or console=ttyS0"
+$ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
 ```
 
 (2). qemu 版本 >= 5.0.0
@@ -75,7 +75,7 @@ Run a OHOS image in qemu according to the options.
     -t, --test               test mode, exclusive with -g
     -h, --help               print help info
 
-    By default, the kernel exec file is: out/riscv32_virt/qemu_riscv_mini_system_demo/bin/liteos,
+    By default, the kernel exec file is: out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image,
     and net will not be enabled, gpu enabled and waiting for VNC connection at port 5920.
 ```
 默认不加参数的情况下，网络不会自动配置，并使用默认镜像文件，若需更改默认镜像文件，可以利用 `./qemu-run -e [file_name]` 指定
@@ -108,17 +108,15 @@ $ hb build -f
 在一个窗口中输入命令：
 
 ```
-$ ./qemu-run -g -e out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
+$ ./qemu-run -g
 ```
 
 在另一个窗口中输入命令：
 
 ```
-$ riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin/liteos
+$ riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image
 (gdb) target remote localhost:1234
 (gdb) b main
 ```
-
-提示: 采用gdb调试时，可执行文件必须选择 `out/riscv32_virt/qemu_riscv_mini_system_demo/unstripped/bin` 目录下的可执行文件。
 
 更多gdb相关的调试可以查阅：[gdb指导手册](https://sourceware.org/gdb/current/onlinedocs/gdb)。
