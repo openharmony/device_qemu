@@ -7,4 +7,8 @@ LOCAL_INCLUDE := -I $(LITEOSTOPDIR)/../../third_party/lwip/src/include/ \
 LOCAL_SRCS := virtnet.c virtmmio.c virtgpu.c virtinput.c
 LOCAL_CFLAGS += $(LOCAL_INCLUDE)
 
+ifdef LOSCFG_HW_RANDOM_ENABLE
+LOCAL_SRCS += virtrng.c
+endif
+
 include $(HDF_DRIVER)

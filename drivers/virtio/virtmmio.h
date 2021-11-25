@@ -66,6 +66,7 @@
 #define VIRTMMIO_MAGIC                      0x74726976
 #define VIRTMMIO_VERSION                    2
 #define VIRTMMIO_DEVICE_ID_NET              1
+#define VIRTMMIO_DEVICE_ID_RNG              4
 #define VIRTMMIO_DEVICE_ID_GPU              16
 #define VIRTMMIO_DEVICE_ID_INPUT            18
 
