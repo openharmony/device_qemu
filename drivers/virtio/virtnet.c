@@ -40,7 +40,7 @@ struct VirtnetConfig {
 };
 
 #define VIRTMMIO_NETIF_NAME                 "virtnet"
-#define VIRTMMIO_NETIF_NICK                 "vn0"
+#define VIRTMMIO_NETIF_NICK                 "eth0"
 #define VIRTMMIO_NETIF_DFT_IP               "10.0.2.15"
 #define VIRTMMIO_NETIF_DFT_GW               "10.0.2.2"
 #define VIRTMMIO_NETIF_DFT_MASK             "255.255.255.0"
@@ -482,6 +482,7 @@ ERR_OUT:
 static err_t EthernetIfInit(struct netif *netif)
 {
     struct VirtNetif *nic = NULL;
+    size_t i;
 
     LWIP_ASSERT("netif != NULL", (netif != NULL));
 
@@ -496,13 +497,18 @@ static err_t EthernetIfInit(struct netif *netif)
     netif->hostname = VIRTMMIO_NETIF_NAME;
 #endif
 
-    strncpy_s(netif->name, sizeof(netif->name), VIRTMMIO_NETIF_NICK, sizeof(netif->name));
-    strncpy_s(netif->full_name, sizeof(netif->full_name), VIRTMMIO_NETIF_NICK, sizeof(netif->full_name));
+    i = sizeof(netif->name) < sizeof(VIRTMMIO_NETIF_NICK) ?
+        sizeof(netif->name) : sizeof(VIRTMMIO_NETIF_NICK);
+    memcpy_s(netif->name, sizeof(netif->name), VIRTMMIO_NETIF_NICK, i);
+    i = sizeof(netif->full_name) < sizeof(VIRTMMIO_NETIF_NICK) ?
+        sizeof(netif->full_name) : sizeof(VIRTMMIO_NETIF_NICK);
+    memcpy_s(netif->full_name, sizeof(netif->full_name), VIRTMMIO_NETIF_NICK, i);
 
     netif->output = etharp_output;
     netif->linkoutput = LowLevelOutput;
 
     netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
+    netif->link_layer_type = ETHERNET_DRIVER_IF;
 
     return LowLevelInit(netif);
 }

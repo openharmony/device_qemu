@@ -219,3 +219,38 @@ console每秒输出为图形的帧率
 5. 退出
 
 在terminal中输入`Ctrl + c`
+
+## 观察dsoftbus组网发现<a name="dsoftbus_discover"></a>
+---
+
+### 运行一台虚拟机
+
+1. 启动结束后，观察日志显示dsoftbus试图发现设备。
+```
+./qemu-run -n
+```
+
+2. 修改ip地址。因为系统硬编码了虚拟机的网络参数，为区别两台虚拟机，需要手工调整一下参数。在OHOS提示符下：
+```
+ifconfig eth0 inet 10.0.2.16
+```
+
+### 运行另一台虚拟机
+
+3. 为这个虚拟机单独拷贝一份虚拟机映像。
+```
+cp flash.img flash2.img
+```
+
+4. 从//vendor/ohemu/qemu_small_system_demo/qemu_run.sh中拷贝出如下命令：
+```
+sudo `which qemu-system-arm` -M virt,gic-version=2,secure=on -cpu cortex-a7 -smp cpus=1 -m 1G -drive \
+  if=pflash,file=./flash2.img,format=raw -global virtio-mmio.force-legacy=false -netdev bridge,id=net0 \
+  -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:88 \
+  -device virtio-gpu-device,xres=800,yres=480 -device virtio-mouse-device \
+  -device virtio-rng-device -nographic
+```
+
+注意：这里修改了映像文件名、MAC地址；删除了一些脚本变量；为便于观察增加了nographic参数。
+
+5. 观察：启动快结束时，两台虚拟机的日志显示，相互发现了对方，并试图组网。
