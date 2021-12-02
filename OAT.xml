@@ -30,9 +30,13 @@
             <filefilter name="defaultFilter" desc="文件属于海思的license，但是属于apache2.0">
                 <filteritem type="filepath" name="drivers/uart/.*" desc="文件属于海思的license，但是属于apache2.0"/>
             </filefilter>
+            <filefilter name="defaultFilter" desc="apache license">
+                <filteritem type="filepath" name="SmartL_E802/liteos_m/board/hals/csky_driver/include/csi_config.h" desc="文件属于社区贡献，不用提供额外的说明"/>
+                <filteritem type="filepath" name="SmartL_E802/liteos_m/board/hals/csky_driver/include/*.h" desc="apache license"/>
+            </filefilter>
             <filefilter name="defaultFilter" desc="文件属于Nuttx的license">
-                <filteritem type="filepath" name="riscv32_virt/driver/video/fb.c" desc="文件属于Nuttx的license"/>
-                <filteritem type="filepath" name="riscv32_virt/driver/video/fb.h" desc="文件属于Nuttx的license"/>
+                <filteritem type="filepath" name="riscv32_virt/liteos_m/board/driver/video/fb.c" desc="文件属于Nuttx的license"/>
+                <filteritem type="filepath" name="riscv32_virt/liteos_m/board/driver/video/fb.h" desc="文件属于Nuttx的license"/>
             </filefilter>
             <filefilter name="defaultFilter" desc="三方驱动文件，属于apache license">
 		    <filteritem type="filepath" name="arm_mps2_an386/driver/arm_uart_drv.*" desc="apache license"/>
