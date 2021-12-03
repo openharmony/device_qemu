@@ -70,6 +70,15 @@ board_cxx_flags = board_cflags
 
 board_ld_flags = []
 
+# Newlib adapt.
+board_ld_flags += [
+  "-Wl,--wrap=_free_r",
+  "-Wl,--wrap,_malloc_usable_size_r",
+  "-Wl,--wrap,_malloc_r",
+  "-Wl,--wrap,_memalign_r",
+  "-Wl,--wrap,_realloc_r",
+]
+
 # Board related headfiles search path.
 board_include_dirs = [ "//utils/native/lite/include" ]
 

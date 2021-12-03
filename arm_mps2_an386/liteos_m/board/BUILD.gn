@@ -60,8 +60,18 @@ config("public") {
     "-Wl,-T" + rebase_path("liteos.ld"),
     "-nostdlib",
   ]
+
   libs = [
     "nosys",
     "gcc",
   ]
+
+  if (defined(LOSCFG_LIBC_NEWLIB)) {
+    ldflags -= [ "-nostdlib" ]
+    libs -= [ "nosys" ]
+    libs += [
+      "c",
+      "m",
+    ]
+  }
 }
