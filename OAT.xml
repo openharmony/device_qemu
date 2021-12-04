@@ -32,15 +32,17 @@
             </filefilter>
             <filefilter name="defaultFilter" desc="apache license">
                 <filteritem type="filepath" name="SmartL_E802/liteos_m/board/hals/csky_driver/include/csi_config.h" desc="文件属于社区贡献，不用提供额外的说明"/>
-                <filteritem type="filepath" name="SmartL_E802/liteos_m/board/hals/csky_driver/include/*.h" desc="apache license"/>
+                <filteritem type="filepath" name="SmartL_E802/liteos_m/board/hals/csky_driver/include/.*" desc="apache license"/>
+                <filteritem type="filepath" name="SmartL_E802/liteos_m/board/hals/csky_driver/src/.*" desc="apache license"/>
+                <filteritem type="filepath" name="SmartL_E802/liteos_m/board/startup.S" desc="apache license"/>
             </filefilter>
             <filefilter name="defaultFilter" desc="文件属于Nuttx的license">
                 <filteritem type="filepath" name="riscv32_virt/liteos_m/board/driver/video/fb.c" desc="文件属于Nuttx的license"/>
                 <filteritem type="filepath" name="riscv32_virt/liteos_m/board/driver/video/fb.h" desc="文件属于Nuttx的license"/>
             </filefilter>
             <filefilter name="defaultFilter" desc="三方驱动文件，属于apache license">
-		    <filteritem type="filepath" name="arm_mps2_an386/driver/arm_uart_drv.*" desc="apache license"/>
-		    <filteritem type="filepath" name="arm_mps2_an386/driver/LICENSE-apache-2.0.txt" desc="license file"/>
+                <filteritem type="filepath" name="arm_mps2_an386/liteos_m/board/driver/arm_uart_drv.*" desc="apache license"/>
+                <filteritem type="filepath" name="arm_mps2_an386/liteos_m/board/driver/LICENSE-apache-2.0.txt" desc="license file"/>
             </filefilter>
             <filefilter name="defaultFilter" desc="Files not to check">
                 <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
