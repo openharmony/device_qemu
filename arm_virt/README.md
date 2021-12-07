@@ -123,6 +123,8 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
 
 - [Running the Graphic Demo](example.md#simple_ui_demo)
 
+- [Observe dsoftbus discovery](example.md#dsoftbus_discover)
+
 ## FAQ:
 1. How do I locate a network configuration problem?
 
@@ -158,7 +160,7 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
    echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
    ```
 
-   Note: The system network configuration is hardcoded to **10.0.2.0/24** for the IP address, **10.0.2.2** for the gateway, and **10.0.2.15** for the default IP address. Use different MAC addresses, IP addresses, and flash image (recommended) for different client instances. The MAC address can be transferred using the QEMU command line. The IP address can be adjusted in the OHOS command line, for example, using `ifconfig vn0 inet 10.0.2.30` or other methods.
+   Note: The system network configuration is hardcoded to **10.0.2.0/24** for the IP address, **10.0.2.2** for the gateway, and **10.0.2.15** for the default IP address. Use different MAC addresses, IP addresses, and flash image (recommended) for different client instances. The MAC address can be transferred using the QEMU command line. The IP address can be adjusted in the OHOS command line, for example, using `ifconfig eth0 inet 10.0.2.30` or other methods.
 
 2. How do I troubleshoot the error when running `qemu-system-arm`?
 

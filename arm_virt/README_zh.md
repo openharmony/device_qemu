@@ -127,6 +127,8 @@ $ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
 
 - [运行图形demo](example.md#simple_ui_demo)
 
+- [观察dsoftbus组网发现](example.md#dsoftbus)
+
 ## FAQ:
 1. 当网络配置出现问题时，如何排查问题？
 
@@ -162,7 +164,7 @@ $ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
    echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
    ```
 
-   提示：系统网络硬编码为10.0.2.0/24，网关10.0.2.2，默认网址10.0.2.15。不同的客户机实例应使用不同的MAC和IP地址(flash映像文件也最好不同)，MAC地址可通过QEMU命令行传递，IP地址可在OHOS命令行中调整，如`ifconfig vn0 inet 10.0.2.30`，或使用其它方法。
+   提示：系统网络硬编码为10.0.2.0/24，网关10.0.2.2，默认网址10.0.2.15。不同的客户机实例应使用不同的MAC和IP地址(flash映像文件也最好不同)，MAC地址可通过QEMU命令行传递，IP地址可在OHOS命令行中调整，如`ifconfig eth0 inet 10.0.2.30`，或使用其它方法。
 
 2. qemu-run提示`qemu-system-arm`运行出错时，如何排查问题？
 

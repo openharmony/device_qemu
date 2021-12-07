@@ -106,5 +106,18 @@
                 }
             }
         }
+        dsoftbus :: host {
+            hostName = "dsoftbus_host";
+            device_dsoftbus :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 100;
+                    preload = 0;
+                    permission = 0664;
+                    moduleName = "HDF_DSOFTBUS";
+                    serviceName = "hdf_dsoftbus";
+                }
+            }
+        }
     }
 }
