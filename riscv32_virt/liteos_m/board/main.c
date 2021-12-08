@@ -20,12 +20,6 @@
 #include "los_debug.h"
 #include "uart.h"
 
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-#endif /* __cplusplus */
-
 #ifdef LOSCFG_NET_LWIP
 
 #define IFNAMSIZ  IF_NAMESIZE
@@ -164,8 +158,49 @@ START_FAILED:
     }
 }
 
-#ifdef __cplusplus
-#if __cplusplus
+void *ioremap(uintptr_t paddr, unsigned long size)
+{
+    printf("[WARN] Function to be implemented: %s\n", __FUNCTION__);
+    return paddr;
 }
-#endif /* __cplusplus */
-#endif /* __cplusplus */
+
+void iounmap(void *vaddr)
+{
+    printf("[WARN] Function to be implemented: %s\n", __FUNCTION__);
+}
+
+int32_t I2cOpen(int16_t number)
+{
+    printf("[WARN] Function to be implemented: %s\n", __FUNCTION__);
+    return 0;
+}
+
+int32_t GpioRead(uint16_t gpio, uint16_t *val)
+{
+    printf("[WARN] Function to be implemented: %s\n", __FUNCTION__);
+    return 0;
+}
+
+int32_t GpioSetIrq(uint16_t gpio, uint16_t mode, void *func, void *arg)
+{
+    printf("[WARN] Function to be implemented: %s\n", __FUNCTION__);
+    return 0;
+}
+
+int32_t GpioSetDir(uint16_t gpio, uint16_t dir)
+{
+    printf("[WARN] Function to be implemented: %s\n", __FUNCTION__);
+    return 0;
+}
+
+int32_t GpioEnableIrq(uint16_t gpio)
+{
+    printf("[WARN] Function to be implemented: %s\n", __FUNCTION__);
+    return 0;
+}
+
+int32_t GpioDisableIrq(uint16_t gpio)
+{
+    printf("[WARN] Function to be implemented: %s\n", __FUNCTION__);
+    return 0;
+}
