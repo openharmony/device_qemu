@@ -34,6 +34,7 @@
  */
 
 #include "soc.h"
+#include "stdbool.h"
 
 #ifndef _TARGET_CONFIG_H
 #define _TARGET_CONFIG_H
