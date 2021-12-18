@@ -3,7 +3,7 @@
 
 liteos_a提供了定制bootargs的机制，通过qemu-run可以向内核传递参数，格式为：-b arg0=val0,arg1=val1...。当不与-f参数同时使用时，可在现有flash镜像基础上，仅更新镜像中bootargs分区内容。
 
-传递到内核的参数名字和值均为字符串，具体使用方式请见kernel/common/rootfs有关代码。
+传递到内核的参数名字和值均为字符串，具体使用方式请见fs/rootfs有关代码。
 
 ## 用FAT映像传递文件<a name="sectionfatfs"></a>
 ---
@@ -128,7 +128,7 @@ applications/sample/helloworld/src/helloworld.c
 
 **注意**：helloworld.json中dirs和targets的属性值是不带src的
 
-5. 在vendor/ohemu/display_qemu_liteos_a/config.json配置文件中找到subsystems属性，并下面追加helloworld的subsystem配置，配置参考如下：
+5. 在vendor/ohemu/qemu_small_system_demo/config.json配置文件中找到subsystems属性，并下面追加helloworld的subsystem配置，配置参考如下：
 ```
     {
       "subsystem": "helloworld",
@@ -138,13 +138,13 @@ applications/sample/helloworld/src/helloworld.c
     }
 ```
 
-**注意**：vendor/ohemu/display_qemu_liteos_a/config.json对应的编译模板为 display_qemu，后面编译时需要选择这个模板；另外修改JSON配置的时候一定要将多余的逗号去掉，否则编译时会报错
+**注意**：修改JSON配置的时候一定要将多余的逗号去掉，否则编译时会报错
 
 6. 编译并构建qemu虚拟环境
 
 参考链接: [编译方法](README_zh.md)
 
-**注意**：helloworld 正常编译后会出现在 out/arm_virt/display_qemu/bin中，如果没有，请返回检查相关配置文件中的路径和名称是否有误，并尝试重新编译直到出现helloword
+**注意**：helloworld 正常编译后会出现在 out/arm_virt/qemu_small_system_demo/bin中，如果没有，请返回检查相关配置文件中的路径和名称是否有误，并尝试重新编译直到出现helloword
 
 ```
 提示：编译完成后，代码根目录下会生成qemu-run脚本，直接运行该脚本默认以非root权限运行qemu环境(不含网络配置)。其他参数配置
