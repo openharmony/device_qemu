@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2020-2021 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/dts-v1/;
+
+/ {
+    description = "U-Boot uImage source file for arm_virt";
+    #address-cells = <1>;
+
+    images {
+        kernel@1 {
+            description = "Linux kernel for arm_virt";
+            data = /incbin/("./packages/phone/images/zImage-dtb");
+            type = "kernel";
+            arch = "arm";
+            os = "linux";
+            compression = "none";
+            load = <0x82000000>;
+            entry = <0x82000000>;
+        };
+	ramdisk@1 {
+            description = "ohos Ramdisk Image";
+            data = /incbin/("./ramdisk.img");
+            type = "ramdisk";
+            arch = "arm";
+            os = "linux";
+            compression = "none";
+            load = <0x84000000>;
+            entry = <0x84000000>;
+        };
+    };
+
+    configurations {
+        default = "conf@boot";
+        conf@boot {
+            description = "booting ARM Linux Kernel Image";
+            kernel = "kernel@1";
+            ramdisk = "ramdisk@1";
+        };
+    };
+};

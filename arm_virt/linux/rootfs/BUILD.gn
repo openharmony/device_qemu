@@ -1,0 +1,47 @@
+# Copyright (c) 2020 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+import("//build/ohos.gni")
+
+ohos_prebuilt_etc("qemu.arm.linux.init.cfg") {
+  source = "qemu.arm.linux.init.cfg"
+  if (!enable_ramdisk) {
+    install_images = [ "system" ]
+  } else {
+    install_images = [ "vendor" ]
+  }
+  part_name = "qemu_arm_linux_chipset"
+}
+
+ohos_prebuilt_etc("qemu.arm.linux.usb.cfg") {
+  source = "qemu.arm.linux.usb.cfg"
+  if (!enable_ramdisk) {
+    install_images = [ "system" ]
+  } else {
+    install_images = [ "vendor" ]
+  }
+  part_name = "qemu_arm_linux_chipset"
+}
+
+ohos_prebuilt_etc("qemu.arm.linux.updater.cfg") {
+  source = "qemu.arm.linux.updater.cfg"
+  install_images = [ "updater" ]
+  part_name = "qemu_arm_linux_chipset"
+}
+
+group("rootfs_files") {
+  deps = [
+    ":qemu.arm.linux.init.cfg",
+    ":qemu.arm.linux.updater.cfg",
+    ":qemu.arm.linux.usb.cfg",
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "subsystem": "qemu_arm_linux_chipset",
+  "parts": {
+    "qemu_arm_linux_chipset": {
+      "module_list": [
+        "//device/qemu/arm_virt/linux:qemu-arm-linux-group"
+      ]
+    }
+  }
+}
