@@ -186,12 +186,12 @@ static void FreeTxEntry(struct VirtNetif *nic, uint16_t head)
 
 static void ReleaseRxEntry(struct pbuf *p)
 {
-    struct RbufRecord *pc = (struct RbufRecord *)p;
-    struct VirtNetif *nic = pc->nic;
+    struct RbufRecord *pr = (struct RbufRecord *)p;
+    struct VirtNetif *nic = pr->nic;
     uint32_t intSave;
 
     LOS_SpinLockSave(&nic->recvLock, &intSave);
-    nic->dev.vq[0].avail->ring[nic->dev.vq[0].avail->index % nic->dev.vq[0].qsz] = pc->id;
+    nic->dev.vq[0].avail->ring[nic->dev.vq[0].avail->index % nic->dev.vq[0].qsz] = pr->id;
     DSB;
     nic->dev.vq[0].avail->index++;
     LOS_SpinUnlockRestore(&nic->recvLock, intSave);
