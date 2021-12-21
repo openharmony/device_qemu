@@ -11,14 +11,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-static_library("board") {
+import("//kernel/liteos_m/liteos.gni")
+
+kernel_module("bsp_config") {
   sources = [
     "fs/fs_init.c",
-    "fs/hal_littlefs.c",
-    "fs/hal_vfs.c",
     "fs/littlefs_hal.c",
     "hals/driver/hal_watchdog.c",
-    "hals/utils/file/hal_file.c",
     "libc/dprintf.c",
     "libc/swap.c",
     "main.c",
@@ -27,13 +26,11 @@ static_library("board") {
     # kernel's testsuites not enabled, use ower's
     sources += [ "test/task_demo.c" ]
   }
-  if (defined(LOSCFG_FS_FAT)) {
-    sources += [ "fs/ff_gen_drv.c" ]
-  }
   include_dirs = [
     "include",
     "hals/driver",
     "test",
+    "fs",
     "//utils/native/lite/include",
   ]
 }

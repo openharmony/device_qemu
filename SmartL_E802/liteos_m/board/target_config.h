@@ -61,21 +61,22 @@ extern "C" {
                                        Task module configuration
 =============================================================================*/
 #define LOSCFG_BASE_CORE_TSK_LIMIT                          16
-#define LOSCFG_BASE_CORE_TSK_IDLE_STACK_SIZE                (0x600U)
-#define LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE             (0x800U)
-#define LOSCFG_BASE_CORE_TSK_MIN_STACK_SIZE                 (0x400U)
+#define LOSCFG_BASE_CORE_TSK_IDLE_STACK_SIZE                (0x1000U)
+#define LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE             (0x2000U)
+#define LOSCFG_BASE_CORE_TSK_MIN_STACK_SIZE                 (0x1000U)
 #define LOSCFG_BASE_CORE_TIMESLICE                          1
-#define LOSCFG_BASE_CORE_TIMESLICE_TIMEOUT                  1000
+#define LOSCFG_BASE_CORE_TIMESLICE_TIMEOUT                  20000
+#define LOSCFG_BASE_CORE_TSK_DEFAULT_PRIO                   15
 /*=============================================================================
                                        Semaphore module configuration
 =============================================================================*/
 #define LOSCFG_BASE_IPC_SEM                                 1
-#define LOSCFG_BASE_IPC_SEM_LIMIT                           20
+#define LOSCFG_BASE_IPC_SEM_LIMIT                           48
 /*=============================================================================
                                        Mutex module configuration
 =============================================================================*/
 #define LOSCFG_BASE_IPC_MUX                                 1
-#define LOSCFG_BASE_IPC_MUX_LIMIT                           20
+#define LOSCFG_BASE_IPC_MUX_LIMIT                           24
 /*=============================================================================
                                        Queue module configuration
 =============================================================================*/
@@ -85,8 +86,8 @@ extern "C" {
                                        Software timer module configuration
 =============================================================================*/
 #define LOSCFG_BASE_CORE_SWTMR                              1
-#define LOSCFG_BASE_CORE_SWTMR_ALIGN                        0
-#define LOSCFG_BASE_CORE_SWTMR_LIMIT                        16
+#define LOSCFG_BASE_CORE_SWTMR_ALIGN                        1
+#define LOSCFG_BASE_CORE_SWTMR_LIMIT                        48
 /*=============================================================================
                                        Exception module configuration
 =============================================================================*/

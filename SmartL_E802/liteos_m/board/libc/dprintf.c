@@ -30,6 +30,7 @@
  */
 
 #include "dprintf.h"
+#include <stdarg.h>
 #include "stdio.h"
 #include "pin.h"
 #include "drv_gpio.h"
@@ -37,9 +38,11 @@
 #include <csi_config.h>
 #include "los_compiler.h"
 
-#define UART_QUEUE_SIZE         64
-#define UART_QUEUE_BUF_MAX_LEN  1
-#define UART_BAUDRATE           115200
+#define PLACEHOLDER_OFFSET  2
+#define HEXADECIMAL_NUM     16
+#define DECIMALISM_NUM      10
+#define BOUNDARY_NUM        9
+#define UART_BAUDRATE       115200
 
 usart_handle_t g_consoleHandle;
 
@@ -53,38 +56,128 @@ void uart_early_init(void)
                      USART_PARITY_NONE, USART_STOP_BITS_1, USART_DATA_BITS_8);
 }
 
-int fputc(int ch, FILE *stream)
+STATIC VOID UartPutc(CHAR c)
 {
-    (void)stream;
-    if (g_consoleHandle == NULL) {
-        return -1;
-    }
-    if (ch == '\n') {
-        csi_usart_putchar(g_consoleHandle, '\r');
-    }
-    csi_usart_putchar(g_consoleHandle, ch);
-    return 0;
+    (VOID)csi_usart_putchar(g_consoleHandle, c);
 }
 
-int fgetc(FILE *stream)
+STATIC VOID MatchedOut(CHAR data, va_list *ap)
 {
-    uint8_t ch;
-    (void)stream;
-    if (g_consoleHandle == NULL) {
-        return -1;
+    CHAR c = 0;
+    UINT32 v, n;
+    UINT32 val[100];
+    CHAR *s = NULL;
+    INT32 i = 0;
+    INT32 j = 0;
+
+    switch (data) {
+        case 'c':
+            c = va_arg(*ap, UINT32);
+            UartPutc(c);
+            break;
+        case 's':
+            s = va_arg(*ap, CHAR*);
+            while (*s) {
+                UartPutc(*s++);
+            }
+            break;
+        case 'd':
+            v = va_arg(*ap, UINT32);
+            i = 0;
+            while (v) {
+                n = v % DECIMALISM_NUM;
+                val[i] = n;
+                v = v / DECIMALISM_NUM;
+                i++;
+            }
+            if (i == 0) {
+                UartPutc('0');
+            }
+            for (j = i - 1; j >= 0; j--) {
+                UartPutc('0' + val[j]);
+            }
+            break;
+        case 'x':
+            v = va_arg(*ap, UINT32);
+            i = 0;
+            if (v == 0) {
+                val[i] = 0;
+                i++;
+            }
+            while (v) {
+                n = v % HEXADECIMAL_NUM;
+                val[i] = n;
+                v = v / HEXADECIMAL_NUM;
+                i++;
+            }
+            if (i == 0) {
+                UartPutc('0');
+            }
+            for (j = i - 1; j >= 0; j--) {
+                if (val[j] > BOUNDARY_NUM) {
+                    UartPutc('a' + val[j] - DECIMALISM_NUM);
+                } else {
+                    UartPutc('0' + val[j]);
+                }
+            }
+            break;
+        case 'p':
+            v = va_arg(*ap, UINT32);
+            i = 0;
+            if (v == 0) {
+                val[i] = 0;
+                i++;
+            }
+            while (v) {
+                n = v % HEXADECIMAL_NUM;
+                val[i] = n;
+                v = v / HEXADECIMAL_NUM;
+                i++;
+            }
+            UartPutc('0');
+            UartPutc('x');
+            if (i == 0) {
+                UartPutc('0');
+            }
+            for (j = i - 1; j >= 0; j--) {
+                if (val[j] > BOUNDARY_NUM) {
+                    UartPutc('a' + val[j] - DECIMALISM_NUM);
+                } else {
+                    UartPutc('0' + val[j]);
+                }
+            }
+            break;
+        default:
+            break;
     }
-    csi_usart_getchar(g_consoleHandle, &ch);
-    return ch;
 }
 
-int os_critical_enter(unsigned int *lock)
+INT32 printf(const CHAR *fmt, ...)
 {
-    (void)lock;
-    return 0;
-}
-
-int os_critical_exit(unsigned int *lock)
-{
-    (void)lock;
+    va_list ap;
+    (VOID)va_start(ap, fmt);
+    while (*fmt != '\0') {
+        switch (*fmt) {
+            case '%':
+                MatchedOut(fmt[1], &ap);
+                fmt += PLACEHOLDER_OFFSET;
+                break;
+            case '\n':
+                UartPutc('\r');
+                UartPutc('\n');
+                fmt++;
+                break;
+            case '\r':
+                UartPutc('\r');
+                UartPutc('\n');
+                fmt++;
+                break;
+            default:
+                UartPutc(*fmt);
+                fmt++;
+                break;
+        }
+    }
+    (VOID)va_end(ap);
     return 0;
 }

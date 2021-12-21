@@ -29,59 +29,52 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "errno.h"
-#include "fcntl.h"
+#include "hal_file.h"
+#include "securec.h"
 #include "sys/stat.h"
-#include "hal_littlefs.h"
-#include "hal_vfs.h"
-#include "lfs.h"
-#include "lfs_rambd.h"
 #include "fs_config.h"
 
 int HalFileOpen(const char* path, int oflag, int mode)
 {
     char tmpPath[LITTLEFS_MAX_LFN_LEN] = {0};
     (void)snprintf_s(tmpPath, LITTLEFS_MAX_LFN_LEN, LITTLEFS_MAX_LFN_LEN, "/littlefs/%s", path);
-    return EspOpen(tmpPath, oflag, mode);
+    return open(tmpPath, oflag, mode);
 }
 
 int HalFileClose(int fd)
 {
-    return EspClose(fd);
+    return close(fd);
 }
 
 int HalFileRead(int fd, char *buf, unsigned int len)
 {
-    return EspRead(fd, buf, len);
+    return read(fd, buf, len);
 }
 
 int HalFileWrite(int fd, const char *buf, unsigned int len)
 {
-    return EspWrite(fd, buf, len);
+    return write(fd, buf, len);
 }
 
 int HalFileDelete(const char *path)
 {
     char tmpPath[LITTLEFS_MAX_LFN_LEN] = {0};
     (void)snprintf_s(tmpPath, LITTLEFS_MAX_LFN_LEN, LITTLEFS_MAX_LFN_LEN, "/littlefs/%s", path);
-    return EspUnlink(tmpPath);
+    return unlink(path);
 }
 
 int HalFileStat(const char *path, unsigned int *fileSize)
 {
     char tmpPath[LITTLEFS_MAX_LFN_LEN] = {0};
-    struct stat halStat = {0};
+    struct stat halStat ;
     int ret = 0;
     (void)snprintf_s(tmpPath, LITTLEFS_MAX_LFN_LEN, LITTLEFS_MAX_LFN_LEN, "/littlefs/%s", path);
-    ret = EspStat(tmpPath, &halStat);
+    ret = stat(tmpPath, &halStat);
     *fileSize = halStat.st_size;
     return ret;
 }
 
 int HalFileSeek(int fd, int offset, unsigned int whence)
 {
-    return EspLseek(fd, (off_t)offset, whence);
+    return lseek(fd, (off_t)offset, whence);
 }

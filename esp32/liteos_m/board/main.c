@@ -44,12 +44,25 @@ VOID BssClean(VOID)
 
 INT32 main(VOID)
 {
+    UINT32 ret;
+
     BssClean();
     WdtDisable();
 
     __asm__ __volatile__("mov sp, %0" : : "r"(&__init_stack_e));
 
-    RunTaskSample();
+    ret = LOS_KernelInit();
+    if (ret != LOS_OK) {
+        printf("Liteos kernel init failed! ERROR: 0x%x\n", ret);
+    }
+    FileSystemInit();
+
+    ret = LosAppInit();
+    if (ret != LOS_OK) {
+        printf("LosAppInit failed! ERROR: 0x%x\n", ret);
+    }
+
+    LOS_Start();
 
     return 0;
 }

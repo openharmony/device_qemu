@@ -38,12 +38,12 @@
 #define DECIMALISM_NUM      10
 #define BOUNDARY_NUM        9
 
-VOID UartPutc(CHAR c)
+STATIC VOID UartPutc(CHAR c)
 {
     (VOID)uart_tx_one_char(c);
 }
 
-VOID MatchedOut(CHAR data, va_list *ap)
+STATIC VOID MatchedOut(CHAR data, va_list *ap)
 {
     CHAR c = 0;
     UINT32 v, n;

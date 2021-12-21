@@ -31,8 +31,9 @@
 
 #include "stdio.h"
 #include "soc.h"
-#include "task_demo.h"
+#include "los_task.h"
 #include "dprintf.h"
+#include "task_demo.h"
 
 int g_system_clock = IHS_VALUE;
 #ifndef CONFIG_SYSTICK_HZ
@@ -46,9 +47,22 @@ void SystemInit(void)
 
 LITE_OS_SEC_TEXT_INIT int main(void)
 {
+    UINT32 ret;
+
     SystemInit();
     uart_early_init();
-    RunTaskSample();
+    ret = LOS_KernelInit();
+    if (ret != LOS_OK) {
+        printf("Liteos kernel init failed! ERROR: 0x%x\n", ret);
+    }
+    FileSystemInit();
+
+    ret = LosAppInit();
+    if (ret != LOS_OK) {
+        printf("LosAppInit failed! ERROR: 0x%x\n", ret);
+    }
+
+    LOS_Start();
 
     while (1) {
         __asm volatile("wait");

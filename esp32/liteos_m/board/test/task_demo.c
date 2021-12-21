@@ -36,6 +36,9 @@
 #include "los_task.h"
 #include "utils_file.h"
 
+#define TASK1_PRIORITY        6
+#define TASK2_PRIORITY        7
+
 VOID TaskSampleEntry2(VOID)
 {
     while (1) {
@@ -52,7 +55,7 @@ VOID TaskSampleEntry1(VOID)
     }
 }
 
-VOID TaskSample(VOID)
+UINT32 LosAppInit(VOID)
 {
     UINT32 ret;
     UINT32 taskID1;
@@ -62,8 +65,8 @@ VOID TaskSample(VOID)
     stTask.pfnTaskEntry = (TSK_ENTRY_FUNC)TaskSampleEntry1;
     stTask.uwStackSize = LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE;
     stTask.pcName = "TaskSampleEntry1";
-    stTask.usTaskPrio = 2; /* Os task priority is 2 */
-    ret = LOS_TaskCreate(&taskID2, &stTask);
+    stTask.usTaskPrio = TASK1_PRIORITY;
+    ret = LOS_TaskCreate(&taskID1, &stTask);
     if (ret != LOS_OK) {
         printf("Task1 create failed\n");
     }
@@ -71,20 +74,11 @@ VOID TaskSample(VOID)
     stTask.pfnTaskEntry = (TSK_ENTRY_FUNC)TaskSampleEntry2;
     stTask.uwStackSize = LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE;
     stTask.pcName = "TaskSampleEntry2";
-    stTask.usTaskPrio = 2; /* Os task priority is 2 */
+    stTask.usTaskPrio = TASK2_PRIORITY;
     ret = LOS_TaskCreate(&taskID2, &stTask);
     if (ret != LOS_OK) {
         printf("Task2 create failed\n");
     }
-}
 
-VOID RunTaskSample(VOID)
-{
-    UINT32 ret;
-    ret = LOS_KernelInit();
-    FileSystemInit();
-    if (ret == LOS_OK) {
-        TaskSample();
-        (VOID)LOS_Start();
-    }
+    return ret;
 }
