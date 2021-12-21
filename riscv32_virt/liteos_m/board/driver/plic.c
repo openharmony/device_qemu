@@ -66,7 +66,7 @@ VOID PlicIrqInit()
 
     WRITE_UINT32(0, plicReg);
 
-    ret = HalHwiCreate(RISCV_MACH_EXT_IRQ, 0x1, 0, OsMachineExternalInterrupt, 0);
+    ret = LOS_HwiCreate(RISCV_MACH_EXT_IRQ, 0x1, 0, OsMachineExternalInterrupt, 0);
     if (ret != LOS_OK) {
         PRINT_ERR("Creat machine external failed! ret : 0x%x\n", ret);
     }

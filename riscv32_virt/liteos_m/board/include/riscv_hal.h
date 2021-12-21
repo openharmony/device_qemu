@@ -17,7 +17,7 @@
 #define _RISCV_HAL_H
 
 #include "los_compiler.h"
-#include "los_context.h"
+#include "los_timer.h"
 
 #ifdef __cplusplus
 #if __cplusplus
