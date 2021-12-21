@@ -33,6 +33,8 @@ import("//kernel/liteos_m/liteos.gni")
 hdf_driver("bsp_config") {
   asmflags = board_asmflags
   sources = [
+    "driver/cfiflash/cfiflash.c",
+    "driver/cfiflash/hdf_cfi.c",
     "driver/plic.c",
     "driver/uart.c",
     "driver/video/fb.c",
@@ -54,10 +56,12 @@ hdf_driver("bsp_config") {
     sources += [
       "test/display_test.c",
       "test/input_demo.c",
+      "test/mount.c",
       "test/test_demo.c",
     ]
   }
   include_dirs = [
+    "driver/cfiflash",
     "driver/video",
     "hardware",
     "hardware/adapter",
