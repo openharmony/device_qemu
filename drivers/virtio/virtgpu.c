@@ -801,3 +801,13 @@ void up_fbuninitialize(int display)
         VirtgpuDeInit(g_virtGpu);
     }
 }
+
+uint32_t VirtgpuGetXres(void)
+{
+    return g_virtGpu->screen.width;
+}
+
+uint32_t VirtgpuGetYres(void)
+{
+    return g_virtGpu->screen.height;
+}

@@ -151,4 +151,7 @@ void VritmmioInitEnd(const struct VirtmmioDev *dev);
 
 void VirtmmioInitFailed(const struct VirtmmioDev *dev);
 
+uint32_t VirtgpuGetXres(void);
+uint32_t VirtgpuGetYres(void);
+
 #endif

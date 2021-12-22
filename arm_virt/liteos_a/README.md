@@ -172,7 +172,7 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
         -netdev bridge,id=net0 \
         -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
         -device virtio-gpu-device,xres=800,yres=480 \
-        -device virtio-mouse-device \
+        -device virtio-tablet-device \
         -device virtio-rng-device \
         -vnc :20 \
         -s -S \
@@ -188,7 +188,7 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
    -netdev                      [optional] NIC bridge type
    -device virtio-net-device    [optional] NIC device
    -device virtio-gpu-device    GPU device
-   -device virtio-mouse-device  Mouse device
+   -device virtio-tablet-device Input device
    -device virtio-rng-device    Random generator device
    -vnc: 20                     [optional] Remote desktop connection, port 5920
    -s -S                        [optional] gdb single step debug
@@ -215,3 +215,8 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
    The LTS code has a kernel startup defect. You can try to resolve the problem by referring to the following:
 
    https://gitee.com/openharmony/kernel_liteos_a/pulls/324
+
+
+4. VNC window has no cursor?
+
+   Virtio-tablet is an emulated tablet input device. Neither QEMU captures nor the virtual machine displays it. The cursor is displayed by VNC client. Please check VNC client options.

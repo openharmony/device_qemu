@@ -25,9 +25,12 @@
 #define VIRTQ_STATUS_QSZ    1
 #define VIRTMMIO_INPUT_NAME "virtinput"
 
-#define VIRTIN_PRECEDE_DOWN_YES  0
-#define VIRTIN_PRECEDE_DOWN_NO   1
-#define VIRTIN_PRECEDE_DOWN_SYN  2
+/*
+ * QEMU virtio-tablet coordinates sit in a fixed square:
+#define INPUT_EVENT_ABS_MIN    0x0000
+#define INPUT_EVENT_ABS_MAX    0x7FFF
+ */
+#define QEMU_TABLET_LEN        0x8000
 
 enum {
     VIRTIO_INPUT_CFG_UNSET      = 0x00,
@@ -124,33 +127,16 @@ static void PopulateEventQ(const struct Virtin *in)
 static void VirtinWorkCallback(void *arg)
 {
     struct VirtinEvent *ev = arg;
-    HidReportEvent(g_virtInputDev, ev->type, ev->code, ev->value);
-}
-
-/*
- * When VM captures mouse, the event is incomplete. We should filter it
- * out: a left-button-up event happened with no left-button-down preceded.
- * We don't know when mouse released, so have to check the signature often.
- */
-static bool VirtinGrabbed(const struct VirtinEvent *ev)
-{
-    static int precedeDown = VIRTIN_PRECEDE_DOWN_NO;
-
-    if (ev->type == EV_KEY && ev->code == BTN_LEFT) {
-        if (ev->value == 1) {       /* left-button-down: must already captured */
-            precedeDown = VIRTIN_PRECEDE_DOWN_YES;
-        } else if (precedeDown == VIRTIN_PRECEDE_DOWN_YES) {  /* left-button-up: have preceded DOWN, counteract */
-            precedeDown = VIRTIN_PRECEDE_DOWN_NO;
-        } else {                    /* left-button-up: no preceded DOWN, filter this and successive EV_SYN */
-            precedeDown = VIRTIN_PRECEDE_DOWN_SYN;
-            return false;
+    if (ev->type == EV_ABS) {
+        if (ev->code == ABS_X) {    /* scale to actual screen */
+            ev->value = ev->value * VirtgpuGetXres() / QEMU_TABLET_LEN;
+            ev->code = ABS_MT_POSITION_X;   /* OHOS WMS only support this code for EV_ABS */
+        } else if (ev->code == ABS_Y) {
+            ev->value = ev->value * VirtgpuGetYres() / QEMU_TABLET_LEN;
+            ev->code = ABS_MT_POSITION_Y;
         }
     }
-    if (precedeDown == VIRTIN_PRECEDE_DOWN_SYN) {    /* EV_SYN */
-        precedeDown = VIRTIN_PRECEDE_DOWN_NO;
-        return false;
-    }
-    return true;
+    HidReportEvent(g_virtInputDev, ev->type, ev->code, ev->value);
 }
 
 static void VirtinHandleEv(struct Virtin *in)
@@ -165,10 +151,8 @@ static void VirtinHandleEv(struct Virtin *in)
         DSB;
         idx = q->used->ring[q->last % q->qsz].id;
 
-        if (VirtinGrabbed(&in->ev[idx])) {
-            if (HdfWorkInit(&w, VirtinWorkCallback, &in->ev[idx]) == HDF_SUCCESS) {
-                (void)HdfAddWork(&in->wq, &w);  /* HDF will alloc for 'realwork' */
-            }
+        if (HdfWorkInit(&w, VirtinWorkCallback, &in->ev[idx]) == HDF_SUCCESS) {
+            (void)HdfAddWork(&in->wq, &w);  /* HDF will alloc for 'realwork' */
         }
 
         q->avail->ring[(q->avail->index + add++) % q->qsz] = idx;
@@ -198,7 +182,28 @@ static uint32_t VirtinIRQhandle(uint32_t swIrq, void *dev)
     return 0;
 }
 
-static bool VirtinFillHidCodeBitmap(struct VirtinConfig *conf, HidInfo *devInfo)
+static void VirtinFillHidAbsInfo(struct VirtinConfig *conf, HidInfo *devInfo)
+{
+    int32_t i;
+
+    for (i = 0; i < HDF_ABS_CNT; i++) {
+        DSB;
+        conf->select = VIRTIO_INPUT_CFG_ABS_INFO;
+        conf->subsel = i;
+        DSB;
+        if (conf->size == 0) {
+            continue;
+        }
+        devInfo->axisInfo[i].axis = i;
+        devInfo->axisInfo[i].min = (int32_t)conf->u.abs.min;
+        devInfo->axisInfo[i].max = (int32_t)conf->u.abs.max;
+        devInfo->axisInfo[i].fuzz = (int32_t)conf->u.abs.fuzz;
+        devInfo->axisInfo[i].flat = (int32_t)conf->u.abs.flat;
+        devInfo->axisInfo[i].range = (int32_t)conf->u.abs.res;
+    }
+}
+
+static void VirtinFillHidCodeBitmap(struct VirtinConfig *conf, HidInfo *devInfo)
 {
     uint8_t *qDest = NULL;
     uint32_t i, evType, len;
@@ -221,17 +226,19 @@ static bool VirtinFillHidCodeBitmap(struct VirtinConfig *conf, HidInfo *devInfo)
                 len = DIV_ROUND_UP(HDF_REL_CNT, BYTE_HAS_BITS);
                 qDest = (uint8_t *)devInfo->relCode;
                 break;
+            case EV_ABS:
+                len = DIV_ROUND_UP(HDF_ABS_CNT, BYTE_HAS_BITS);
+                qDest = (uint8_t *)devInfo->absCode;
+                break;
             default:
-                HDF_LOGE("[%s]unsupported event type: %d", __func__, evType);
-                return false;
+                HDF_LOGW("[%s]unsupported event type: %d", __func__, evType);
+                continue;
         }
         devInfo->eventType[0] |= 1 << evType;
         for (i = 0; i < len && i < VIRTIN_PROP_LEN; i++) {
             qDest[i] = conf->u.bitmap[i];
         }
     }
-
-    return true;
 }
 
 static void VirtinFillHidDevIds(struct VirtinConfig *conf, HidInfo *devInfo)
@@ -247,7 +254,7 @@ static void VirtinFillHidDevIds(struct VirtinConfig *conf, HidInfo *devInfo)
     }
 }
 
-static bool VirtinFillHidInfo(const struct Virtin *in, HidInfo *devInfo)
+static void VirtinFillHidInfo(const struct Virtin *in, HidInfo *devInfo)
 {
     struct VirtinConfig *conf = (struct VirtinConfig *)(in->dev.base + VIRTMMIO_REG_CONFIG);
     uint32_t before, after;
@@ -259,15 +266,11 @@ static bool VirtinFillHidInfo(const struct Virtin *in, HidInfo *devInfo)
         before = OSAL_READL(in->dev.base + VIRTMMIO_REG_CONFIGGENERATION);
 
         VirtinFillHidDevIds(conf, devInfo);
-
-        if (!VirtinFillHidCodeBitmap(conf, devInfo)) {
-            return false;
-        }
+        VirtinFillHidCodeBitmap(conf, devInfo);
+        VirtinFillHidAbsInfo(conf, devInfo);
 
         after = OSAL_READL(in->dev.base + VIRTMMIO_REG_CONFIGGENERATION);
     } while (before != after);
-
-    return true;
 }
 
 static int32_t HdfVirtinInitHid(struct Virtin *in)
@@ -280,11 +283,7 @@ static int32_t HdfVirtinInitHid(struct Virtin *in)
         return HDF_ERR_MALLOC_FAIL;
     }
 
-    if (!VirtinFillHidInfo(in, devInfo)) {
-        ret = HDF_ERR_NOT_SUPPORT;
-        goto ERR_OUT;
-    }
-
+    VirtinFillHidInfo(in, devInfo);
     SendInfoToHdf(devInfo);
 
     g_virtInputDev = HidRegisterHdfInputDev(devInfo);
@@ -293,7 +292,6 @@ static int32_t HdfVirtinInitHid(struct Virtin *in)
         ret = HDF_FAILURE;
     }
 
-ERR_OUT:
     OsalMemFree(devInfo);
     return ret;
 }
