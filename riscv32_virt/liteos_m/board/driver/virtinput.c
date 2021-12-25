@@ -311,7 +311,7 @@ ERR_OUT:
 static void VirtinDeInit(struct Virtin *in)
 {
     if (in->dev.irq) { 
-       HalHwiDelete(in->dev.irq);
+        LOS_HwiDelete(in->dev.irq);
     }
     LOS_MemFree(OS_SYS_MEM_ADDR, in);
 }

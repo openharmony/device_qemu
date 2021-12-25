@@ -31,7 +31,7 @@ UINT32 MTimerTickInit(OS_TICK_HANDLER handler, UINT32 period)
 {
     unsigned int ret;
 
-    ret = HalHwiCreate(RISCV_MACH_TIMER_IRQ, 0x1, 0, (HWI_PROC_FUNC)handler, period);
+    ret = LOS_HwiCreate(RISCV_MACH_TIMER_IRQ, 0x1, 0, (HWI_PROC_FUNC)handler, period);
     if (ret != LOS_OK) {
         return ret;
     }

@@ -82,7 +82,7 @@ VOID UartReciveHandler(VOID)
 VOID Uart0RxIrqRegister(VOID)
 {
     WriteUartReg(UART_IER_OFFSET, ReadUartReg(UART_IER_OFFSET) | UART_IER_RDI);
-    uint32_t ret = HalHwiCreate(RISCV_UART0_Rx_IRQn, OS_HWI_PRIO_HIGHEST, 0, (HWI_PROC_FUNC)UartReciveHandler, 0);
+    uint32_t ret = LOS_HwiCreate(RISCV_UART0_Rx_IRQn, OS_HWI_PRIO_HIGHEST, 0, (HWI_PROC_FUNC)UartReciveHandler, 0);
     if (ret != LOS_OK) {
         return;
     }

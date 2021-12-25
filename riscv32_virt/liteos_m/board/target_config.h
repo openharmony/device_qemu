@@ -92,7 +92,7 @@ extern UINTPTR __heap_size;
 =============================================================================*/
 #define LOSCFG_PLATFORM_EXC                                 0
 
-#define OS_HWI_WITH_ARG                                     1
+#define LOSCFG_PLATFORM_HWI_WITH_ARG                        1
 
 #define LOSCFG_BACKTRACE_TYPE                               2
 
