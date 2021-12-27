@@ -176,7 +176,7 @@ $ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
         -netdev bridge,id=net0 \
         -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
         -device virtio-gpu-device,xres=800,yres=480 \
-        -device virtio-mouse-device \
+        -device virtio-tablet-device \
         -device virtio-rng-device \
         -vnc :20 \
         -s -S \
@@ -192,7 +192,7 @@ $ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
    -netdev                      [可选]网卡后端设置，桥接类型
    -device virtio-net-device    [可选]网卡设备
    -device virtio-gpu-device    GPU设备
-   -device virtio-mouse-device  鼠标设备
+   -device virtio-tablet-device 输入设备
    -device virtio-rng-device    随机数设备
    -vnc :20                     [可选]远程桌面连接，端口5920
    -s -S                        [可选]gdb单步调试
@@ -219,3 +219,8 @@ $ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
    LTS的代码存在一个内核启动缺陷，可以参考如下PR尝试解决问题：
 
    https://gitee.com/openharmony/kernel_liteos_a/pulls/324
+
+
+4. VNC窗口不显示光标？
+
+   virtio-tablet是个模拟平板输入的设备，QEMU不捕获设备，虚拟机不显示光标，由VNC客户端自行处理光标显示。请查看VNC客户端选项设置。
