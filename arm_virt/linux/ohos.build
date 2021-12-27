@@ -1,5 +1,5 @@
 {
-  "subsystem": "qemu_arm_linux_chipset",
+  "subsystem": "device_arm_virt",
   "parts": {
     "qemu_arm_linux_chipset": {
       "module_list": [
