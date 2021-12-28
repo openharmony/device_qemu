@@ -77,6 +77,7 @@ board_ld_flags += [
   "-Wl,--wrap,_malloc_r",
   "-Wl,--wrap,_memalign_r",
   "-Wl,--wrap,_realloc_r",
+  "-Wl,--wrap,_calloc_r",
 ]
 
 # Board related headfiles search path.
