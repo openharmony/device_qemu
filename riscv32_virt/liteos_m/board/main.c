@@ -120,6 +120,8 @@ LITE_OS_SEC_TEXT_INIT INT32 main(VOID)
         goto START_FAILED;
     }
 
+    HalPlicInit();
+
     Uart0RxIrqRegister();
 
 #if (LOSCFG_USE_SHELL == 1)

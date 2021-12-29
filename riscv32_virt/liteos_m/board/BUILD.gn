@@ -33,7 +33,6 @@ import("//kernel/liteos_m/liteos.gni")
 hdf_driver("bsp_config") {
   asmflags = board_asmflags
   sources = [
-    "driver/mtimer.c",
     "driver/plic.c",
     "driver/uart.c",
     "driver/video/fb.c",
