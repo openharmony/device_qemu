@@ -30,6 +30,7 @@
 group("qemu-arm-linux-group") {
   deps = [
     "//device/qemu/arm_virt/linux/chipset:chipset_files",
+    "//device/qemu/arm_virt/linux/images:all_image_conf",
     "//device/qemu/arm_virt/linux/rootfs:rootfs_files",
   ]
 }
