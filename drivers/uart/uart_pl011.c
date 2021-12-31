@@ -54,7 +54,7 @@ static uint32_t Pl011Irq(uint32_t irq, void *data)
             if (udd->num != CONSOLE_UART) {
                 continue;
             }
-            if (CheckMagicKey(buf[count - 1])) {
+            if (CheckMagicKey(buf[count - 1], CONSOLE_SERIAL)) {
                 goto end;
             }
         } while (count < FIFO_SIZE);
