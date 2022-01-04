@@ -17,7 +17,6 @@
 #include "los_debug.h"
 #include "soc.h"
 #include "plic.h"
-#include "mtimer.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -61,15 +60,8 @@ BOOL HalBackTraceFpCheck(UINT32 value)
     return FALSE;
 }
 
-VOID HalClockInit(OS_TICK_HANDLER handler, UINT32 period)
+VOID HalPlicInit(VOID)
 {
-    UINT32 ret;
-    ret = MTimerTickInit(handler, period);
-    if (ret != LOS_OK) {
-        PRINT_ERR("Creat Mtimer failed! ret : 0x%x \n", ret);
-        return;
-    }
-
     PlicIrqInit();
 
     HalIrqEnable(RISCV_MACH_EXT_IRQ);

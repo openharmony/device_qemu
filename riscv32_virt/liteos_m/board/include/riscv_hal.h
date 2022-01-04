@@ -39,7 +39,7 @@ extern VOID HalIrqEnable(UINT32 vector);
 extern VOID HalSetLocalInterPri(UINT32 vector, UINT16 prior);
 
 extern VOID HalGetSysCpuCycle(UINT32 *cntHi, UINT32 *cntLo);
-extern VOID HalClockInit(OS_TICK_HANDLER handler, UINT32 period);
+extern VOID HalPlicInit(VOID);
 
 #ifdef __cplusplus
 #if __cplusplus
