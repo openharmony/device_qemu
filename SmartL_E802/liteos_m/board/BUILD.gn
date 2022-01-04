@@ -16,8 +16,6 @@ import("//kernel/liteos_m/liteos.gni")
 kernel_module("bsp_config") {
   sources = [
     "fs/fs_init.c",
-    "fs/hal_littlefs.c",
-    "fs/hal_vfs.c",
     "fs/littlefs_hal.c",
     "hals/csky_driver/src/ck_usart.c",
     "hals/csky_driver/src/devices.c",
@@ -26,7 +24,6 @@ kernel_module("bsp_config") {
     "hals/csky_driver/src/isr.c",
     "hals/csky_driver/src/pinmux.c",
     "hals/csky_driver/src/sys_freq.c",
-    "hals/utils/file/hal_file.c",
     "libc/dprintf.c",
     "main.c",
     "startup.S",
@@ -34,9 +31,6 @@ kernel_module("bsp_config") {
   if (!defined(LOSCFG_TEST)) {
     # kernel's testsuites not enabled, use ower's
     sources += [ "test/task_demo.c" ]
-  }
-  if (defined(LOSCFG_FS_FAT)) {
-    sources += [ "fs/ff_gen_drv.c" ]
   }
   include_dirs = [
     "//utils/native/lite/include",
@@ -52,10 +46,7 @@ config("public") {
     "-nostdlib",
   ]
 
-  libs = [
-    "gcc",
-    "c",
-  ]
+  libs = [ "gcc" ]
 
   include_dirs = [
     ".",

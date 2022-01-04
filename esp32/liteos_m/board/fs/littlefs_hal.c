@@ -29,14 +29,10 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
 #include <string.h>
 #include "los_memory.h"
 #include "lfs_rambd.h"
 #include "lfs.h"
-
-#define LITTLEFS_PHYS_ADDR 0x00
-#define LITTLEFS_PHYS_SIZE (64 * 1024)
 
 #define READ_SIZE      16
 #define PROG_SIZE      16

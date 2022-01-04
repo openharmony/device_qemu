@@ -38,10 +38,6 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-struct spiffs_drv_t* SpiffsConfigGet(void);
-struct diskio_drv* FatfsConfigGet(void);
-struct lfs_config* LittlefsConfigGet(void);
-
 void FileSystemInit(void);
 
 #ifdef __cplusplus

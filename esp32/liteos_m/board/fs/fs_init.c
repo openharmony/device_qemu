@@ -30,29 +30,40 @@
  */
 
 #include "fs_init.h"
+#include "lfs.h"
 #include "los_task.h"
 #include "securec.h"
-#include "hal_littlefs.h"
+#include "utils_file.h"
 
-#define FS_INIT_TASK_SIZE     0x1000
-#define FS_INIT_TASK_PRIORITY 2
+#define FS_INIT_TASK_SIZE       0x1000
+#define FS_INIT_TASK_PRIORITY   2
+#define LITTLEFS_ROOTDIR_MODE   775
 
 static uint32_t g_taskId;
 
 static void FileSystemEntry(void)
 {
-    uint32_t ret;
+    int ret = 0;
     struct lfs_config *littlefsConfig = LittlefsConfigGet();
-    ret = LittlefsInit(0, littlefsConfig);
+    LittlefsDriverInit(0);
+    SetDefaultMountPath(0, "/littlefs");
+    ret = mount(NULL, "/littlefs", "littlefs", 0, littlefsConfig);
     if (ret != LOS_OK) {
-        printf("Littlefs init failed.\n");
+        printf("Littlefs init failed 0x%x.\n", ret);
+        return;
     }
-    printf("Littlefs inited.\n");
+
+    ret = mkdir("/littlefs", LITTLEFS_ROOTDIR_MODE);
+    if (ret != LOS_OK) {
+        printf("Mkdir failed 0x%x.\n", ret);
+        return;
+    }
+    printf("Littlefs init successed!\n");
 }
 
 void FileSystemInit(void)
 {
-    uint32_t ret;
+    int ret = 0;
     TSK_INIT_PARAM_S taskInitParam;
 
     ret = memset_s(&taskInitParam, sizeof(TSK_INIT_PARAM_S), 0, sizeof(TSK_INIT_PARAM_S));

@@ -67,6 +67,7 @@ board_cflags = [
   "-Wno-parentheses",
   "-Wno-pointer-sign",
   "-D__FPU_PRESENT",
+  "-D__NEED_uintptr_t",
 ]
 
 board_cxx_flags = board_cflags
