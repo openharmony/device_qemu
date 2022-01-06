@@ -29,8 +29,62 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "los_debug.h"
 #include "fs_config.h"
 #include "fatfs.h"
 #include "ff_gen_drv.h"
 
 DiskDrvTypeDef g_diskDrv = { { 0 }, { 0 }, { 0 }, { 0 } };
+
+#if (LOSCFG_SUPPORT_FATFS == 1)
+#include "cfiflash.h"
+/* 
+    note: Physical drive 0 for cfiFlash can not be used, may be conflicted with kernel img,
+          so we must assign index=1 when use -drive if=pflash in qemu_run.sh 
+*/
+PARTITION VolToPart[FF_VOLUMES] = { { 0 }, { 0 }, { 0 }, { 0 } };
+
+int SetupVolToPartTable(int index, PARTITION vptable, DiskioDrvTypeDef *cfiDrv)
+{
+    if (index < 0 || index >= FF_VOLUMES) {
+        PRINT_ERR("[%s]the volum index is out of range\n", __func__);
+        return RES_ERROR;
+    }
+    VolToPart[index].di = vptable.di;    /* Physics disk id */
+    VolToPart[index].pd = vptable.pd;    /* Physical drive number */
+    VolToPart[index].pt = vptable.pt;    /* Partition: 0:Auto detect, 1-4:Forced partition) */
+    VolToPart[index].ps = vptable.ps;    /* Partition start sector */
+    VolToPart[index].pc = vptable.pc;    /* Partition sector count */
+
+    g_diskDrv.initialized[index] = 0;
+    g_diskDrv.drv[index] = cfiDrv;
+    g_diskDrv.lun[index] = VolToPart[index].pd;
+    return RES_OK;
+}
+
+void SetupDefaultVolToPartTable()
+{
+    int i = 0;
+    PARTITION defaultVToP[FF_VOLUMES] = { 
+        {0, 1, 1},     /* "0:" ==> Physical drive 1, 1st partition */
+        {1, 1, 2},     /* "1:" ==> Physical drive 1, 2nd partition */
+        {2, 1, 3},     /* "2:" ==> Physical drive 1, 3rd partition */
+        {3, 1, 4}      /* "3:" ==> Physical drive 1, 4th partition */
+    };
+
+    for (i = 0; i < FF_VOLUMES; i++) {
+        SetupVolToPartTable(i, defaultVToP[i], GetCfiBlkOps());
+    }
+}
+#endif
+
+int DiscDrvInit(void)
+{
+
+#if (LOSCFG_SUPPORT_FATFS == 1)
+    SetupDefaultVolToPartTable();
+#endif
+
+    return RES_OK;
+}
+

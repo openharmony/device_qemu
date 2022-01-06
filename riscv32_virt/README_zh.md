@@ -120,3 +120,7 @@ $ riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Imag
 ```
 
 更多gdb相关的调试可以查阅：[gdb指导手册](https://sourceware.org/gdb/current/onlinedocs/gdb)。
+
+## 7. 用法示例
+
+- [用FAT映像传递文件](example.md#sectionfatfs)

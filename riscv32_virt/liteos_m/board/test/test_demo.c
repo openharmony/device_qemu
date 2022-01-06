@@ -36,6 +36,7 @@
 
 static void TaskDisplaySampleEntry(void)
 {
+    MountShellInit();
     DisplayServiceSample();
     InputServiceSample();
 }

@@ -1,0 +1,12 @@
+root {
+    storage {
+        template cfi_flash_attr {
+            match_attr = "";
+            pbase0 = 0x20000000;    // slot0 
+            pbase1 = 0x22000000;    // slot1 fat
+        }
+        cfiflash0 :: cfi_flash_attr {
+            match_attr = "qemu_virt_cfi_0";
+        }
+    }
+}

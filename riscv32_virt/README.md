@@ -123,3 +123,9 @@ $ riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Imag
 ```
 
 More GDB related debugging can refer to [GDB instruction manual](https://sourceware.org/gdb/current/onlinedocs/gdb).
+
+## 7. Example
+
+- [Transferring Files Using FAT Images](example.md#sectionfatfs)
+
+
