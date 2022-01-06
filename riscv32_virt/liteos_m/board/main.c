@@ -163,7 +163,7 @@ START_FAILED:
 void *ioremap(uintptr_t paddr, unsigned long size)
 {
     printf("[WARN] Function to be implemented: %s\n", __FUNCTION__);
-    return paddr;
+    return (void *)paddr;
 }
 
 void iounmap(void *vaddr)
