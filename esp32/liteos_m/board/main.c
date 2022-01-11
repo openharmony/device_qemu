@@ -50,6 +50,9 @@ INT32 main(VOID)
     WdtDisable();
 
     __asm__ __volatile__("mov sp, %0" : : "r"(&__init_stack_e));
+    #ifdef __FPU_PRESENT
+    __asm__ __volatile__("wsr %0, CPENABLE;rsync" : : "r"(1));
+    #endif
 
     ret = LOS_KernelInit();
     if (ret != LOS_OK) {
