@@ -46,6 +46,7 @@ board_cflags = [
   "-MMD",
   "-MP",
   "-Wno-pointer-sign",
+  "-D__CSKY_V2__",
 ]
 board_cxx_flags = board_cflags
 
