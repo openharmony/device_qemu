@@ -105,9 +105,8 @@ QEMU applies only to the OpenHarmony kernel.
 
 ## Usage<a name="section169045116126"></a>
 
-For details about the ARM architectures:  
+For details about the ARM architectures:
 - [Qemu ARM Virt HOWTO - liteos_a](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_virt/liteos_a/README.md)
-- [Qemu ARM Virt HOWTO - liteos_m](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_virt/liteos_m/README.md)
 - [Qemu ARM Virt HOWTO - linux](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_virt/linux/README.md)
 
 For details about the Cortex-m4 architecture, see  [Qemu Cortex-m4 mps2-an386 HOWTO](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_mps2_an386/README.md).
