@@ -43,11 +43,11 @@ extern "C" {
 /*=============================================================================
                                         System clock module configuration
 =============================================================================*/
-#define OS_SYS_CLOCK                                        80000000
+#define OS_SYS_CLOCK                                        800000000
 #define LOSCFG_BASE_CORE_TICK_PER_SECOND                    (1000UL)
 #define LOSCFG_BASE_CORE_TICK_HW_TIME                       0
 #define LOSCFG_BASE_CORE_TICK_WTIMER                        1
-#define LOSCFG_BASE_CORE_TICK_RESPONSE_MAX                  80000
+#define LOSCFG_BASE_CORE_TICK_RESPONSE_MAX                  0xffffffff
 
 /*=============================================================================
                                         Hardware interrupt module configuration
@@ -60,8 +60,8 @@ extern "C" {
 =============================================================================*/
 #define LOSCFG_BASE_CORE_TSK_LIMIT                          24
 #define LOSCFG_BASE_CORE_TSK_IDLE_STACK_SIZE                (0x1000U)
-#define LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE             (0x2000U)
-#define LOSCFG_BASE_CORE_TSK_MIN_STACK_SIZE                 (0x1000U)
+#define LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE             (0x1000U)
+#define LOSCFG_BASE_CORE_TSK_MIN_STACK_SIZE                 (0x800U)
 #define LOSCFG_BASE_CORE_TIMESLICE                          1
 #define LOSCFG_BASE_CORE_TIMESLICE_TIMEOUT                  20000
 #define LOSCFG_BASE_CORE_TSK_DEFAULT_PRIO                   15
@@ -110,7 +110,6 @@ extern UINTPTR __heap_start;
 
 #define LOSCFG_BACKTRACE_TYPE                               4
 #define LOSCFG_KERNEL_PRINTF                                1
-#define LOSCFG_KERNEL_PM                                    0
 
 #ifdef __cplusplus
 #if __cplusplus
