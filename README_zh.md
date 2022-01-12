@@ -107,7 +107,6 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 
 arm架构参考：
 - [QEMU教程 for arm - liteos_a](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_virt/liteos_a/README_zh.md)
-- [QEMU教程 for arm - liteos_m](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_virt/liteos_m/README_zh.md)
 - [QEMU教程 for arm - linux](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_virt/linux/README_zh.md)
 
 cortex-m4架构参考[QEMU教程 for cortex-m4](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_mps2_an386/README_zh.md)。
