@@ -113,7 +113,6 @@ extern UINTPTR __heap_size;
 =============================================================================*/
 #define LOSCFG_BACKTRACE_TYPE                               5
 #define LOSCFG_KERNEL_PRINTF                                1
-#define LOSCFG_KERNEL_PM                                    0
 
 #ifdef __cplusplus
 #if __cplusplus
