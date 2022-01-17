@@ -17,7 +17,7 @@ ohos_prebuilt_etc("qemu.arm.linux.init.cfg") {
   if (!enable_ramdisk) {
     install_images = [ "system" ]
   } else {
-    install_images = [ "vendor" ]
+    install_images = [ vendor_base_dir ]
   }
   part_name = "qemu_arm_linux_chipset"
 }
@@ -27,7 +27,7 @@ ohos_prebuilt_etc("qemu.arm.linux.usb.cfg") {
   if (!enable_ramdisk) {
     install_images = [ "system" ]
   } else {
-    install_images = [ "vendor" ]
+    install_images = [ vendor_base_dir ]
   }
   part_name = "qemu_arm_linux_chipset"
 }
