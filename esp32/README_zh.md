@@ -12,9 +12,14 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 
    2. esptool安装
 
-      ```shell
-      python -m pip install esptool
-      ```
+      a) 步骤1中export.sh脚本会设置esptool工具路径,需要确保esptool工具版本为3.1及以上。
+         ```shell
+         esptool.py version
+         ```
+      b) 如果esp-idf自带esptool工具版本过低，需删除当前esptool路径对应的环境变量，并执行以下命令。（python版本建议为3.8及以上）
+         ```shell
+         python -m pip install esptool
+         ```
 
    3. qemu-system-xtensa编译
 
