@@ -12,9 +12,14 @@ QEMU can simulate the kernel to run on different boards ,eliminate dependence on
 
    2. Install esptool
 
-      ```shell
-      python -m pip install esptool
-      ```
+      a) In step 1, the export.sh script will set the esptool in the environment path, you need to ensure that the esptool version is 3.1 and above.
+         ```shell
+         esptool.py version
+         ```
+      b) If the version of the esptool that comes with esp-idf is too low, delete the environment variable corresponding to the current esptool path and run the following commands. (The recommended python version is 3.8 and above)
+         ```shell
+         python -m pip install esptool
+         ```
 
    3. Compile qemu-system-xtensa
 
