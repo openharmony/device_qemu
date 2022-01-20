@@ -10,6 +10,23 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 
       使用安装指导请参考：(https://docs.espressif.com/projects/esp-idf/zh_CN/release-v4.1/get-started/index.html)
 
+      注：esp-idf安装可以跳过，当前已将生成好的bootloader.bin和partition-table.bin放入vendor\ohemu\qemu_xtensa_mini_system_demo\image文件夹中。
+
+      注：若跳过安装esp-idf可以按照下列方式安装工具链：
+
+      1.下载官方release的SDK包：https://www.espressif.com/zh-hans/support/download/sdks-demos?keys=&field_type_tid%5B%5D=13
+
+      2.将下载好的SDK包放入linux系统，进入目录执行如下指令：
+
+         ```shell
+         unzip esp-idf-v4.3.1.zip
+         cd esp-idf-v4.3.1/
+         ./install.sh
+         . ./export.sh
+         ```
+
+      注：本教程使用的工具链版本为gcc version 8.2.0 (crosstool-NG esp-2019r2)或gcc version 8.4.0 (crosstool-NG esp-2021r1)
+
    2. esptool安装
 
       a) 步骤1中export.sh脚本会设置esptool工具路径,需要确保esptool工具版本为3.1及以上。
