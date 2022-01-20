@@ -110,12 +110,6 @@ extern UINTPTR __heap_start;
                                         Exception module configuration
 =============================================================================*/
 #define LOSCFG_PLATFORM_EXC                                 0
-
-/*=============================================================================
-                                        TestSuite configuration
-=============================================================================*/
-#define LOSCFG_TEST                                         0
-
 #define LOSCFG_BACKTRACE_TYPE                               4
 #define LOSCFG_KERNEL_PRINTF                                1
 
