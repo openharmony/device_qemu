@@ -10,6 +10,23 @@ QEMU can simulate the kernel to run on different boards ,eliminate dependence on
 
       Please refer to the installation instructions: (https://docs.espressif.com/projects/esp-idf/en/release-v4.1/get-started/index.html)
 
+      Annotation: The installation of esp-idf can be skipped. The bootloader.bin and partition-table.bin generated have been placed in the vendor\ohemu\qemu_xtensa_mini_system_demo\image folder.
+
+      Annotation: If you skip the installation of esp-idf, you can install the toolchain as follows:
+
+      1. Download the esp official release the SDK package: https://www.espressif.com/zh-hans/support/download/sdks-demos?keys=&field_type_tid%5B%5D=13
+
+      2. Put the downloaded SDK package into the Linux system, go to the directory, and run the following commands:
+
+         ```shell
+         unzip esp-idf-v4.3.1.zip
+         cd esp-idf-v4.3.1/
+         ./install.sh
+         . ./export.sh
+         ```
+
+      Annotation: The version of the toolchain used in the test is GCC Version 8.2.0 (Crosstool-ng ESP-2019R2) or GCC Version 8.4.0 (Crosstool-ng ESP-2021R1).  
+
    2. Install esptool
 
       a) In step 1, the export.sh script will set the esptool in the environment path, you need to ensure that the esptool version is 3.1 and above.
