@@ -32,7 +32,7 @@ board = "esp32"
 board_toolchain = "xtensa-esp32-elf-gcc"
 
 # The toolchain path instatlled, it's not mandatory if you have added toolchian path to your ~/.bashrc.
-board_toolchain_path = ""
+board_toolchain_path = "$ohos_root_path/prebuilts/gcc/linux-x86/esp/esp-2019r2-8.2.0/xtensa-esp32-elf/bin/"
 
 # Compiler prefix.
 board_toolchain_prefix = "xtensa-esp32-elf-"

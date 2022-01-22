@@ -8,6 +8,16 @@ QEMU can simulate the kernel to run on different boards, freeing the dependence 
 
    1. Set up the Compilation tool chain
 
+      Tip: Users can also skip this step by using the following instructions directly to use the compiler configured in the default environment.
+
+      To use the default environment, execute '3.Get source code' and then install the default compiler in the root directory by executing the following instructions.
+
+         ```shell
+         $ sh build/prebuilts_download.sh
+         ```
+
+      Optional compiler installation process:
+
       a) Create the `csky_toolchain` folder and enter it
 
          ```shell
