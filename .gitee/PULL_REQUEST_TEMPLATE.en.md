@@ -12,7 +12,7 @@
 
 ### Need to synchronize to release (e.g. 3.0lts...) Branch?
 
-You must select one:
+You must select one (In markdown mode, you can choose the corresponding option by replacing [ ] with [x]):
 
 -[ ] Yes, branches to be synchronized:
 -[ ] no
