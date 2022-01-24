@@ -14,6 +14,16 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 
       注：若跳过安装esp-idf可以按照下列方式安装工具链：
 
+      提示：用户也可以直接使用下列指令来使用默认环境中配置好的编译器，跳过该步骤。
+
+      若要使用默认环境请先执行 '3.获取源码' ，然后在根目录下执行下列指令安装默认编译器。
+
+         ```shell
+         $ sh build/prebuilts_download.sh
+         ```
+
+      可选的编译器安装流程：
+
       1.下载官方release的SDK包：https://www.espressif.com/zh-hans/support/download/sdks-demos?keys=&field_type_tid%5B%5D=13
 
       2.将下载好的SDK包放入linux系统，进入目录执行如下指令：
