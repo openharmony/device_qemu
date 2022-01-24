@@ -14,6 +14,16 @@ QEMU can simulate the kernel to run on different boards ,eliminate dependence on
 
       Annotation: If you skip the installation of esp-idf, you can install the toolchain as follows:
 
+      Tip: Users can also skip this step by using the following instructions directly to use the compiler configured in the default environment.
+
+      To use the default environment, execute '3.Get source code' and then install the default compiler in the root directory by executing the following instructions.
+
+         ```shell
+         $ sh build/prebuilts_download.sh
+         ```
+
+      Optional compiler installation process:
+
       1. Download the esp official release the SDK package: https://www.espressif.com/zh-hans/support/download/sdks-demos?keys=&field_type_tid%5B%5D=13
 
       2. Put the downloaded SDK package into the Linux system, go to the directory, and run the following commands:
