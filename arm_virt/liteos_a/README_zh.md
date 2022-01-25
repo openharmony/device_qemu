@@ -71,7 +71,7 @@ to the options.
     be enabled, gpu enabled and waiting for VNC connection at port 5920.
 ```
 
-默认不加参数的情况下，网络不会自动配置。当根目录镜像文件flash.img存在时，镜像不会被重新制作。
+网卡模拟的是无线网卡wlan0，但无真的wifi功能；默认不加参数的情况下，网络不会自动配置。当根目录镜像文件flash.img存在时，镜像不会被重新制作。
 
 c) 退出qemu环境
 
@@ -164,7 +164,7 @@ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
    echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
    ```
 
-   提示：系统网络硬编码为10.0.2.0/24，网关10.0.2.2，默认网址10.0.2.15。不同的客户机实例应使用不同的MAC和IP地址(flash映像文件也最好不同)，MAC地址可通过QEMU命令行传递，IP地址可在OHOS命令行中调整，如`ifconfig eth0 inet 10.0.2.30`，或使用其它方法。
+   提示：系统网络硬编码为10.0.2.0/24，网关10.0.2.2，网址随机选取。不同的客户机实例应使用不同的MAC和IP地址(flash映像文件也最好不同)，MAC地址可通过QEMU命令行传递，IP地址可在OHOS命令行中调整，如`ifconfig wlan0 inet 10.0.2.30`，或使用其它方法。
 
 2. qemu-run提示`qemu-system-arm`运行出错时，如何排查问题？
 

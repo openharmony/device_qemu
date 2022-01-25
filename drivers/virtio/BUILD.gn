@@ -32,6 +32,7 @@ import("//drivers/adapter/khdf/liteos/hdf.gni")
 module_name = get_path_info(rebase_path("."), "name")
 hdf_driver(module_name) {
   sources = [
+    "fakesdio.c",
     "virtgpu.c",
     "virtinput.c",
     "virtmmio.c",
@@ -40,4 +41,9 @@ hdf_driver(module_name) {
   if (defined(LOSCFG_HW_RANDOM_ENABLE)) {
     sources += [ "virtrng.c" ]
   }
+  include_dirs = [
+    "//drivers/framework/model/network/wifi/include/",
+    "//drivers/framework/model/network/wifi/platform/include/",
+    "//drivers/framework/model/network/wifi/core/components/eapol/",
+  ]
 }
