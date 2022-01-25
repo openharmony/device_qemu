@@ -36,6 +36,13 @@ Quick Emulator \(QEMU\) can simulate the scenario where a kernel runs on differe
 │   ├── fs                  # fs configuration
 │   ├── test                # Test the demo
 │   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
+├── arm_mps3_an547          # cortex-m55 mps3_an547 board
+│   ├── driver              # Driver code
+│   ├── include             # APIs exposed externally
+│   ├── libc                # Basic libc library
+│   ├── fs                  # fs configuration
+│   ├── test                # Test the demo
+│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
 ├── esp32                   # Xtensa esp32 board
 │   ├── hals                # Hardware adaptation layer
 │   ├── driver              # Driver code
@@ -68,18 +75,18 @@ QEMU applies only to the OpenHarmony kernel.
 2. Acquiring Source Code
 
    ```
-   $ wget https://download.qemu.org/qemu-6.0.0.tar.xz
+   $ wget https://download.qemu.org/qemu-6.2.0.tar.xz
    ```
 
    or
 
-   [Download from official website: qemu-6.0.0.tar.xz](https://download.qemu.org/qemu-6.0.0.tar.xz)
+   [Download from official website: qemu-6.2.0.tar.xz](https://download.qemu.org/qemu-6.2.0.tar.xz)
 
 3. Compile and install
 
    ```
-   $ tar -xf qemu-6.0.0.tar.xz
-   $ cd qemu-6.0.0
+   $ tar -xf qemu-6.2.0.tar.xz
+   $ cd qemu-6.2.0
    $ mkdir build && cd build
    $ ../configure --prefix=qemu_installation_path
    $ make -j16
@@ -110,6 +117,8 @@ For details about the ARM architectures:
 - [Qemu ARM Virt HOWTO - linux](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_virt/linux/README.md)
 
 For details about the Cortex-m4 architecture, see  [Qemu Cortex-m4 mps2-an386 HOWTO](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_mps2_an386/README.md).
+
+For details about the Cortex-m55 architecture, see  [Qemu Cortex-m55 mps3-an547 HOWTO](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_mps3_an547/README.md).
 
 For details about the RISC-V architecture, see  [Qemu RISC-V Virt HOWTO](https://gitee.com/openharmony/device_qemu/blob/HEAD/riscv32_virt/README.md).
 
