@@ -1,0 +1,74 @@
+root {
+    module = "wlan";
+    wlan_config {
+        match_attr = "hdf_wlan_driver";
+        hostChipName = "virtio_net";
+        moduleConfig {
+            featureMap = 0x2;   /* wifi_inc.h::WifiMainFeatureType: STA */
+            msgName = "WalService";
+            Station {
+                name = "sta";
+                mode = true;
+            }
+            HostAp {
+                name = "ap";
+                mode = 0;       /* 0-- not supported */
+                vapResNum = 1;
+                userResNum = 8;
+            }
+            P2P {
+                name = "p2p";
+                mode = false;
+            }
+            Mac80211 {
+                mode = true;
+            }
+            Phy {
+                mode = true;
+            }
+        }
+        deviceList {
+            device0 {
+                deviceInstId = 0;
+                powers {
+                    power0 {
+                        powerSeqDelay = 0;
+                        powerType = 0; /* AlwaysON(0);GPIO(1) */
+                        gpioId = 0;
+                        activeLevel=1;
+                    }
+                    power1 {
+                        powerSeqDelay = 0;
+                        powerType = 0;
+                        gpioId = 0;
+                        activeLevel=1;
+                    }
+                }
+                reset {
+                    resetType = 1;      /* Unusable(0);GPIO(1) */
+                    gpioId = 0;
+                    activeLevel=0;
+                    resetHoldTime = 16;
+                }
+                bootUpTimeOut = 32;
+                bus {
+                    busType = 0;        /* 0-sdio */
+                    busIdx = 2;
+                    funcNum = [1];
+                    timeout = 1000;
+                    blockSize = 512;
+               }
+            }
+        }
+        chipList {
+            chipVirtnet {
+                match_attr = "";
+                driverName = "fakewifi";
+                sdio {
+                    vendorId = 0x1af4;
+                    deviceId = [0x1000];
+                }
+            }
+        }
+    }
+}

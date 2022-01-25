@@ -13,22 +13,24 @@
  * limitations under the License.
  */
 
-/* enable lwip 'netif_add' API */
-#define __LWIP__
+/*
+ * Simple virtio-net driver using HDF WIFI framework without real WIFI functions.
+ */
 
-#include "los_base.h"
 #include "los_hw_cpu.h"
+#include "los_vm_iomap.h"
 #include "los_vm_zone.h"
-#include "los_spinlock.h"
-
-/* kernel changed lwip 'netif->client_data' size, so this should be prior */
 #include "netinet/if_ether.h"
-
-#include "lwip/netif.h"
-#include "lwip/etharp.h"
-#include "lwip/tcpip.h"
-#include "lwip/mem.h"
+#include "arpa/inet.h"
+#include "core/hdf_device_desc.h"
+#include "wifi/hdf_wlan_chipdriver_manager.h"
+#include "wifi/wifi_mac80211_ops.h"
+#include "osal.h"
+#include "osal/osal_io.h"
+#include "eapol.h"
 #include "virtmmio.h"
+
+#define HDF_LOG_TAG HDF_VIRTIO_NET
 
 #define VIRTIO_NET_F_MTU                    (1 << 3)
 #define VIRTIO_NET_F_MAC                    (1 << 5)
@@ -40,12 +42,8 @@ struct VirtnetConfig {
 };
 
 #define VIRTMMIO_NETIF_NAME                 "virtnet"
-#define VIRTMMIO_NETIF_NICK                 "eth0"
-#define VIRTMMIO_NETIF_DFT_IP               "10.0.2.15"
 #define VIRTMMIO_NETIF_DFT_GW               "10.0.2.2"
 #define VIRTMMIO_NETIF_DFT_MASK             "255.255.255.0"
-#define VIRTMMIO_NETIF_DFT_RXQSZ            16
-#define VIRTMMIO_NETIF_DFT_TXQSZ            32
 
 /* This struct is actually ignored by this simple driver */
 struct VirtnetHdr {
@@ -59,70 +57,67 @@ struct VirtnetHdr {
 };
 
 /*
- * We use two queues for Tx/Rx respectively. When Tx/Rx, no dynamic memory alloc/free:
- * output pbuf directly put into queue and freed by tcpip_thread when used; input has
- * some fixed-size buffers just after the queues and released by application when consumed.
- *
+ * We use two queues for Tx/Rx respectively. When Tx, we record outgoing NetBuf
+ * and free it when QEMU done. When Rx, we use fixed buffers, then allocate &
+ * copy to a NetBuf, and then HDF will consume & free the NetBuf.
+ * Every NetBuf is a solo packet, no chaining like LWIP pbuf. So every outgoing
+ * packet always occupy two desc items: one for VirtnetHdr, the other for NetBuf.
  * Tx/Rx queues memory layout:
- *                         Rx queue                                Tx queue             Rx buffers
- * +-----------------+------------------+------------------++------+-------+------++----------------------+
- * | desc: 16B align | avail: 2B align  | used: 4B align   || desc | avail | used || 4B align             |
- * | 16∗(Queue Size) | 4+2∗(Queue Size) | 4+8∗(Queue Size) ||      |       |      || 1528*(Rx Queue Size) |
- * +-----------------+------------------+------------------++------+-------+------++----------------------+
+ *                         Rx queue                                Tx queue
+ * +-----------------+------------------+------------------++------+-------+------+
+ * | desc: 16B align | avail: 2B align  | used: 4B align   || desc | avail | used |
+ * | 16∗(Queue Size) | 4+2∗(Queue Size) | 4+8∗(Queue Size) ||      |       |      |
+ * +-----------------+------------------+------------------++------+-------+------+
  */
-#define VIRTQ_NUM_NET       2
-#define VIRTQ_RXBUF_ALIGN   4
-#define VIRTQ_RXBUF_SIZE    ALIGN(sizeof(struct VirtnetHdr) + ETH_FRAME_LEN, VIRTQ_RXBUF_ALIGN)
-
-struct RbufRecord {
-    struct pbuf_custom  cbuf;
-    struct VirtNetif    *nic;
-    uint16_t            id;     /* index to Rx vq[0].desc[] */
-};
-
-struct TbufRecord {
-    struct pbuf         *head;  /* first pbuf address of this pbuf chain */
-    uint16_t            count;  /* occupied desc entries, including VirtnetHdr */
-    uint16_t            tail;   /* tail pbuf's index to Tx vq[1].desc[] */
-};
+#define VIRTQ_RX_QSZ        16
+#define VIRTQ_TX_QSZ        32
+#define PER_TX_ENTRIES      2
+#define PER_RXBUF_SIZE      (sizeof(struct VirtnetHdr) + ETH_FRAME_LEN)
 
 struct VirtNetif {
     struct VirtmmioDev  dev;
 
-    struct RbufRecord   *rbufRec;
-    SPIN_LOCK_S         recvLock;
-
     uint16_t            tFreeHdr;   /* head of Tx free desc entries list */
     uint16_t            tFreeNum;
-    struct TbufRecord   *tbufRec;
-    SPIN_LOCK_S         transLock;
+    NetBuf*             tbufRec[VIRTQ_TX_QSZ];
+    OSAL_DECLARE_SPINLOCK(transLock);
+
+    uint8_t             rbuf[VIRTQ_RX_QSZ][PER_RXBUF_SIZE];
 
     struct VirtnetHdr   vnHdr;
 };
 
+static inline struct VirtNetif *GetVirtnetIf(const NetDevice *netDev)
+{
+    return (struct VirtNetif *)GET_NET_DEV_PRIV(netDev);
+}
+
 static bool Feature0(uint32_t features, uint32_t *supported, void *dev)
 {
-    struct netif *netif = dev;
-    struct VirtNetif *nic = netif->state;
+    NetDevice *netDev = dev;
+    struct VirtNetif *nic = GetVirtnetIf(netDev);
     struct VirtnetConfig *conf = (struct VirtnetConfig *)(nic->dev.base + VIRTMMIO_REG_CONFIG);
     int i;
 
     if (features & VIRTIO_NET_F_MTU) {
-        if (conf->mtu > ETH_DATA_LEN) {
-            PRINT_ERR("unsupported backend net MTU: %u\n", conf->mtu);
+        if (conf->mtu > WLAN_MAX_MTU || conf->mtu < WLAN_MIN_MTU) {
+            HDF_LOGE("[%s]unsupported backend net MTU: %u", __func__, conf->mtu);
             return false;
         }
-        netif->mtu = conf->mtu;
+        netDev->mtu = conf->mtu;
         *supported |= VIRTIO_NET_F_MTU;
     } else {
-        netif->mtu = ETH_DATA_LEN;
+        netDev->mtu = DEFAULT_MTU;
     }
 
-    LOS_ASSERT(features & VIRTIO_NET_F_MAC);
-    for (i = 0; i < ETHARP_HWADDR_LEN; i++) {
-        netif->hwaddr[i] = conf->mac[i];
+    if ((features & VIRTIO_NET_F_MAC) == 0) {
+        HDF_LOGE("[%s]no MAC feature found", __func__);
+        return false;
     }
-    netif->hwaddr_len = ETHARP_HWADDR_LEN;
+    for (i = 0; i < MAC_ADDR_SIZE; i++) {
+        netDev->macAddr[i] = conf->mac[i];
+    }
+    netDev->addrLen = MAC_ADDR_SIZE;
     *supported |= VIRTIO_NET_F_MAC;
 
     return true;
@@ -130,26 +125,20 @@ static bool Feature0(uint32_t features, uint32_t *supported, void *dev)
 
 static bool Feature1(uint32_t features, uint32_t *supported, void *dev)
 {
+    (void)dev;
     if (features & VIRTIO_F_VERSION_1) {
         *supported |= VIRTIO_F_VERSION_1;
     } else {
-        PRINT_ERR("net device has no VERSION_1 feature\n");
+        HDF_LOGE("[%s]net device has no VERSION_1 feature", __func__);
         return false;
     }
 
     return true;
 }
 
-static err_t InitTxFreelist(struct VirtNetif *nic)
+static int32_t InitTxFreelist(struct VirtNetif *nic)
 {
     int i;
-
-    LOS_SpinInit(&nic->transLock);
-    nic->tbufRec = malloc(sizeof(struct TbufRecord) * nic->dev.vq[1].qsz);
-    if (nic->tbufRec == NULL) {
-        PRINT_ERR("alloc nic->tbufRec memory failed\n");
-        return ERR_MEM;
-    }
 
     for (i = 0; i < nic->dev.vq[1].qsz - 1; i++) {
         nic->dev.vq[1].desc[i].flag = VIRTQ_DESC_F_NEXT;
@@ -158,232 +147,145 @@ static err_t InitTxFreelist(struct VirtNetif *nic)
     nic->tFreeHdr = 0;
     nic->tFreeNum = nic->dev.vq[1].qsz;
 
-    return ERR_OK;
+    return OsalSpinInit(&nic->transLock);
 }
 
 static void FreeTxEntry(struct VirtNetif *nic, uint16_t head)
 {
-    uint16_t count, idx, tail;
-    struct pbuf *phead = NULL;
     struct Virtq *q = &nic->dev.vq[1];
+    uint16_t idx = q->desc[head].next;
+    NetBuf *nb = NULL;
 
-    idx = q->desc[head].next;
-    phead = nic->tbufRec[idx].head;
-    count = nic->tbufRec[idx].count;
-    tail = nic->tbufRec[idx].tail;
-
-    LOS_SpinLock(&nic->transLock);
+    /* keep track of virt queue free entries */
+    OsalSpinLock(&nic->transLock);
     if (nic->tFreeNum > 0) {
-        q->desc[tail].next = nic->tFreeHdr;
-        q->desc[tail].flag = VIRTQ_DESC_F_NEXT;
+        q->desc[idx].next = nic->tFreeHdr;
+        q->desc[idx].flag = VIRTQ_DESC_F_NEXT;
     }
-    nic->tFreeNum += count;
+    nic->tFreeNum += PER_TX_ENTRIES;
     nic->tFreeHdr = head;
-    LOS_SpinUnlock(&nic->transLock);
+    nb = nic->tbufRec[idx];
+    OsalSpinUnlock(&nic->transLock);
 
-    pbuf_free_callback(phead);
+    /* We free upstream Tx NetBuf! */
+    NetBufFree(nb);
 }
 
-static void ReleaseRxEntry(struct pbuf *p)
-{
-    struct RbufRecord *pr = (struct RbufRecord *)p;
-    struct VirtNetif *nic = pr->nic;
-    uint32_t intSave;
-
-    LOS_SpinLockSave(&nic->recvLock, &intSave);
-    nic->dev.vq[0].avail->ring[nic->dev.vq[0].avail->index % nic->dev.vq[0].qsz] = pr->id;
-    DSB;
-    nic->dev.vq[0].avail->index++;
-    LOS_SpinUnlockRestore(&nic->recvLock, intSave);
-
-    if (nic->dev.vq[0].used->flag != VIRTQ_USED_F_NO_NOTIFY) {
-        WRITE_UINT32(0, nic->dev.base + VIRTMMIO_REG_QUEUENOTIFY);
-    }
-}
-
-static err_t ConfigRxBuffer(struct VirtNetif *nic, VADDR_T buf)
+static void PopulateRxBuffer(struct VirtNetif *nic)
 {
     uint32_t i;
     PADDR_T paddr;
     struct Virtq *q = &nic->dev.vq[0];
 
-    LOS_SpinInit(&nic->recvLock);
-    nic->rbufRec = calloc(q->qsz, sizeof(struct RbufRecord));
-    if (nic->rbufRec == NULL) {
-        PRINT_ERR("alloc nic->rbufRec memory failed\n");
-        return ERR_MEM;
-    }
-
-    paddr = VMM_TO_DMA_ADDR(buf);
-
     for (i = 0; i < q->qsz; i++) {
+        paddr = VMM_TO_DMA_ADDR((VADDR_T)nic->rbuf[i]);
+
         q->desc[i].pAddr = paddr;
-        q->desc[i].len = sizeof(struct VirtnetHdr) + ETH_FRAME_LEN;
+        q->desc[i].len = PER_RXBUF_SIZE;
         q->desc[i].flag = VIRTQ_DESC_F_WRITE;
-        paddr += VIRTQ_RXBUF_SIZE;
 
         q->avail->ring[i] = i;
-
-        nic->rbufRec[i].cbuf.custom_free_function = ReleaseRxEntry;
-        nic->rbufRec[i].nic = nic;
-        nic->rbufRec[i].id = i;
     }
-
-    return ERR_OK;
 }
 
-static err_t ConfigQueue(struct VirtNetif *nic)
+static int32_t ConfigQueue(struct VirtNetif *nic)
 {
-    VADDR_T buf, pad;
-    void *base = NULL;
-    err_t ret;
-    size_t size;
-    uint16_t qsz[VIRTQ_NUM_NET];
+    VADDR_T base;
+    uint16_t qsz[VIRTQ_NUM];
 
-    /*
-     * lwip request (packet address - ETH_PAD_SIZE) must align with 4B.
-     * We pad before the first Rx buf to happy it. Rx buf = VirtnetHdr + packet,
-     * then (buf base + pad + VirtnetHdr - ETH_PAD_SIZE) should align with 4B.
-     * When allocating memory, VIRTQ_RXBUF_ALIGN - 1 is enough for padding.
-     */
-    qsz[0] = VIRTMMIO_NETIF_DFT_RXQSZ;
-    qsz[1] = VIRTMMIO_NETIF_DFT_TXQSZ;
-    size = VirtqSize(qsz[0]) + VirtqSize(qsz[1]) + VIRTQ_RXBUF_ALIGN - 1 + qsz[0] * VIRTQ_RXBUF_SIZE;
-
-    base = calloc(1, size);
-    if (base == NULL) {
-        PRINT_ERR("alloc queues memory failed\n");
-        return ERR_MEM;
+    base = ALIGN((VADDR_T)nic + sizeof(struct VirtNetif), VIRTQ_ALIGN_DESC);
+    qsz[0] = VIRTQ_RX_QSZ;
+    qsz[1] = VIRTQ_TX_QSZ;
+    if (VirtmmioConfigQueue(&nic->dev, base, qsz, VIRTQ_NUM) == 0) {
+        return HDF_DEV_ERR_DEV_INIT_FAIL;
     }
 
-    buf = VirtmmioConfigQueue(&nic->dev, (VADDR_T)base, qsz, VIRTQ_NUM_NET);
-    if (buf == 0) {
-        return ERR_IF;
-    }
+    PopulateRxBuffer(nic);
 
-    pad = (buf + sizeof(struct VirtnetHdr) - ETH_PAD_SIZE) % VIRTQ_RXBUF_ALIGN;
-    if (pad) {
-        pad = VIRTQ_RXBUF_ALIGN - pad;
-    }
-    buf += pad;
-    if ((ret = ConfigRxBuffer(nic, buf)) != ERR_OK) {
-        return ret;
-    }
-
-    if ((ret = InitTxFreelist(nic)) != ERR_OK) {
-        return ret;
-    }
-
-    return ERR_OK;
+    return InitTxFreelist(nic);
 }
 
-static uint16_t GetTxFreeEntry(struct VirtNetif *nic, uint16_t count)
+static uint16_t GetTxFreeEntry(struct VirtNetif *nic)
 {
     uint32_t intSave;
-    uint16_t head, tail, idx;
+    uint16_t head, idx;
+    bool logged = false;
 
 RETRY:
-    LOS_SpinLockSave(&nic->transLock, &intSave);
-    if (count > nic->tFreeNum) {
-        LOS_SpinUnlockRestore(&nic->transLock, intSave);
+    OsalSpinLockIrqSave(&nic->transLock, &intSave);
+    if (PER_TX_ENTRIES > nic->tFreeNum) {
+        OsalSpinUnlockIrqRestore(&nic->transLock, &intSave);
+        if (!logged) {
+            HDF_LOGW("[%s]transmit queue is full", __func__);
+            logged = true;
+        }
         LOS_TaskYield();
         goto RETRY;
     }
 
-    nic->tFreeNum -= count;
+    nic->tFreeNum -= PER_TX_ENTRIES;
     head = nic->tFreeHdr;
-    idx = head;
-    while (count--) {
-        tail = idx;
-        idx = nic->dev.vq[1].desc[idx].next;
-    }
-    nic->tFreeHdr = idx;   /* may be invalid if empty, but tFreeNum must be valid: 0 */
-    LOS_SpinUnlockRestore(&nic->transLock, intSave);
-    nic->dev.vq[1].desc[tail].flag &= ~VIRTQ_DESC_F_NEXT;
+    idx = nic->dev.vq[1].desc[head].next;
+    /* new tFreeHdr may be invalid if list is empty, but tFreeNum must be valid: 0 */
+    nic->tFreeHdr = nic->dev.vq[1].desc[idx].next;
+    OsalSpinUnlockIrqRestore(&nic->transLock, &intSave);
+    nic->dev.vq[1].desc[idx].flag &= ~VIRTQ_DESC_F_NEXT;
 
     return head;
 }
 
-static err_t LowLevelOutput(struct netif *netif, struct pbuf *p)
+static NetDevTxResult LowLevelOutput(NetDevice *netDev, NetBuf *p)
 {
-    uint16_t add, idx, head, tmp;
-    struct pbuf *q = NULL;
-    struct VirtNetif *nic = netif->state;
+    uint16_t idx, head;
+    struct VirtNetif *nic = GetVirtnetIf(netDev);
     struct Virtq *trans = &nic->dev.vq[1];
 
-#if ETH_PAD_SIZE
-    pbuf_header(p, -ETH_PAD_SIZE); /* drop the padding word */
-#endif
-
-    /* plus 1 for VirtnetHdr */
-    add = pbuf_clen(p) + 1;
-    if (add > trans->qsz) {
-        PRINT_ERR("packet pbuf_clen %u larger than supported %u\n", add - 1, trans->qsz - 1);
-        return ERR_IF;
-    }
-
-    head = GetTxFreeEntry(nic, add);
+    head = GetTxFreeEntry(nic);
     trans->desc[head].pAddr = VMM_TO_DMA_ADDR((PADDR_T)&nic->vnHdr);
     trans->desc[head].len = sizeof(struct VirtnetHdr);
     idx = trans->desc[head].next;
-    tmp = head;
-    q = p;
-    while (q != NULL) {
-        tmp = trans->desc[tmp].next;
-        trans->desc[tmp].pAddr = VMM_TO_DMA_ADDR((PADDR_T)q->payload);
-        trans->desc[tmp].len = q->len;
-        q = q->next;
-    }
+    trans->desc[idx].pAddr = LOS_PaddrQuery(NetBufGetAddress(p, E_DATA_BUF));
+    trans->desc[idx].len = NetBufGetDataLen(p);
 
-    nic->tbufRec[idx].head = p;
-    nic->tbufRec[idx].count = add;
-    nic->tbufRec[idx].tail = tmp;
-    pbuf_ref(p);
+    nic->tbufRec[idx] = p;
 
     trans->avail->ring[trans->avail->index % trans->qsz] = head;
     DSB;
     trans->avail->index++;
-    WRITE_UINT32(1, nic->dev.base + VIRTMMIO_REG_QUEUENOTIFY);
+    if (trans->used->flag != VIRTQ_USED_F_NO_NOTIFY) {
+        OSAL_WRITEL(1, nic->dev.base + VIRTMMIO_REG_QUEUENOTIFY);
+    }
 
-#if ETH_PAD_SIZE
-    pbuf_header(p, ETH_PAD_SIZE); /* reclaim the padding word */
-#endif
-
-    return ERR_OK;
+    return NETDEV_TX_OK;
 }
 
-static struct pbuf *LowLevelInput(const struct netif *netif, const struct VirtqUsedElem *e)
+static NetBuf *LowLevelInput(const NetDevice *netDev, const struct VirtqUsedElem *e)
 {
-    struct VirtNetif *nic = netif->state;
-    struct pbuf *p = NULL;
+    struct VirtNetif *nic = GetVirtnetIf(netDev);
     uint16_t len;
-    VADDR_T payload;
+    uint8_t *payload = NULL;
+    NetBuf *nb = NULL;
 
-    payload = DMA_TO_VMM_ADDR(nic->dev.vq[0].desc[e->id].pAddr) + sizeof(struct VirtnetHdr);
-#if ETH_PAD_SIZE
-    payload -= ETH_PAD_SIZE;
-#endif
-    pbuf_alloced_custom(PBUF_RAW, ETH_FRAME_LEN, PBUF_ROM | PBUF_ALLOC_FLAG_RX,
-                        &nic->rbufRec[e->id].cbuf, (void *)payload, ETH_FRAME_LEN);
-
+    /* we allocate Rx NetBuf & fill in received packet */
     len = e->len - sizeof(struct VirtnetHdr);
-    LOS_ASSERT(len <= ETH_FRAME_LEN);
-#if ETH_PAD_SIZE
-    len += ETH_PAD_SIZE;
-#endif
+    nb = NetBufDevAlloc(netDev, len);
+    if (nb == NULL) {
+        HDF_LOGE("[%s]allocate NetBuf failed, drop 1 packet", __func__);
+        return NULL;
+    }
+    payload = NetBufPush(nb, E_DATA_BUF, len);  /* here always succeed */
+    (void)memcpy_s(payload, len, nic->rbuf[e->id] + sizeof(struct VirtnetHdr), len);
 
-    p = &nic->rbufRec[e->id].cbuf.pbuf;
-    p->len = len;
-    p->tot_len = p->len;
-    return p;
+    return nb;
 }
 
-static void VirtnetRxHandle(struct netif *netif)
+static void VirtnetRxHandle(NetDevice *netDev)
 {
-    struct VirtNetif *nic = netif->state;
+    struct VirtNetif *nic = GetVirtnetIf(netDev);
     struct Virtq *q = &nic->dev.vq[0];
-    struct pbuf *buf = NULL;
+    NetBuf *nb = NULL;
     struct VirtqUsedElem *e = NULL;
+    uint16_t add = 0;
 
     q->avail->flag = VIRTQ_AVAIL_F_NO_INTERRUPT;
     while (1) {
@@ -399,13 +301,24 @@ static void VirtnetRxHandle(struct netif *netif)
 
         DSB;
         e = &q->used->ring[q->last % q->qsz];
-        buf = LowLevelInput(netif, e);
-        if (netif->input(buf, netif) != ERR_OK) {
-            LWIP_DEBUGF(NETIF_DEBUG, ("IP input error\n"));
-            ReleaseRxEntry(buf);
+        nb = LowLevelInput(netDev, e);
+        if (nb && NetIfRx(netDev, nb) != 0) {   /* Upstream free Rx NetBuf! */
+            HDF_LOGE("[%s]NetIfRx failed, drop 1 packet", __func__);
+            NetBufFree(nb);
         }
 
+        /*
+         * Our fixed receive buffers always sit in the appropriate desc[].
+         * We only need to update the available ring to QEMU.
+         */
+        q->avail->ring[(q->avail->index + add++) % q->qsz] = e->id;
         q->last++;
+    }
+    DSB;
+    q->avail->index += add;
+
+    if (q->used->flag != VIRTQ_USED_F_NO_NOTIFY) {
+        OSAL_WRITEL(0, nic->dev.base + VIRTMMIO_REG_QUEUENOTIFY);
     }
 }
 
@@ -428,135 +341,471 @@ static void VirtnetTxHandle(struct VirtNetif *nic)
 static void VirtnetIRQhandle(int swIrq, void *pDevId)
 {
     (void)swIrq;
-    struct netif *netif = pDevId;
-    struct VirtNetif *nic = netif->state;
+    NetDevice *netDev = pDevId;
+    struct VirtNetif *nic = GetVirtnetIf(netDev);
 
-    if (!(GET_UINT32(nic->dev.base + VIRTMMIO_REG_INTERRUPTSTATUS) & VIRTMMIO_IRQ_NOTIFY_USED)) {
+    if (!(OSAL_READL(nic->dev.base + VIRTMMIO_REG_INTERRUPTSTATUS) & VIRTMMIO_IRQ_NOTIFY_USED)) {
         return;
     }
 
-    VirtnetRxHandle(netif);
+    VirtnetRxHandle(netDev);
 
     VirtnetTxHandle(nic);
 
-    WRITE_UINT32(VIRTMMIO_IRQ_NOTIFY_USED, nic->dev.base + VIRTMMIO_REG_INTERRUPTACK);
+    OSAL_WRITEL(VIRTMMIO_IRQ_NOTIFY_USED, nic->dev.base + VIRTMMIO_REG_INTERRUPTACK);
 }
 
-static err_t LowLevelInit(struct netif *netif)
+/*
+ * The whole initialization is complex, here is the main point.
+ *  -factory-    FakeWifiInit/Release: alloc, set & register HdfChipDriverFactory
+ *  -chip-       FakeFactoryInitChip/Release: alloc & set HdfChipDriver
+ *  -NetDevice-  VirtNetDeviceInit/DeInit: set & add NetDevice
+ *  -virtnet-    VirtnetInit/DeInit: virtio-net driver
+ */
+
+static int32_t VirtnetInit(NetDevice *netDev)
 {
-    struct VirtNetif *nic = netif->state;
-    int ret;
+    int32_t ret, len;
+    struct VirtNetif *nic = NULL;
+
+    /* NOTE: For simplicity, alloc all these data from physical continuous memory. */
+    len = sizeof(struct VirtNetif) + VirtqSize(VIRTQ_RX_QSZ) + VirtqSize(VIRTQ_TX_QSZ);
+    nic = LOS_DmaMemAlloc(NULL, len, sizeof(void *), DMA_CACHE);
+    if (nic == NULL) {
+        HDF_LOGE("[%s]alloc nic memory failed", __func__);
+        return HDF_ERR_MALLOC_FAIL;
+    }
+    memset_s(nic, len, 0, len);
+    GET_NET_DEV_PRIV(netDev) = nic;
 
     if (!VirtmmioDiscover(VIRTMMIO_DEVICE_ID_NET, &nic->dev)) {
-        return ERR_IF;
+        return HDF_DEV_ERR_NO_DEVICE;
     }
 
     VirtmmioInitBegin(&nic->dev);
 
-    if (!VirtmmioNegotiate(&nic->dev, Feature0, Feature1, netif)) {
-        ret = ERR_IF;
+    if (!VirtmmioNegotiate(&nic->dev, Feature0, Feature1, netDev)) {
+        ret = HDF_DEV_ERR_DEV_INIT_FAIL;
         goto ERR_OUT;
     }
 
-    if ((ret = ConfigQueue(nic)) != ERR_OK) {
+    if ((ret = ConfigQueue(nic)) != HDF_SUCCESS) {
         goto ERR_OUT;
     }
 
-    if (!VirtmmioRegisterIRQ(&nic->dev, (HWI_PROC_FUNC)VirtnetIRQhandle, netif, VIRTMMIO_NETIF_NAME)) {
-        ret = ERR_IF;
+    ret = OsalRegisterIrq(nic->dev.irq, OSAL_IRQF_TRIGGER_NONE, (OsalIRQHandle)VirtnetIRQhandle,
+                          VIRTMMIO_NETIF_NAME, netDev);
+    if (ret != HDF_SUCCESS) {
+        HDF_LOGE("[%s]register IRQ failed: %d", __func__, ret);
         goto ERR_OUT;
     }
+    nic->dev.irq |= ~_IRQ_MASK;
 
     VritmmioInitEnd(&nic->dev);
-
-    /* everything is ready, now notify device the receive buffer */
-    nic->dev.vq[0].avail->index += nic->dev.vq[0].qsz;
-    WRITE_UINT32(0, nic->dev.base + VIRTMMIO_REG_QUEUENOTIFY);
-    return ERR_OK;
+    return HDF_SUCCESS;
 
 ERR_OUT:
     VirtmmioInitFailed(&nic->dev);
     return ret;
 }
 
-static err_t EthernetIfInit(struct netif *netif)
+static void VirtnetDeInit(NetDevice *netDev)
 {
-    struct VirtNetif *nic = NULL;
-    size_t i;
-
-    LWIP_ASSERT("netif != NULL", (netif != NULL));
-
-    nic = mem_calloc(1, sizeof(struct VirtNetif));
-    if (nic == NULL) {
-        PRINT_ERR("alloc nic memory failed\n");
-        return ERR_MEM;
-    }
-    netif->state = nic;
-
-#if LWIP_NETIF_HOSTNAME
-    netif->hostname = VIRTMMIO_NETIF_NAME;
-#endif
-
-    i = sizeof(netif->name) < sizeof(VIRTMMIO_NETIF_NICK) ?
-        sizeof(netif->name) : sizeof(VIRTMMIO_NETIF_NICK);
-    memcpy_s(netif->name, sizeof(netif->name), VIRTMMIO_NETIF_NICK, i);
-    i = sizeof(netif->full_name) < sizeof(VIRTMMIO_NETIF_NICK) ?
-        sizeof(netif->full_name) : sizeof(VIRTMMIO_NETIF_NICK);
-    memcpy_s(netif->full_name, sizeof(netif->full_name), VIRTMMIO_NETIF_NICK, i);
-
-    netif->output = etharp_output;
-    netif->linkoutput = LowLevelOutput;
-
-    netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_LINK_UP;
-    netif->link_layer_type = ETHERNET_DRIVER_IF;
-
-    return LowLevelInit(netif);
-}
-
-static void VirtnetDeInit(struct netif *netif)
-{
-    struct VirtNetif *nic = netif->state;
+    struct VirtNetif *nic = GetVirtnetIf(netDev);
 
     if (nic && (nic->dev.irq & ~_IRQ_MASK)) {
-        HwiIrqParam param = {0, netif, VIRTMMIO_NETIF_NAME};
-        LOS_HwiDelete(nic->dev.irq & _IRQ_MASK, &param);
-    }
-    if (nic && nic->rbufRec) {
-        free(nic->rbufRec);
-    }
-    if (nic && nic->tbufRec) {
-        free(nic->tbufRec);
-    }
-    if (nic && nic->dev.vq[0].desc) {
-        free(nic->dev.vq[0].desc);
+        OsalUnregisterIrq(nic->dev.irq & _IRQ_MASK, netDev);
     }
     if (nic) {
-        mem_free(nic);
+        LOS_DmaMemFree(nic);
     }
-    mem_free(netif);
+    GET_NET_DEV_PRIV(netDev) = NULL;
 }
 
-struct netif *VirtnetInit(void)
+static int32_t VirtNetDeviceSetMacAddr(NetDevice *netDev, void *addr)
 {
-    ip4_addr_t ip, mask, gw;
-    struct netif *netif = NULL;
-
-    netif = mem_calloc(1, sizeof(struct netif));
-    if (netif == NULL) {
-        PRINT_ERR("alloc netif memory failed\n");
-        return NULL;
+    uint8_t *p = addr;
+    for (int i = 0; i < netDev->addrLen; i++) {
+        netDev->macAddr[i] = p[i];
     }
-
-    ip.addr = ipaddr_addr(VIRTMMIO_NETIF_DFT_IP);
-    mask.addr = ipaddr_addr(VIRTMMIO_NETIF_DFT_MASK);
-    gw.addr = ipaddr_addr(VIRTMMIO_NETIF_DFT_GW);
-    if (netif_add(netif, &ip, &mask, &gw, netif->state,
-                    EthernetIfInit, tcpip_input) == NULL) {
-        PRINT_ERR("add virtio-mmio net device failed\n");
-        VirtnetDeInit(netif);
-        return NULL;
-    }
-
-    return netif;
+    return HDF_SUCCESS;
 }
 
+static struct NetDeviceInterFace g_netDevOps = {
+    .setMacAddr = VirtNetDeviceSetMacAddr,
+    /*
+     * Link layer packet transmition chain:
+     *   LWIP netif->linkoutput = driverif_output, in kernel, pbuf
+     *       KHDF netif->drv_send = LwipSend, in HDF adapter, NetBuf
+     *           NetDevice .xmit = our driver, NetBuf
+     */
+    .xmit = LowLevelOutput,
+};
+
+#define VN_RANDOM_IP_MASK   0xFF    /* 255.255.255.0 subnet */
+#define VN_RANDOM_IP_SHF    24      /* network byte order */
+
+/* fake WIFI have to UP interface, assign IP by hand */
+static int32_t VirtNetDeviceInitDone(NetDevice *netDev)
+{
+    IpV4Addr ip, mask, gw;
+    uint32_t h, l;
+    int32_t ret;
+
+    if ((ret = NetIfSetStatus(netDev, NETIF_UP)) != HDF_SUCCESS) {
+        return ret;
+    }
+
+    /* odd way hope to get ~distinct~ IP for different guests */
+    LOS_GetCpuCycle(&h, &l);
+    l &= VN_RANDOM_IP_MASK;
+    if (l == 0 || l == (1 << 1)) {          /* avoid 10.0.2.0, 10.0.2.2 */
+        l++;
+    } else if (l == VN_RANDOM_IP_MASK) {    /* avoid 10.0.2.255 */
+        l--;
+    }
+    l <<= VN_RANDOM_IP_SHF;
+    ip.addr = (inet_addr(VIRTMMIO_NETIF_DFT_MASK) & inet_addr(VIRTMMIO_NETIF_DFT_GW)) | l;
+    mask.addr = inet_addr(VIRTMMIO_NETIF_DFT_MASK);
+    gw.addr = inet_addr(VIRTMMIO_NETIF_DFT_GW);
+    return NetIfSetAddr(netDev, &ip, &mask, &gw);
+}
+
+static int32_t VirtNetDeviceInit(struct HdfChipDriver *chipDriver, NetDevice *netDev)
+{
+    (void)chipDriver;
+    int32_t ret;
+
+    /* VirtnetInit also set netDev->macAddr, mtu, addrLen */
+    if ((ret = VirtnetInit(netDev)) != HDF_SUCCESS) {
+        return ret;
+    }
+    netDev->flags = NET_DEVICE_IFF_RUNNING;
+    netDev->neededHeadRoom = 0;
+    netDev->neededTailRoom = 0;
+    netDev->funType.wlanType = PROTOCOL_80211_IFTYPE_STATION;
+    netDev->netDeviceIf = &g_netDevOps;
+    if ((ret = NetDeviceAdd(netDev)) != HDF_SUCCESS) {
+        goto ERR_OUT;
+    }
+    if ((ret = CreateEapolData(netDev)) != HDF_SUCCESS) {
+        goto ERR_OUT;
+    }
+
+    /* everything is ready, now notify device the receive buffers */
+    struct VirtNetif *nic = GetVirtnetIf(netDev);
+    nic->dev.vq[0].avail->index = nic->dev.vq[0].qsz;
+    OSAL_WRITEL(0, nic->dev.base + VIRTMMIO_REG_QUEUENOTIFY);
+
+    return VirtNetDeviceInitDone(netDev);
+
+ERR_OUT:
+    VirtnetDeInit(netDev);
+    return ret;
+}
+
+static int32_t VirtNetDeviceDeInit(struct HdfChipDriver *chipDriver, NetDevice *netDev)
+{
+    (void)chipDriver;
+
+    DestroyEapolData(netDev);
+
+    if (GetVirtnetIf(netDev)) {
+        VirtnetDeInit(netDev);
+    }
+
+    return NetDeviceDelete(netDev);
+}
+
+
+/*
+ * Followings are mainly fake data & funcs to mimic a wireless card.
+ *
+ * Here is fake MAC80211 base operations.
+ */
+static int32_t FakeWalSetMode(NetDevice *netDev, enum WlanWorkMode mode)
+{
+    (void)netDev;
+    if (mode != WLAN_WORKMODE_STA) {
+        HDF_LOGE("[%s]unsupported WLAN mode: %u", __func__, mode);
+        return HDF_ERR_NOT_SUPPORT;
+    }
+    return HDF_SUCCESS;
+}
+static int32_t FakeWalAddKey(NetDevice *netDev, uint8_t keyIndex, bool pairwise, const uint8_t *macAddr,
+                             struct KeyParams *params)
+{
+    (void)netDev;
+    (void)keyIndex;
+    (void)pairwise;
+    (void)macAddr;
+    (void)params;
+    return HDF_SUCCESS;
+}
+static int32_t FakeWalDelKey(NetDevice *netDev, uint8_t keyIndex, bool pairwise, const uint8_t *macAddr)
+{
+    (void)netDev;
+    (void)keyIndex;
+    (void)pairwise;
+    (void)macAddr;
+    return HDF_SUCCESS;
+}
+static int32_t FakeWalSetDefaultKey(NetDevice *netDev, uint8_t keyIndex, bool unicast, bool multicas)
+{
+    (void)netDev;
+    (void)keyIndex;
+    (void)unicast;
+    (void)multicas;
+    return HDF_SUCCESS;
+}
+static int32_t FakeWalGetDeviceMacAddr(NetDevice *netDev, int32_t type, uint8_t *mac, uint8_t len)
+{
+    (void)netDev;
+    (void)type;
+
+    for (int i = 0; i < len && i < netDev->addrLen; i++) {
+        mac[i] = netDev->macAddr[i];
+    }
+
+    return HDF_SUCCESS;
+}
+static int32_t FakeWalSetMacAddr(NetDevice *netDev, uint8_t *mac, uint8_t len)
+{
+    (void)netDev;
+
+    for (int i = 0; i < len && i < netDev->addrLen; i++) {
+        netDev->macAddr[i] = mac[i];
+    }
+
+    return HDF_SUCCESS;
+}
+static int32_t FakeWalSetTxPower(NetDevice *netDev, int32_t power)
+{
+    (void)netDev;
+    (void)power;
+    return HDF_SUCCESS;
+}
+#define FAKE_MAGIC_BAND     20
+#define FAKE_MAGIC_FREQ     2412
+#define FAKE_MAGIC_CAPS     20
+#define FAKE_MAGIC_RATE     100
+static int32_t FakeWalGetValidFreqsWithBand(NetDevice *netDev, int32_t band, int32_t *freqs, uint32_t *num)
+{
+    (void)netDev;
+
+    if (band != FAKE_MAGIC_BAND) {
+        HDF_LOGE("[%s]unsupported WLAN band: %dMHz", __func__, band);
+        return HDF_ERR_NOT_SUPPORT;
+    }
+
+    *freqs = FAKE_MAGIC_FREQ; /* MHz, channel 1 */
+    *num = 1;
+    return HDF_SUCCESS;
+}
+struct MemAllocForWlanHwCapability {
+    struct WlanHwCapability cap;
+    struct WlanBand band;
+    struct WlanChannel ch;
+    uint16_t rate;
+};
+static void FakeWalHwCapabilityRelease(struct WlanHwCapability *self)
+{
+    OsalMemFree(self);
+}
+static int32_t FakeWalGetHwCapability(NetDevice *netDev, struct WlanHwCapability **capability)
+{
+    (void)netDev;
+
+    struct MemAllocForWlanHwCapability *p = OsalMemCalloc(sizeof(struct MemAllocForWlanHwCapability));
+    if (p == NULL) {
+        HDF_LOGE("[%s]alloc memory failed", __func__);
+        return HDF_ERR_MALLOC_FAIL;
+    }
+    p->cap.Release = FakeWalHwCapabilityRelease;
+    p->cap.bands[0] = &p->band;
+    p->cap.htCapability = FAKE_MAGIC_CAPS;
+    p->cap.supportedRateCount = 1;
+    p->cap.supportedRates = &p->rate;
+    p->band.channelCount = 1;
+    p->ch.channelId = 1;
+    p->ch.centerFreq = FAKE_MAGIC_FREQ;
+    p->ch.flags = WLAN_CHANNEL_FLAG_NO_IR | WLAN_CHANNEL_FLAG_DFS_UNAVAILABLE;
+    p->rate = FAKE_MAGIC_RATE;
+
+    *capability = &p->cap;
+    return HDF_SUCCESS;
+}
+static struct HdfMac80211BaseOps g_fakeBaseOps = {
+    .SetMode = FakeWalSetMode,
+    .AddKey = FakeWalAddKey,
+    .DelKey = FakeWalDelKey,
+    .SetDefaultKey = FakeWalSetDefaultKey,
+    .GetDeviceMacAddr = FakeWalGetDeviceMacAddr,
+    .SetMacAddr = FakeWalSetMacAddr,
+    .SetTxPower = FakeWalSetTxPower,
+    .GetValidFreqsWithBand = FakeWalGetValidFreqsWithBand,
+    .GetHwCapability = FakeWalGetHwCapability
+};
+
+
+/*
+ * Fake STA operations.
+ */
+static int32_t FakeStaConnect(NetDevice *netDev, WlanConnectParams *param)
+{
+    (void)netDev;
+    (void)param;
+    return HDF_SUCCESS;
+}
+static int32_t FakeStaDisonnect(NetDevice *netDev, uint16_t reasonCode)
+{
+    (void)netDev;
+    (void)reasonCode;
+    return HDF_SUCCESS;
+}
+static int32_t FakeStaStartScan(NetDevice *netDev, struct WlanScanRequest *param)
+{
+    (void)netDev;
+    (void)param;
+    return HDF_SUCCESS;
+}
+static int32_t FakeStaAbortScan(NetDevice *netDev)
+{
+    (void)netDev;
+    return HDF_SUCCESS;
+}
+static int32_t FakeStaSetScanningMacAddress(NetDevice *netDev, unsigned char *mac, uint32_t len)
+{
+    (void)netDev;
+    (void)mac;
+    (void)len;
+    return HDF_SUCCESS;
+}
+static struct HdfMac80211STAOps g_fakeStaOps = {
+    .Connect = FakeStaConnect,
+    .Disconnect = FakeStaDisonnect,
+    .StartScan = FakeStaStartScan,
+    .AbortScan = FakeStaAbortScan,
+    .SetScanningMacAddress = FakeStaSetScanningMacAddress,
+};
+
+
+/*
+ * Fake factory & chip functions.
+ */
+static struct HdfChipDriver *FakeFactoryInitChip(struct HdfWlanDevice *device, uint8_t ifIndex)
+{
+    struct HdfChipDriver *chipDriver = NULL;
+    if (device == NULL || ifIndex > 0) {
+        HDF_LOGE("[%s]HdfWlanDevice is NULL or ifIndex>0", __func__);
+        return NULL;
+    }
+    chipDriver = OsalMemCalloc(sizeof(struct HdfChipDriver));
+    if (chipDriver == NULL) {
+        HDF_LOGE("[%s]alloc memory failed", __func__);
+        return NULL;
+    }
+
+    if (strcpy_s(chipDriver->name, MAX_WIFI_COMPONENT_NAME_LEN, VIRTMMIO_NETIF_NAME) != EOK) {
+        HDF_LOGE("[%s]strcpy_s failed", __func__);
+        OsalMemFree(chipDriver);
+        return NULL;
+    }
+    chipDriver->init = VirtNetDeviceInit;
+    chipDriver->deinit = VirtNetDeviceDeInit;
+    chipDriver->ops = &g_fakeBaseOps;
+    chipDriver->staOps = &g_fakeStaOps;
+
+    return chipDriver;
+}
+static void FakeFactoryReleaseChip(struct HdfChipDriver *chipDriver)
+{
+    if (chipDriver == NULL) {
+        return;
+    }
+    if (strcmp(chipDriver->name, VIRTMMIO_NETIF_NAME) != 0) {
+        HDF_LOGE("[%s]not my driver: %s", __func__, chipDriver->name);
+        return;
+    }
+    OsalMemFree(chipDriver);
+}
+static uint8_t FakeFactoryGetMaxIFCount(struct HdfChipDriverFactory *factory)
+{
+    (void)factory;
+    return 1;
+}
+static void FakeFactoryRelease(struct HdfChipDriverFactory *factory)
+{
+    OsalMemFree(factory);
+}
+static int32_t FakeFactoryInit(void)
+{
+    struct HdfChipDriverManager *driverMgr = NULL;
+    struct HdfChipDriverFactory *tmpFactory = NULL;
+    int32_t ret;
+
+    tmpFactory = OsalMemCalloc(sizeof(struct HdfChipDriverFactory));
+    if (tmpFactory == NULL) {
+        HDF_LOGE("[%s]alloc memory failed", __func__);
+        return HDF_ERR_MALLOC_FAIL;
+    }
+
+    driverMgr = HdfWlanGetChipDriverMgr();
+    if (driverMgr == NULL || driverMgr->RegChipDriver == NULL) {
+        HDF_LOGE("[%s]driverMgr or its RegChipDriver is NULL!", __func__);
+        OsalMemFree(tmpFactory);
+        return HDF_FAILURE;
+    }
+
+#define VIRTMMIO_WIFI_NAME  "fakewifi"  /* must match wlan_chip_virtnet.hcs::driverName */
+    tmpFactory->driverName = VIRTMMIO_WIFI_NAME;
+    tmpFactory->ReleaseFactory = FakeFactoryRelease;
+    tmpFactory->Build = FakeFactoryInitChip;
+    tmpFactory->Release = FakeFactoryReleaseChip;
+    tmpFactory->GetMaxIFCount = FakeFactoryGetMaxIFCount;
+    if ((ret = driverMgr->RegChipDriver(tmpFactory)) != HDF_SUCCESS) {
+        HDF_LOGE("[%s]register chip driver failed: %d", __func__, ret);
+        OsalMemFree(tmpFactory);
+        return ret;
+    }
+
+    return HDF_SUCCESS;
+}
+
+
+/*
+ * HDF entry.
+ */
+
+static int32_t FakeWifiInit(struct HdfDeviceObject *device)
+{
+    struct VirtmmioDev dev;
+
+    if (device == NULL) {
+        HDF_LOGE("[%s]device is null", __func__);
+        return HDF_ERR_INVALID_PARAM;
+    }
+
+    /* only when virtio-net do exist, we go on the other lots of work */
+    if (!VirtmmioDiscover(VIRTMMIO_DEVICE_ID_NET, &dev)) {
+        return HDF_ERR_INVALID_OBJECT;
+    }
+
+    return FakeFactoryInit();
+}
+
+static void FakeWifiRelease(struct HdfDeviceObject *deviceObject)
+{
+    if (deviceObject) {
+        (void)ChipDriverMgrDeInit();
+    }
+}
+
+struct HdfDriverEntry g_fakeWifiEntry = {
+    .moduleVersion = 1,
+    .Init = FakeWifiInit,
+    .Release = FakeWifiRelease,
+    .moduleName = "HDF_FAKE_WIFI"
+};
+
+HDF_INIT(g_fakeWifiEntry);

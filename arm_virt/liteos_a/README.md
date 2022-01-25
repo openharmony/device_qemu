@@ -67,7 +67,7 @@ to the options.
     be enabled, gpu enabled and waiting for VNC connection at port 5920.
 ```
 
-By default, the network will not be automatically configured if no parameter is specified. If the root directory image file **flash.img** exists, the image will not be re-created.
+Simulated network interface is wireless card wlan0, but has no real wifi functions. By default, the network will not be automatically configured if no parameter is specified. If the root directory image file **flash.img** exists, the image will not be re-created.
 
 c) Exit QEMU.
 
@@ -160,7 +160,7 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
    echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
    ```
 
-   Note: The system network configuration is hardcoded to **10.0.2.0/24** for the IP address, **10.0.2.2** for the gateway, and **10.0.2.15** for the default IP address. Use different MAC addresses, IP addresses, and flash image (recommended) for different client instances. The MAC address can be transferred using the QEMU command line. The IP address can be adjusted in the OHOS command line, for example, using `ifconfig eth0 inet 10.0.2.30` or other methods.
+   Note: The system is hardcoded to **10.0.2.0/24** for the sub-network, **10.0.2.2** for the gateway, and random IP address. Use different MAC addresses, IP addresses, and flash image (recommended) for different client instances. The MAC address can be transferred using the QEMU command line. The IP address can be adjusted in the OHOS command line, for example, using `ifconfig wlan0 inet 10.0.2.30` or other methods.
 
 2. How do I troubleshoot the error when running `qemu-system-arm`?
 
