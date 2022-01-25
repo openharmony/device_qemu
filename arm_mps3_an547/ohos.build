@@ -1,0 +1,10 @@
+{
+  "parts": {
+    "device_arm_mps3_an547": {
+      "module_list": [
+        "//device/qemu/arm_mps3_an547:arm_mps3_an547"
+      ]
+    }
+  },
+  "subsystem": "device_arm_mps3_an547"
+}
