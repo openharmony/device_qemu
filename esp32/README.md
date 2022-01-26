@@ -19,20 +19,34 @@ QEMU can simulate the kernel to run on different boards ,eliminate dependence on
       To use the default environment, execute '3.Get source code' and then install the default compiler in the root directory by executing the following instructions.
 
          ```shell
-         $ sh build/prebuilts_download.sh
+         sh build/prebuilts_download.sh
          ```
 
       Optional compiler installation process:
 
-      1. Download the esp official release the SDK package: https://www.espressif.com/zh-hans/support/download/sdks-demos?keys=&field_type_tid%5B%5D=13
+      a) Download the esp official release the SDK package: https://www.espressif.com/zh-hans/support/download/sdks-demos?keys=&field_type_tid%5B%5D=13
 
-      2. Put the downloaded SDK package into the Linux system, go to the directory, and run the following commands:
+      b) Put the downloaded SDK package into the Linux system, go to the directory, and run the following commands:
 
          ```shell
          unzip esp-idf-v4.3.1.zip
          cd esp-idf-v4.3.1/
          ./install.sh
          . ./export.sh
+         ```
+
+      c) Delete the default compiler path:
+
+         change esp32\liteos_m\config.gni:
+
+         ```c
+         board_toolchain_path = "$ohos_root_path/prebuilts/gcc/linux-x86/esp/esp-2019r2-8.2.0/xtensa-esp32-elf/bin/"
+         ```
+
+         to
+
+         ```c
+         board_toolchain_path = ""
          ```
 
       Annotation: The version of the toolchain used in the test is GCC Version 8.2.0 (Crosstool-ng ESP-2019R2) or GCC Version 8.4.0 (Crosstool-ng ESP-2021R1).  
@@ -53,9 +67,9 @@ QEMU can simulate the kernel to run on different boards ,eliminate dependence on
       a) Install and compile
 
          ```shell
-         $ git clone https://github.com/espressif/qemu.git
-         $ cd qemu
-         $ ./configure --target-list=xtensa-softmmu \
+         git clone https://github.com/espressif/qemu.git
+         cd qemu
+         ./configure --target-list=xtensa-softmmu \
             --enable-gcrypt \
             --enable-debug --enable-sanitizers \
             --disable-strip --disable-user \
@@ -66,21 +80,21 @@ QEMU can simulate the kernel to run on different boards ,eliminate dependence on
       b) Waitting for the completion of the compilation and executing the installation command (If the compilation fail, please refer to https://github.com/espressif/qemu/issues/21):
 
          ```shell
-         $ ninja -C build
+         ninja -C build
          ```
 
       c) Add qemu to the environment variable (modify user_qemu_xxx_path to your own installation path)：
 
          ```shell
-         $ vim ~/.bashrc
-         $ export QEMU=user_qemu_xxx_path/qemu/build
-         $ source ~/.bashrc
+         vim ~/.bashrc
+         export QEMU=user_qemu_xxx_path/qemu/build
+         source ~/.bashrc
          ```
 
       d) Installation dependencies
 
          ```shell
-         $ ldd $QEMU/qemu-system-xtensa
+         ldd $QEMU/qemu-system-xtensa
          ```
 
          According to the execution result of ldd, install the missing dependent libraries
@@ -100,8 +114,8 @@ Hint : You can use the `repo` command to get the source code.
    2. Execute the hb clean && hb build command to build the executable file that produces `OHOS_Image`.
 
       ```shell
-      $ hb set
-      $ hb clean && hb build
+      hb set
+      hb clean && hb build
       ```
 
    3. After the buildding is complete, the corresponding executable file is in the home directory：
@@ -115,7 +129,7 @@ Hint : You can use the `repo` command to get the source code.
    1. Run qemu(Don't cooperate with GDB )
 
       ```shell
-      $ ./qemu-run
+      ./qemu-run
       ```
 
    2. Run qemu(Cooperate with GDB)
@@ -123,13 +137,13 @@ Hint : You can use the `repo` command to get the source code.
       a) Start the GDB server and wait for the connection
 
          ```shell
-         $ ./qemu-run -g
+         ./qemu-run -g
          ```
 
       b) Create a new terminal and use GDB to connect to qemu
 
          ```shell
-         $ xtensa-esp32-elf-gdb out/esp32/qemu_xtensa_mini_system_demo/OHOS_Image -ex "target remote :1234"
+         xtensa-esp32-elf-gdb out/esp32/qemu_xtensa_mini_system_demo/OHOS_Image -ex "target remote :1234"
          ```
 
    Annotation：Since the qemu-system-xtensa tool of qemu has the same name as the qemu-system-xtensa tool of esp32, the absolute path is used to execute the qemu-system-xtensa tool of esp32.
