@@ -7,7 +7,7 @@ LOCAL_INCLUDE := -I $(LITEOSTOPDIR)/../../third_party/lwip/src/include/ \
                  -I $(LITEOSTOPDIR)/../../drivers/framework/model/network/wifi/platform/include/ \
                  -I $(LITEOSTOPDIR)/../../drivers/framework/model/network/wifi/core/components/eapol/ \
                  -I $(LITEOSTOPDIR)/../../third_party/FreeBSD/sys/dev/evdev/
-LOCAL_SRCS := virtnet.c virtmmio.c virtgpu.c virtinput.c fakesdio.c
+LOCAL_SRCS := virtnet.c virtmmio.c virtgpu.c virtinput.c virtblock.c fakesdio.c
 LOCAL_CFLAGS += $(LOCAL_INCLUDE)
 
 ifdef LOSCFG_HW_RANDOM_ENABLE

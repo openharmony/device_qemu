@@ -5,44 +5,29 @@ liteos_a提供了定制bootargs的机制，通过qemu-run可以向内核传递�
 
 传递到内核的参数名字和值均为字符串，具体使用方式请见fs/rootfs有关代码。
 
-## 用FAT映像传递文件<a name="sectionfatfs"></a>
+## 用MMC映像传递文件<a name="sectionfatfs"></a>
 ---
 
-利用arm virt的第二个CFI flash设备，可以加载FAT格式的映像盘。因为FAT映像制作、挂载、存储文件均比较简单，可由此在宿主机和虚拟机间方便地传递文件。
+MMC映像可用于在宿主机和虚拟机之间传递文件。注意：MMC映像同时用于一些系统文件，防止误删除。
 
-1. 准备FAT映像
+1. 在宿主机上挂载
+
+```
+sudo modprobe nbd
+sudo qemu-nbd --connect=/dev/nbd0 out/smallmmc.img
+sudo mount /dev/nbd0p1 some_directory   # 1st partition, total 3 partitions
 ```
 
-dd if=/dev/zero of=fat.img bs=64M count=1
-sudo losetup /dev/loop0 fat.img
-sudo fdisk /dev/loop0    # 磁盘分区选择MBR格式, FAT16或FAT32
-sudo losetup -o 1048576 /dev/loop1 /dev/loop0    # 这里用第一个主分区示例
-sudo mkfs.vfat /dev/loop1
-```
+2. 拷贝
 
-2. 在虚拟机中挂载
-```
-qemu-system-arm ...(正常运行参数) \
-                -drive if=pflash,file=fat.img,format=raw
+常用的cp、mkdir命令。
 
-OHOS # mount /dev/cfiblkp0 some_dir vfat
-```
+3. 卸载。
 
-**注意**：新加的drive参数要在原drive参数的后面。
-
-3. 在宿主机中挂载
 ```
-sudo losetup /dev/loop0 fat.img
-sudo losetup -o 1048576 /dev/loop1 /dev/loop0
-sudo mount /dev/loop1 some_dir
-```
-
-4. 缷载
-```
-sudo umount some_dir
-
-sudo losetup -d /dev/loop1    # 宿主机时
-sudo losetup -d /dev/loop0    # 宿主机时
+sudo umount /mnt
+sudo qemu-nbd -d /dev/nbd0
+sudo modprobe -r nbd
 ```
 
 ## 添加一个HelloWorld程序<a name="addhelloworld"></a>
@@ -235,6 +220,7 @@ console每秒输出为图形的帧率
 2. 为这个虚拟机单独拷贝一份虚拟机映像。
 ```
 cp flash.img flash2.img
+cp out/smallmmc.img out/smallmmc1.img
 ```
 
 3. 从//vendor/ohemu/qemu_small_system_demo/qemu_run.sh中拷贝出qemu命令：
@@ -242,7 +228,7 @@ cp flash.img flash2.img
 sudo `which qemu-system-arm` -M virt, ...
 ```
 
-修改映像文件名、MAC地址，删除替换脚本变量；为便于观察可增加-nographic参数。
+修改映像文件名、MMC映像文件名、MAC地址，删除替换脚本变量；为便于观察可增加-nographic参数。
 
 4. 如果ip地址恰好与第1台虚拟机相同，修改ip地址。在OHOS提示符下：
 ```

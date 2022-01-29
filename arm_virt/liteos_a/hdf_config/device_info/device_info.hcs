@@ -109,6 +109,16 @@
                     deviceMatchAttr = "qemu_virt_cfi_0";
                 }
             }
+            device_mmc:: device {
+                device0 :: deviceNode {
+                    policy = 1;
+                    priority = 50;
+                    permission = 0600;
+                    moduleName = "HDF_VIRTIO_BLOCK";
+                    serviceName = "HDF_PLATFORM_MMC_0";
+                    deviceMatchAttr = "qemu_virt_blk_0";
+                }
+            }
         }
         media :: host {
         }
