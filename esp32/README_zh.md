@@ -19,20 +19,34 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
       若要使用默认环境请先执行 '3.获取源码' ，然后在根目录下执行下列指令安装默认编译器。
 
          ```shell
-         $ sh build/prebuilts_download.sh
+         sh build/prebuilts_download.sh
          ```
 
       可选的编译器安装流程：
 
-      1.下载官方release的SDK包：https://www.espressif.com/zh-hans/support/download/sdks-demos?keys=&field_type_tid%5B%5D=13
+      a) 下载官方release的SDK包：https://www.espressif.com/zh-hans/support/download/sdks-demos?keys=&field_type_tid%5B%5D=13
 
-      2.将下载好的SDK包放入linux系统，进入目录执行如下指令：
+      b) 将下载好的SDK包放入linux系统，进入目录执行如下指令：
 
          ```shell
          unzip esp-idf-v4.3.1.zip
          cd esp-idf-v4.3.1/
          ./install.sh
          . ./export.sh
+         ```
+
+      c) 删除默认的编译器路径：
+
+         修改esp32\liteos_m\config.gni：
+
+         ```c
+         board_toolchain_path = "$ohos_root_path/prebuilts/gcc/linux-x86/esp/esp-2019r2-8.2.0/xtensa-esp32-elf/bin/"
+         ```
+
+         改为
+
+         ```c
+         board_toolchain_path = ""
          ```
 
       注：本教程使用的工具链版本为gcc version 8.2.0 (crosstool-NG esp-2019r2)或gcc version 8.4.0 (crosstool-NG esp-2021r1)
@@ -53,9 +67,9 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
       a) 编译安装
 
          ```shell
-         $ git clone https://github.com/espressif/qemu.git
-         $ cd qemu
-         $ ./configure --target-list=xtensa-softmmu \
+         git clone https://github.com/espressif/qemu.git
+         cd qemu
+         ./configure --target-list=xtensa-softmmu \
             --enable-gcrypt \
             --enable-debug --enable-sanitizers \
             --disable-strip --disable-user \
@@ -66,21 +80,21 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
       b) 等待编译结束，执行安装命令（如果编译失败请参考https://github.com/espressif/qemu/issues/21）:
 
          ```shell
-         $ ninja -C build
+         ninja -C build
          ```
 
       c) 将qemu添加到环境变量中(user_qemu_xxx_path修改为自己的安装路径):
 
          ```shell
-         $ vim ~/.bashrc
-         $ export QEMU=user_qemu_xxx_path/qemu/build
-         $ source ~/.bashrc
+         vim ~/.bashrc
+         export QEMU=user_qemu_xxx_path/qemu/build
+         source ~/.bashrc
          ```
 
       d) 安装依赖
 
          ```shell
-         $ ldd $QEMU/qemu-system-xtensa
+         ldd $QEMU/qemu-system-xtensa
          ```
 
          根据ldd执行结果，安装缺少的依赖库
@@ -100,8 +114,8 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
    2. 执行hb clean && hb build命令构建产生 `OHOS_Image` 的可执行文件。
 
       ```shell
-      $ hb set
-      $ hb clean && hb build
+      hb set
+      hb clean && hb build
       ```
 
    3. 在构建完成之后，对应的可执行文件在主目录下：
@@ -115,7 +129,7 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
    1. 运行qemu(不配合GDB)
 
       ```shell
-      $ ./qemu-run
+      ./qemu-run
       ```
 
    2. 启动qemu(配合GDB)
@@ -123,13 +137,13 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
       a) 启动GDB服务器，等待连接
 
          ```shell
-         $ ./qemu-run -g
+         ./qemu-run -g
          ```
 
       b) 新建终端并使用GDB连接qemu
 
          ```shell
-         $ xtensa-esp32-elf-gdb out/esp32/qemu_xtensa_mini_system_demo/OHOS_Image -ex "target remote :1234"
+         xtensa-esp32-elf-gdb out/esp32/qemu_xtensa_mini_system_demo/OHOS_Image -ex "target remote :1234"
          ```
 
    注：由于默认安装的qemu自带qemu-system-xtensa工具与当前安装的qemu-system-xtensa工具重名，因此采用绝对路径执行当前的qemu-system-xtensa工具。
