@@ -33,133 +33,36 @@
 #include <stdio.h>
 #include "los_interrupt.h"
 
-#define PLACEHOLDER_OFFSET  2
-#define HEXADECIMAL_NUM     16
-#define DECIMALISM_NUM      10
-#define BOUNDARY_NUM        9
+#define BUFSIZE  256
 
 STATIC VOID UartPutc(CHAR c)
 {
     (VOID)uart_tx_one_char(c);
 }
 
-STATIC VOID MatchedOut(CHAR data, va_list *ap)
+STATIC VOID FuncPuts(const CHAR *s, VOID (*funcPutc)(CHAR c))
 {
-    CHAR c = 0;
-    UINT32 v, n;
-    UINT32 val[100];
-    CHAR *s = NULL;
-    INT32 i = 0;
-    INT32 j = 0;
+    UINT32 intSave;
 
-    switch (data) {
-        case 'c':
-            c = va_arg(*ap, UINT32);
-            UartPutc(c);
-            break;
-        case 's':
-            s = va_arg(*ap, CHAR*);
-            while (*s) {
-                UartPutc(*s++);
-            }
-            break;
-        case 'd':
-            v = va_arg(*ap, UINT32);
-            i = 0;
-            while (v) {
-                n = v % DECIMALISM_NUM;
-                val[i] = n;
-                v = v / DECIMALISM_NUM;
-                i++;
-            }
-            if (i == 0) {
-                UartPutc('0');
-            }
-            for (j = i - 1; j >= 0; j--) {
-                UartPutc('0' + val[j]);
-            }
-            break;
-        case 'x':
-            v = va_arg(*ap, UINT32);
-            i = 0;
-            if (v == 0) {
-                val[i] = 0;
-                i++;
-            }
-            while (v) {
-                n = v % HEXADECIMAL_NUM;
-                val[i] = n;
-                v = v / HEXADECIMAL_NUM;
-                i++;
-            }
-            if (i == 0) {
-                UartPutc('0');
-            }
-            for (j = i - 1; j >= 0; j--) {
-                if (val[j] > BOUNDARY_NUM) {
-                    UartPutc('a' + val[j] - DECIMALISM_NUM);
-                } else {
-                    UartPutc('0' + val[j]);
-                }
-            }
-            break;
-        case 'p':
-            v = va_arg(*ap, UINT32);
-            i = 0;
-            if (v == 0) {
-                val[i] = 0;
-                i++;
-            }
-            while (v) {
-                n = v % HEXADECIMAL_NUM;
-                val[i] = n;
-                v = v / HEXADECIMAL_NUM;
-                i++;
-            }
-            UartPutc('0');
-            UartPutc('x');
-            if (i == 0) {
-                UartPutc('0');
-            }
-            for (j = i - 1; j >= 0; j--) {
-                if (val[j] > BOUNDARY_NUM) {
-                    UartPutc('a' + val[j] - DECIMALISM_NUM);
-                } else {
-                    UartPutc('0' + val[j]);
-                }
-            }
-            break;
-        default:
-            break;
+    intSave = LOS_IntLock();
+    while (*s) {
+        funcPutc(*s++);
     }
+    LOS_IntRestore(intSave);
 }
 
 INT32 printf(const CHAR *fmt, ...)
 {
+    CHAR buf[BUFSIZE] = { 0 };
     va_list ap;
-    (VOID)va_start(ap, fmt);
-    while (*fmt != '\0') {
-        switch (*fmt) {
-            case '%':
-                MatchedOut(fmt[1], &ap);
-                fmt += PLACEHOLDER_OFFSET;
-                break;
-            case '\n':
-                UartPutc('\r');
-                UartPutc('\n');
-                fmt++;
-                break;
-            case '\r':
-                UartPutc('\r');
-                UartPutc('\n');
-                fmt++;
-                break;
-            default:
-                UartPutc(*fmt);
-                fmt++;
-                break;
-        }
+    va_start(ap, fmt);
+    int len = vsnprintf_s(buf, sizeof(buf), BUFSIZE - 1, fmt, ap);
+    va_end(ap);
+    if (len > 0) {
+        FuncPuts(buf, UartPutc);
+    } else {
+        FuncPuts("printf error!\n", UartPutc);
     }
-    (VOID)va_end(ap);
-    return 0;
+    return len;
 }
+
