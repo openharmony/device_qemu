@@ -1,0 +1,20 @@
+root {
+    platform {
+        mmc_config {
+            device0 {
+                match_attr = "qemu_virt_blk_0";
+                hostId = 0;             // 主机号
+                devType = 0;            // 模式选择：emmc, SD, SDIO, COMBO
+                voltDef = 0;            // 3.3V
+                freqMin = 50000;        // 最小频率
+                freqMax = 100000000;    // 最大频率
+                freqDef = 400000;       // 默认频率
+                ocrDef = 0x300000;      // 工作电压设置相关
+                caps = 0xd001e045;      // 属性寄存器相关,见mmc_caps.h中MmcCaps定义
+                caps2 = 0x60;           // 属性寄存器相关,见mmc_caps.h中MmcCaps2定义
+                maxBlkNum = 2048;       // IO最大块数
+                maxBlkSize = 512;       // 块最大字节数
+            }
+        }
+    }
+}
