@@ -45,6 +45,10 @@
                 <filteritem type="filepath" name="arm_mps2_an386/liteos_m/board/driver/net/lan9118_eth_drv.*" desc="apache license"/>
                 <filteritem type="filepath" name="arm_mps2_an386/liteos_m/board/driver/LICENSE-apache-2.0.txt" desc="license file"/>
             </filefilter>
+            <filefilter name="defaultFilter" desc="三方驱动文件，属于apache license">
+                <filteritem type="filepath" name="arm_mps3_an547/liteos_m/board/driver/arm_uart_drv.*" desc="apache license"/>
+                <filteritem type="filepath" name="arm_mps3_an547/liteos_m/board/driver/LICENSE-apache-2.0.txt" desc="license file"/>
+            </filefilter>
             <filefilter name="defaultFilter" desc="Files not to check">
                 <filteritem type="filepath" name="arm_virt/linux/chipset/etc/fstab*.*" desc="fstab配置文件，不能加其他注释"/>
                 <filteritem type="filepath" name="arm_virt/linux/rootfs/*.cfg" desc="init配置文件，不能加其他注释"/>
