@@ -36,6 +36,13 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 │   ├── fs                  # fs 配置
 │   ├── test                # 测试样例
 │   └── liteos_m            # 与liteos_m内核相关的配置
+├── arm_mps3_an547          # cortex-m55 mps3_an547单板
+│   ├── driver              # 驱动目录
+│   ├── include             # 对外接口存放目录
+│   ├── libc                # 基础libc库
+│   ├── fs                  # fs 配置
+│   ├── test                # 测试样例
+│   └── liteos_m            # 与liteos_m内核相关的配置
 ├── esp32                   # Xtensa LX6 esp32单板
 │   ├── hals                # 硬件适配层
 │   ├── driver              # 驱动目录
@@ -68,18 +75,18 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 2. 获取源码
 
    ```
-   $ wget https://download.qemu.org/qemu-6.0.0.tar.xz
+   $ wget https://download.qemu.org/qemu-6.2.0.tar.xz
    ```
 
    或
 
-   [官网下载: qemu-6.0.0.tar.xz](https://download.qemu.org/qemu-6.0.0.tar.xz)
+   [官网下载: qemu-6.2.0.tar.xz](https://download.qemu.org/qemu-6.2.0.tar.xz)
 
 3. 编译安装
 
    ```
-   $ tar -xf qemu-6.0.0.tar.xz
-   $ cd qemu-6.0.0
+   $ tar -xf qemu-6.2.0.tar.xz
+   $ cd qemu-6.2.0
    $ mkdir build && cd build
    $ ../configure --prefix=qemu_installation_path
    $ make -j16
@@ -110,6 +117,8 @@ arm架构参考：
 - [QEMU教程 for arm - linux](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_virt/linux/README_zh.md)
 
 cortex-m4架构参考[QEMU教程 for cortex-m4](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_mps2_an386/README_zh.md)。
+
+cortex-m55架构参考[QEMU教程 for cortex-m55](https://gitee.com/openharmony/device_qemu/blob/HEAD/arm_mps3_an547/README_zh.md)。
 
 risc-v架构参考[QEMU教程 for risc-v](https://gitee.com/openharmony/device_qemu/blob/HEAD/riscv32_virt/README_zh.md)。
 
