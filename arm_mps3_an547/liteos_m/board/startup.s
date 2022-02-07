@@ -33,8 +33,6 @@
   .fpu vfpv3-d16-fp16
   .thumb
 
-.equ CPACR, 0xE000ED88
-
 .extern HalExcNMI;
 .extern HalExcHardFault;
 .extern HalExcMemFault;
@@ -58,14 +56,6 @@ bss_loop:
     add  r0, r0, #4
     subs r3, r1, r0
     bne  bss_loop
-
-    // Enable EPU
-    ldr  r0, =CPACR
-    ldr  r1, [r0]
-    orr  r1, r1, #(0xf << 20)
-    str  r1, [r0]
-    dsb
-    isb
 
     ldr  sp, =__irq_stack_top
     b    main
