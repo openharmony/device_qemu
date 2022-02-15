@@ -19,6 +19,7 @@
 #include "los_reg.h"
 #include "los_compiler.h"
 #include "los_debug.h"
+#include "los_interrupt.h"
 
 #define IFNAMSIZ  IF_NAMESIZE
 
@@ -548,7 +549,7 @@ static void VirtnetDeInit(struct netif *netif)
     struct VirtNetif *nic = netif->state;
 
     if (nic && (nic->dev.irq & ~_IRQ_MASK)) {
-        LOS_HwiDelete(nic->dev.irq);
+        LOS_HwiDelete(nic->dev.irq, NULL);
     }
     if (nic && nic->rbufRec) {
         free(nic->rbufRec);

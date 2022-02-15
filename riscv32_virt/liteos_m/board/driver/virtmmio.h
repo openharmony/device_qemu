@@ -20,16 +20,10 @@
 #include "stdint.h"
 #include "los_reg.h"
 #include "stdbool.h"
-#include "los_arch_context.h" 
+#include "los_arch_context.h"
 
 typedef unsigned long VADDR_T;
 typedef unsigned long PADDR_T;
-
-typedef struct tagIrqParam {
-    int swIrq;
-    VOID *pDevId;
-    const CHAR *pName;
-} HwiIrqParam;  
 
 #define IO_DEVICE_ADDR(paddr)               (paddr)
 #define VMM_TO_DMA_ADDR(vaddr)              (vaddr)
