@@ -52,6 +52,7 @@ board_cflags = [
   "-ffunction-sections",
   "-fno-builtin",
   "-fno-strict-aliasing",
+  "-mno-unaligned-access",
   "-fsigned-char",
   "-std=c99",
   "-Os",
