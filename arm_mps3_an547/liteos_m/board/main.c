@@ -34,15 +34,36 @@
 unsigned int LosAppInit(VOID);
 unsigned int LosShellInit(void);
 
+// Enable EPU
+static void EPUInit(void)
+{
+#if ((__FPU_PRESENT == 1U) && (__FPU_USED == 1U))
+    __asm volatile
+    (
+        "    .equ CPACR, 0xE000ED88                 \n"
+        "                                           \n"
+        "    ldr  r0, =CPACR                        \n"
+        "    ldr  r1, [r0]                          \n"
+        "    orr  r1, r1, #(0xf << 20)              \n"
+        "    str  r1, [r0]                          \n"
+        "    dsb                                    \n"
+        "    isb                                    \n"
+        "                                           \n"
+        "    .align 4                               \n"
+    );
+#endif
+}
+
 LITE_OS_SEC_TEXT_INIT int main(void)
 {
     unsigned int ret;
 
+    EPUInit();
     UartInit();
 
     ret = LOS_KernelInit();
     if (ret != LOS_OK) {
-        printf("Liteos kernel init failed! ERROR: %d\n", ret);
+        printf("Liteos kernel init failed! ERROR: %u\n", ret);
         goto EXIT;
     }
 
@@ -51,13 +72,13 @@ LITE_OS_SEC_TEXT_INIT int main(void)
 #if (LOSCFG_USE_SHELL == 1)
     ret = LosShellInit();
     if (ret != LOS_OK) {
-        printf("LosAppInit failed! ERROR: %d\n", ret);
+        printf("LosAppInit failed! ERROR: %u\n", ret);
     }
 #endif
 
     ret = LosAppInit();
     if (ret != LOS_OK) {
-        printf("LosAppInit failed! ERROR: %d\n", ret);
+        printf("LosAppInit failed! ERROR: %u\n", ret);
     }
 
     LOS_Start();
