@@ -20,31 +20,31 @@ Compiler install
 Note: Command to install toolchain without arm-none-eabi-gdb, gdb cannot be debugged.
 
 ```
-$ sudo apt install gcc-arm-none-eabi
+sudo apt install gcc-arm-none-eabi
 ```
 
 2.The installation package to install
 
-Note: The MVE feature of cortex-m55 processor can only be supported by installing the cross tool chain launched after 2020. If you have already passed the command to install gcc-arm-none-eabi, can through the command: `$sudo apt remove
+Note: The MVE feature of cortex-m55 processor can only be supported by installing the cross tool chain launched after 2020. If you have already passed the command to install gcc-arm-none-eabi, can through the command: `sudo apt remove
 gcc-arm-none-eabi` after unloading, install again.
 
 Download toolchain: [package](https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2)。
 
 ```
-$ chmod 777 gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
-$ tar -xvf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 install_path
+chmod 777 gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+tar -xvf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 install_path
 ```
 
 Add the installation path to the environment variable:
 
 ```
-$ vim ~/.bashrc
+vim ~/.bashrc
 ```
 
 Add the following command line to the last line of ~/.bashrc:
 
 ```
-$ export PATH=$PATH:install_path/gcc-arm-none-eabi-10.3-2021.10/bin
+export PATH=$PATH:install_path/gcc-arm-none-eabi-10.3-2021.10/bin
 ```
 
 #### 3. Code acquisition
@@ -65,7 +65,7 @@ Select `qemu_cm55_mini_system_demo` under **ohemu**.
 
 Run the following build command:
 ```
-$ hb build -f
+hb build -f
 ```
 
 This will build `OHOS_Image` for Qemu Cortex-m55 mps3-an547 machine.
@@ -103,8 +103,8 @@ Run a OHOS image in qemu according to the options.
 #### 6. gdb debug
 
 ```
-$ cd device/qemu/arm_mps3_an547
-$ vim liteos_m/config.gni
+cd device/qemu/arm_mps3_an547
+vim liteos_m/config.gni
 ```
 
 In the modified `board_opt_flags` compiler options:
@@ -121,19 +121,19 @@ board_opt_flags = [ "-g" ]
 Save and exit, recompile under OHOS root directory:
 
 ```
-$ hb build -f
+hb build -f
 ```
 
 In a window to enter the command:
 
 ```
-$ ./qemu-run -g
+./qemu-run -g
 ```
 
 In another window to enter the command:
 
 ```
-$ arm-none-eabi-gdb out/arm_mps3_an547/qemu_cm55_mini_system_demo/OHOS_Image
+arm-none-eabi-gdb out/arm_mps3_an547/qemu_cm55_mini_system_demo/OHOS_Image
 (gdb) target remote localhost:1234
 (gdb) b main
 ```

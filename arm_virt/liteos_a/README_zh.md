@@ -85,8 +85,8 @@ sudo apt install gdb-multiarch
 ```
 然后，
 ```
-$ cd ohos/vendor/ohemu/qemu_small_system_demo/kernel_configs
-$ vim debug.config
+cd ohos/vendor/ohemu/qemu_small_system_demo/kernel_configs
+vim debug.config
 ```
 
 将 `LOSCFG_CC_STACKPROTECTOR_ALL=y` 修改为:
@@ -99,19 +99,19 @@ LOSCFG_COMPILE_DEBUG=y
 保存并退出，在OHOS根目录重新编译:
 
 ```
-$ hb build -f
+hb build -f
 ```
 
 在一个窗口中输入命令：
 
 ```
-$ ./qemu-run -g
+./qemu-run -g
 ```
 
 在另一个窗口中输入命令：
 
 ```
-$ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
+gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
 (gdb) target remote localhost:1234
 ```
 

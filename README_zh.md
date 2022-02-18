@@ -69,13 +69,13 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 1. 安装依赖(Ubuntu 18+)
 
    ```
-   $ sudo apt install build-essential zlib1g-dev pkg-config libglib2.0-dev  binutils-dev libboost-all-dev autoconf libtool libssl-dev libpixman-1-dev virtualenv flex bison
+   sudo apt install build-essential zlib1g-dev pkg-config libglib2.0-dev  binutils-dev libboost-all-dev autoconf libtool libssl-dev libpixman-1-dev virtualenv flex bison
    ```
 
 2. 获取源码
 
    ```
-   $ wget https://download.qemu.org/qemu-6.2.0.tar.xz
+   wget https://download.qemu.org/qemu-6.2.0.tar.xz
    ```
 
    或
@@ -85,29 +85,29 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 3. 编译安装
 
    ```
-   $ tar -xf qemu-6.2.0.tar.xz
-   $ cd qemu-6.2.0
-   $ mkdir build && cd build
-   $ ../configure --prefix=qemu_installation_path
-   $ make -j16
+   tar -xf qemu-6.2.0.tar.xz
+   cd qemu-6.2.0
+   mkdir build && cd build
+   ../configure --prefix=qemu_installation_path
+   make -j16
    ```
 
    等待编译结束, 执行安装命令:
 
    ```
-   $ make install
+   make install
    ```
 
    最后将安装路径添加到环境变量中:
 
    ```
-   $ vim ~/.bashrc
+   vim ~/.bashrc
    ```
 
    在~/.bashrc最末尾加入:
 
    ```
-   $ export PATH=$PATH:qemu_installation_path
+   export PATH=$PATH:qemu_installation_path
    ```
 
 ## 使用说明<a name="section169045116126"></a>

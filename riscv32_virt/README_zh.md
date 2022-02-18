@@ -54,8 +54,8 @@ b) 运行
 (1). qemu 版本 < 5.0.0
 
 ```
-$ cd device/qemu/riscv32_virt
-$ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
+cd device/qemu/riscv32_virt
+qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
 ```
 
 (2). qemu 版本 >= 5.0.0
@@ -83,8 +83,8 @@ Run a OHOS image in qemu according to the options.
 ## 6. gdb调试
 
 ```
-$ cd device/qemu/riscv32_virt
-$ vim liteos_m/config.gni
+cd device/qemu/riscv32_virt
+vim liteos_m/config.gni
 ```
 
 将 `board_opt_flags` 中的
@@ -102,19 +102,19 @@ board_opt_flags = [ "-g" ]
 保存并退出，在OHOS根目录重新编译:
 
 ```
-$ hb build -f
+hb build -f
 ```
 
 在一个窗口中输入命令：
 
 ```
-$ ./qemu-run -g
+./qemu-run -g
 ```
 
 在另一个窗口中输入命令：
 
 ```
-$ riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image
+riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image
 (gdb) target remote localhost:1234
 (gdb) b main
 ```
