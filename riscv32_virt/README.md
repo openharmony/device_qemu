@@ -56,8 +56,8 @@ b) Run
 (1) qemu version < 5.0.0
 
 ```
-$ cd device/qemu/riscv32_virt
-$ qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
+cd device/qemu/riscv32_virt
+qemu-system-riscv32 -machine virt -m 128M -kernel ../../../out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image -nographic -append "root=dev/vda or console=ttyS0"
 ```
 
 (2). qemu version >= 5.0.0
@@ -86,8 +86,8 @@ If you want to use other kernel exec file, please try `./qemu-run -e [file_name]
 #### 6. gdb debug
 
 ```
-$ cd device/qemu/riscv32_virt
-$ vim liteos_m/config.gni
+cd device/qemu/riscv32_virt
+vim liteos_m/config.gni
 ```
 
 In the modified `board_opt_flags` compiler options:
@@ -105,19 +105,19 @@ board_opt_flags = [ "-g" ]
 Save and exit, recompile under OHOS root directory:
 
 ```
-$ hb build -f
+hb build -f
 ```
 
 In a window to enter the command:
 
 ```
-$ ./qemu-run -g
+./qemu-run -g
 ```
 
 In another window to enter the command:
 
 ```
-$ riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image
+riscv32-unknown-elf-gdb out/riscv32_virt/qemu_riscv_mini_system_demo/OHOS_Image
 (gdb) target remote localhost:1234
 (gdb) b main
 ```

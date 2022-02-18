@@ -19,30 +19,30 @@ Arm Cortex-m55 虚拟化平台是一个 `qemu-system-arm` 的目标设备，通�
 提示：命令安装的工具链无 arm-none-eabi-gdb，无法进行gdb调试
 
 ```
-$ sudo apt install gcc-arm-none-eabi
+sudo apt install gcc-arm-none-eabi
 ```
 
 2.安装包安装
 
-提示：安装2020年后推出的交叉工具链才能支持cortex-m55处理器的MVE特性。如果已经通过命令安装了gcc-arm-none-eabi， 可以通过命令：`$ sudo apt remove gcc-arm-none-eabi` 卸载之后，再进行安装。
+提示：安装2020年后推出的交叉工具链才能支持cortex-m55处理器的MVE特性。如果已经通过命令安装了gcc-arm-none-eabi， 可以通过命令：`sudo apt remove gcc-arm-none-eabi` 卸载之后，再进行安装。
 
 下载工具链[安装包](https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2)。
 
 ```
-$ chmod 777 gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
-$ tar -xvf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 install_path
+chmod 777 gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+tar -xvf gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2 install_path
 ```
 
 将安装路径添加到环境变量中:
 
 ```
-$ vim ~/.bashrc
+vim ~/.bashrc
 ```
 
 在~/.bashrc最末尾加入:
 
 ```
-$ export PATH=$PATH:install_path/gcc-arm-none-eabi-10.3-2021.10/bin
+export PATH=$PATH:install_path/gcc-arm-none-eabi-10.3-2021.10/bin
 ```
 
 ## 3. 获取源码
@@ -64,7 +64,7 @@ hb set
 
 然后执行构建命令如下：
 ```
-$ hb build -f
+hb build -f
 ```
 
 这个命令构建会产生 `OHOS_Image` 的镜像文件。
@@ -100,8 +100,8 @@ Run a OHOS image in qemu according to the options.
 ## 6. gdb调试
 
 ```
-$ cd device/qemu/arm_mps3_an547
-$ vim liteos_m/config.gni
+cd device/qemu/arm_mps3_an547
+vim liteos_m/config.gni
 ```
 
 将 `board_opt_flags` 中的
@@ -119,19 +119,19 @@ board_opt_flags = [ "-g" ]
 保存并退出，在OHOS根目录重新编译:
 
 ```
-$ hb build -f
+hb build -f
 ```
 
 在一个窗口中输入命令：
 
 ```
-$ ./qemu-run -g
+./qemu-run -g
 ```
 
 在另一个窗口中输入命令：
 
 ```
-$ arm-none-eabi-gdb out/arm_mps3_an547/qemu_cm55_mini_system_demo/OHOS_Image
+arm-none-eabi-gdb out/arm_mps3_an547/qemu_cm55_mini_system_demo/OHOS_Image
 (gdb) target remote localhost:1234
 (gdb) b main
 ```
