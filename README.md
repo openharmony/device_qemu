@@ -69,13 +69,13 @@ QEMU applies only to the OpenHarmony kernel.
 1. Install dependencies(Ubuntu 18+)
 
    ```
-   $ sudo apt install build-essential zlib1g-dev pkg-config libglib2.0-dev  binutils-dev libboost-all-dev autoconf libtool libssl-dev libpixman-1-dev virtualenv flex bison
+   sudo apt install build-essential zlib1g-dev pkg-config libglib2.0-dev  binutils-dev libboost-all-dev autoconf libtool libssl-dev libpixman-1-dev virtualenv flex bison
    ```
 
 2. Acquiring Source Code
 
    ```
-   $ wget https://download.qemu.org/qemu-6.2.0.tar.xz
+   wget https://download.qemu.org/qemu-6.2.0.tar.xz
    ```
 
    or
@@ -85,29 +85,29 @@ QEMU applies only to the OpenHarmony kernel.
 3. Compile and install
 
    ```
-   $ tar -xf qemu-6.2.0.tar.xz
-   $ cd qemu-6.2.0
-   $ mkdir build && cd build
-   $ ../configure --prefix=qemu_installation_path
-   $ make -j16
+   tar -xf qemu-6.2.0.tar.xz
+   cd qemu-6.2.0
+   mkdir build && cd build
+   ../configure --prefix=qemu_installation_path
+   make -j16
    ```
 
    Wait for the compilation to finish and execute the installation command:
 
    ```
-   $ make install
+   make install
    ```
 
    Finally, add the installation path to the environment variable:
 
    ```
-   $ vim ~/.bashrc
+   vim ~/.bashrc
    ```
 
    Add the following command line to the last line of ~/.bashrc:
 
    ```
-   $ export PATH=$PATH:qemu_installation_path
+   export PATH=$PATH:qemu_installation_path
    ```
 
 ## Usage<a name="section169045116126"></a>
