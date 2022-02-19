@@ -15,6 +15,7 @@
 
 #include "los_debug.h"
 #include "los_arch_interrupt.h"
+#include "los_interrupt.h"
 #include "lwip/mem.h"
 #include "virtmmio.h"
 
