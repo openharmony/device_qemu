@@ -48,23 +48,9 @@
 
 #ifdef LOSCFG_DRIVERS_NETDEV
 #include "lwip/tcpip.h"
-#include "lwip/netif.h"
-#include "lwip/netifapi.h"
-
-#define SLEEP_TIME_MS 60
-#define NETIF_SETUP_OVERTIME 100
-
 void net_init(void)
 {
-extern void tcpip_init(tcpip_init_done_fn initfunc, void *arg);
     tcpip_init(NULL, NULL);
-
-    extern struct netif *VirtnetInit(void);
-    struct netif *p = VirtnetInit();
-    if (p) {
-        netif_set_default(p);
-        (void)netifapi_netif_set_up(p);
-    }
 }
 #endif
 

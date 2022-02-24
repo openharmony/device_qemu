@@ -29,6 +29,25 @@
                     deviceMatchAttr = "qemu_virt_uart_0";
                 }
             }
+            device_sdio :: device {
+                device0 :: deviceNode {
+                    policy = 1;
+                    priority = 70;
+                    permission = 0644;
+                    moduleName = "HDF_PLATFORM_SDIO";
+                    serviceName = "HDF_PLATFORM_MMC_2";
+                    deviceMatchAttr = "fake_sdio_0";
+                }
+            }
+            device_gpio :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 80;
+                    permission = 0644;
+                    moduleName = "HDF_PLATFORM_GPIO_MANAGER";
+                    serviceName = "HDF_PLATFORM_GPIO_MANAGER";
+                }
+            }
         }
         display :: host {
             hostName = "display_host";
@@ -54,6 +73,29 @@
             }
         }
         network :: host {
+            hostName = "network_host";
+            priority = 90;
+            device_wifi :: device {
+                device0 :: deviceNode {
+                    policy = 2;
+                    priority = 100;
+                    preload = 0;
+                    permission = 0664;
+                    moduleName = "HDF_WIFI";
+                    serviceName = "hdfwifi";
+                    deviceMatchAttr = "hdf_wlan_driver";
+                }
+            }
+            device_wlan_chips :: device {
+                device0 :: deviceNode {
+                    policy = 0;
+                    priority = 110;
+                    preload = 1;
+                    moduleName = "HDF_FAKE_WIFI";
+                    serviceName = "hdffakewifi";
+                    deviceMatchAttr = "virtnet_fakewifi";
+                }
+            }
         }
         storage :: host {
             hostName = "storage_host";
