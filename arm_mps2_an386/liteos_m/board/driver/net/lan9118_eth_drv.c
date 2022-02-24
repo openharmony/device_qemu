@@ -18,6 +18,10 @@
 #include "lan9118_eth_drv.h"
 #include "los_debug.h"
 
+#if LWIP_IPV6
+#include "lwip/ethip6.h"
+#endif
+
 #define DSB                        __DSB()
 
 #define LAN9118_NETIF_NAME         "lan9118"
