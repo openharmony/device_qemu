@@ -1,0 +1,11 @@
+root {
+    platform {
+        sdio_config {
+            controller_0 {
+                match_attr = "fake_sdio_0";
+                hostId = 2;  // 固定为2
+                devType = 2; // 固定为2
+            }
+        }
+    }
+}
