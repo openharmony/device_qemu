@@ -42,7 +42,6 @@ a) If `qemu-system-arm` has not been installed, install it. For details, see [Qe
 
 Note: The introduced functions have been tested on the target machine of virt-5.1, but are not available for all QEMU versions. Therefore, you must ensure that the qemu-system-arm version is 5.1 or later.
 
-
 b) Create and run an image.
 
 After the source code is built, the **qemu-run** script is generated in the root directory of the code. You can run the script to create and run an image as prompted.
@@ -68,6 +67,8 @@ to the options.
 ```
 
 Simulated network interface is wireless card wlan0, but has no real wifi functions. By default, the network will not be automatically configured if no parameter is specified. If the root directory image file **flash.img** exists, the image will not be re-created.
+
+Note: On the first run, script will also create a MMC image mainly for system and user data files. It is stored at OHOS source tree 'out' sub-directory, named 'smallmmc.img'. Whenever it exists, script will never try to touch it again. More information please refer to `vendor/ohemu/qemu_small_system_demo/qemu_run.sh`.
 
 c) Exit QEMU.
 
@@ -117,7 +118,7 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
 
 - [Transferring Parameters to the Kernel](example.md#sectiondebug)
 
-- [Transferring Files Using FAT Images](example.md#sectionfatfs)
+- [Transferring Files Using MMC Images](example.md#sectionfatfs)
 
 - [Adding a Hello World Program](example.md#addhelloworld)
 
@@ -160,7 +161,7 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
    echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
    ```
 
-   Note: The system is hardcoded to **10.0.2.0/24** for the sub-network, **10.0.2.2** for the gateway, and random IP address. Use different MAC addresses, IP addresses, and flash image (recommended) for different client instances. The MAC address can be transferred using the QEMU command line. The IP address can be adjusted in the OHOS command line, for example, using `ifconfig wlan0 inet 10.0.2.30` or other methods.
+   Note: The system is hardcoded to **10.0.2.0/24** for the sub-network, **10.0.2.2** for the gateway, and random IP address. Use different MAC addresses, IP addresses, and flash, MMC images for different client instances. The MAC address can be transferred using the QEMU command line. The IP address can be adjusted in the OHOS command line, for example, using `ifconfig wlan0 inet 10.0.2.30` or other methods.
 
 2. How do I troubleshoot the error when running `qemu-system-arm`?
 
@@ -169,6 +170,8 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
    ```
    qemu-system-arm -M virt,gic-version=2,secure=on -cpu cortex-a7 -smp cpus=1 -m 1G \
         -drive if=pflash,file=flash.img,format=raw \
+        -drive if=none,file=./out/smallmmc.img,format=qcow2,id=mmc
+        -device virtio-blk-device,drive=mmc \
         -netdev bridge,id=net0 \
         -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
         -device virtio-gpu-device,xres=800,yres=480 \
@@ -185,7 +188,9 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
    -smp                         SMP setting, single core
    -m                           Maximum memory size that can be used by the virtual machines
    -drive if=pflash             CFI flash drive setting
+   -drive if=none               Block device image setting
    -netdev                      [optional] NIC bridge type
+   -device virtio-blk-device    Block device
    -device virtio-net-device    [optional] NIC device
    -device virtio-gpu-device    GPU device
    -device virtio-tablet-device Input device
