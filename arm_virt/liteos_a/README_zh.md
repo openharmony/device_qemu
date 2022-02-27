@@ -73,6 +73,8 @@ to the options.
 
 网卡模拟的是无线网卡wlan0，但无真的wifi功能；默认不加参数的情况下，网络不会自动配置。当根目录镜像文件flash.img存在时，镜像不会被重新制作。
 
+提示：初次运行脚本时，系统还会生成MMC镜像，主要内容为系统和用户数据文件。镜像存放在OHOS源码树的out目录下，文件名为smallmmc.img。只要不被删除，后续就不再重新制作该镜像。具体请见vendor/ohemu/qemu_small_system_demo/qemu_run.sh。
+
 c) 退出qemu环境
 
 按下`Ctrl-A + x`可退出qemu虚拟环境。
@@ -121,13 +123,13 @@ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
 
 - [向内核传递参数](example.md#sectiondebug)
 
-- [用FAT映像传递文件](example.md#sectionfatfs)
+- [用MMC映像传递文件](example.md#sectionfatfs)
 
 - [添加一个Hello World程序](example.md#addhelloworld)
 
 - [运行图形demo](example.md#simple_ui_demo)
 
-- [观察dsoftbus组网发现](example.md#dsoftbus)
+- [观察dsoftbus组网发现](example.md#dsoftbus_discover)
 
 ## FAQ:
 1. 当网络配置出现问题时，如何排查问题？
@@ -164,7 +166,7 @@ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
    echo 0 | sudo tee /proc/sys/net/bridge/bridge-nf-call-iptables
    ```
 
-   提示：系统网络硬编码为10.0.2.0/24，网关10.0.2.2，网址随机选取。不同的客户机实例应使用不同的MAC和IP地址(flash映像文件也最好不同)，MAC地址可通过QEMU命令行传递，IP地址可在OHOS命令行中调整，如`ifconfig wlan0 inet 10.0.2.30`，或使用其它方法。
+   提示：系统网络硬编码为10.0.2.0/24，网关10.0.2.2，网址随机选取。不同的客户机实例应使用不同的MAC和IP地址(flash、MMC映像文件也应不同)，MAC地址可通过QEMU命令行传递，IP地址可在OHOS命令行中调整，如`ifconfig wlan0 inet 10.0.2.30`，或使用其它方法。
 
 2. qemu-run提示`qemu-system-arm`运行出错时，如何排查问题？
 
@@ -173,6 +175,8 @@ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
    ```
    qemu-system-arm -M virt,gic-version=2,secure=on -cpu cortex-a7 -smp cpus=1 -m 1G \
         -drive if=pflash,file=flash.img,format=raw \
+        -drive if=none,file=./out/smallmmc.img,format=qcow2,id=mmc
+        -device virtio-blk-device,drive=mmc \
         -netdev bridge,id=net0 \
         -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
         -device virtio-gpu-device,xres=800,yres=480 \
@@ -189,7 +193,9 @@ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
    -smp                         SMP设置，单核
    -m                           虚拟机可使用的内存限制
    -drive if=pflash             CFI闪存盘设置
+   -drive if=none               块设备映像文件设置
    -netdev                      [可选]网卡后端设置，桥接类型
+   -device virtio-blk-device    块存储设备
    -device virtio-net-device    [可选]网卡设备
    -device virtio-gpu-device    GPU设备
    -device virtio-tablet-device 输入设备

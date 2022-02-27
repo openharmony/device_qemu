@@ -33,6 +33,7 @@ module_name = get_path_info(rebase_path("."), "name")
 hdf_driver(module_name) {
   sources = [
     "fakesdio.c",
+    "virtblock.c",
     "virtgpu.c",
     "virtinput.c",
     "virtmmio.c",
