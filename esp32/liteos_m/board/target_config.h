@@ -55,7 +55,8 @@ extern "C" {
 #define LOSCFG_BASE_CORE_TICK_PER_SECOND                    (1000UL)
 #define LOSCFG_BASE_CORE_TICK_HW_TIME                       0
 #define LOSCFG_BASE_CORE_TICK_WTIMER                        1
-#define LOSCFG_BASE_CORE_TICK_RESPONSE_MAX                  0xffffffff
+#define LOSCFG_BASE_CORE_CYCLE_PER_TICK                     (OS_SYS_CLOCK / LOSCFG_BASE_CORE_TICK_PER_SECOND)
+#define LOSCFG_BASE_CORE_TICK_RESPONSE_MAX                  (0xFFFFFFFF - LOSCFG_BASE_CORE_CYCLE_PER_TICK)
 
 /*=============================================================================
                                         Hardware interrupt module configuration
