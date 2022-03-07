@@ -155,7 +155,7 @@ bool VirtmmioNegotiate(struct VirtmmioDev *baseDev, VirtioFeatureFn f0, VirtioFe
 unsigned VirtqSize(uint16_t qsz);
 
 /* config pre-allocated continuous memory as two Virtq, started at 'base' with specified queue size */
-VADDR_T VirtmmioConfigQueue(struct VirtmmioDev *dev, VADDR_T base, uint16_t qsz[], int len);
+VADDR_T VirtmmioConfigQueue(struct VirtmmioDev *dev, VADDR_T base, uint16_t qsz[], int num);
 
 bool VirtmmioRegisterIRQ(struct VirtmmioDev *dev, HWI_PROC_FUNC handle, void *argDev, const char *devName);
 
