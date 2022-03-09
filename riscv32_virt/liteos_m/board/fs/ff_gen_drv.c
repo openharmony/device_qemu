@@ -42,7 +42,6 @@ DiskDrvTypeDef g_diskDrv = { { 0 }, { 0 }, { 0 }, { 0 } };
     note: Physical drive 0 for cfiFlash can not be used, may be conflicted with kernel img,
           so we must assign index=1 when use -drive if=pflash in qemu_run.sh 
 */
-PARTITION VolToPart[FF_VOLUMES] = { { 0 }, { 0 }, { 0 }, { 0 } };
 
 int SetupVolToPartTable(int index, PARTITION vptable, DiskioDrvTypeDef *cfiDrv)
 {

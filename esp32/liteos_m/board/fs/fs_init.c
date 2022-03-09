@@ -46,7 +46,6 @@ static void FileSystemEntry(void)
     int ret = 0;
     struct lfs_config *littlefsConfig = LittlefsConfigGet();
     LittlefsDriverInit(0);
-    SetDefaultMountPath(0, "/littlefs");
     ret = mount(NULL, "/littlefs", "littlefs", 0, littlefsConfig);
     if (ret != LOS_OK) {
         printf("Littlefs init failed 0x%x.\n", ret);
