@@ -231,7 +231,8 @@ enum lan9118_error_t lan9118_mac_regwrite(const struct lan9118_eth_dev_t* dev, e
  *
  * \return error code /ref lan9118_error_t
  */
-enum lan9118_error_t lan9118_phy_regread(const struct lan9118_eth_dev_t* dev, enum phy_reg_offsets_t, uint32_t* data);
+enum lan9118_error_t lan9118_phy_regread(const struct lan9118_eth_dev_t* dev, enum phy_reg_offsets_t regoffset, \
+                                         uint32_t* data);
 
 /**
  * \brief Writes the PHY register.
@@ -242,7 +243,8 @@ enum lan9118_error_t lan9118_phy_regread(const struct lan9118_eth_dev_t* dev, en
  *
  * \return error code /ref lan9118_error_t
  */
-enum lan9118_error_t lan9118_phy_regwrite(const struct lan9118_eth_dev_t* dev, enum phy_reg_offsets_t, uint32_t data);
+enum lan9118_error_t lan9118_phy_regwrite(const struct lan9118_eth_dev_t* dev, enum phy_reg_offsets_t regoffset, \
+                                          uint32_t data);
 
 /**
  * \brief Reads the Ethernet Controller's ID.
