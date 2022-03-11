@@ -166,7 +166,7 @@ struct UartDmaTransfer {
     /* dma receive buf cycled flag */
     uint32_t flags;
 #define BUF_CIRCLED (1 << 0)
-    /* dma receive buf, shoud be cache aligned */
+    /* dma receive buf, should be cache aligned */
     char *buf;
 };
 
