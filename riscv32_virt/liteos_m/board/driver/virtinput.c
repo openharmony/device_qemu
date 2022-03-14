@@ -326,7 +326,7 @@ static struct Virtin *VirtinInitDev(void)
     len = sizeof(struct Virtin) + VirtqSize(VIRTQ_EVENT_QSZ) + VirtqSize(VIRTQ_STATUS_QSZ);
     in = LOS_MemAlloc(OS_SYS_MEM_ADDR, len * sizeof(void *));
     if (in != NULL) {
-        memset_s(in, len * sizeof(void *), 0, len * sizeof(void *));
+        (void)memset_s(in, len * sizeof(void *), 0, len * sizeof(void *));
     } else {
         HDF_LOGE("[%s]alloc virtio-input memory failed", __func__);
         return NULL;

@@ -634,7 +634,7 @@ int32_t csi_gpio_pin_write(gpio_pin_handle_t handle, bool value)
     dw_gpio_priv_t *port_handle = &gpio_handle[gpio_pin_priv->portidx];
 
     uint8_t offset = gpio_pin_priv->idx;
-    uint32_t port_value = value << offset;
+    uint32_t port_value = (uint32_t)value << offset;
 
     port_handle->value = port_value;
     gpio_write(port_handle, (1 << offset));

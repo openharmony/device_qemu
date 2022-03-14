@@ -154,7 +154,7 @@ static struct Virtrng *VirtrngInitDev(void)
         HDF_LOGE("[%s]alloc rng memory failed", __func__);
         return NULL;
     }
-    memset_s(rng, len, 0, len);
+    (void)memset_s(rng, len, 0, len);
 
     if (!VirtmmioDiscover(VIRTMMIO_DEVICE_ID_RNG, &rng->dev)) {
         goto ERR_OUT;

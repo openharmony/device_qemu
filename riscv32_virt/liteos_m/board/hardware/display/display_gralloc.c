@@ -149,7 +149,7 @@ static int32_t AllocMem(const AllocInfo* info, BufferHandle **buffer)
         ret = DISPLAY_FAILURE;
     } else {
         bufferHdl->virAddr = pBase;
-        memset_s(pBase, bufferHdl->size, 0x0, bufferHdl->size);
+        (void)memset_s(pBase, bufferHdl->size, 0x0, bufferHdl->size);
         ret = DISPLAY_SUCCESS;
     }
 

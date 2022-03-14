@@ -514,7 +514,7 @@ static struct Virtgpu *VirtgpuInitDev(void)
     len = sizeof(struct Virtgpu) + VirtqSize(VIRTQ_CONTROL_QSZ) + VirtqSize(VIRTQ_CURSOR_QSZ);
     gpu = LOS_MemAlloc(OS_SYS_MEM_ADDR, len * sizeof(void *));
     if (gpu != NULL) {
-        memset_s(gpu, len * sizeof(void *), 0, len * sizeof(void *));
+        (void)memset_s(gpu, len * sizeof(void *), 0, len * sizeof(void *));
     } else {
         HDF_LOGE("[%s]alloc gpu memory failed\n", __func__);
         return NULL;
@@ -649,7 +649,7 @@ static bool VirtgpuInitResource(void)
     /* Framebuffer must be physical continuous. fb_register will zero the buffer */
     g_virtGpu->fb = LOS_MemAlloc(OS_SYS_MEM_ADDR, VirtgpuFbPageSize());
     if (g_virtGpu->fb != NULL) {
-        memset_s(g_virtGpu->fb, VirtgpuFbPageSize(), 0, VirtgpuFbPageSize());
+        (void)memset_s(g_virtGpu->fb, VirtgpuFbPageSize(), 0, VirtgpuFbPageSize());
     } else {
         HDF_LOGE("[%s]alloc framebuffer memory fail", __func__);
         return false;
