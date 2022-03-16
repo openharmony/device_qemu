@@ -24,9 +24,12 @@ In the root directory of the obtained source code, run the following command:
 
 ```
 ./build.sh --product-name qemu-arm-linux-min --ccache --jobs 4
+./build.sh --product-name qemu-arm-linux-headless --ccache --jobs 4
 ```
 
 After this command is executed, the image files for standard system are generated in out/qemu-arm-linux/packages/phone/images/ directory.
+qemu-arm-linux-min means product with minimum set of components.
+qemu-arm-linux-headless add application framework related components based on qemu-arm-linux-min.
 
 ## 5. Running an Image in QEMU
 
@@ -37,7 +40,7 @@ Note: The introduced functions have been tested on the target machine of virt-5.
 
 b) Run the images.
 
-After the source code is built, run the `./vendor/ohemu/qemu_arm_linux_min/qemu_run.sh` command, the images built in step 4 will be started.
+After the source code is built, run the `./vendor/ohemu/qemu_arm_linux_min/qemu_run.sh` or `./vendor/ohemu/qemu_arm_linux_headless/qemu_run.sh` command, the images built in step 4 will be started.
 
 c) Exit QEMU.
 
