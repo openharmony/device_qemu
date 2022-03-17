@@ -32,7 +32,9 @@
 #define FF_GEN_DRV_H
 
 #include "stdint.h"
+#ifdef LOSCFG_SUPPORT_FATFS
 #include "diskio.h"
+#endif
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -40,6 +42,7 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
+#ifdef LOSCFG_SUPPORT_FATFS
 typedef struct {
     DSTATUS (*disk_initialize)(BYTE);
     DSTATUS (*disk_status)(BYTE);
@@ -56,6 +59,7 @@ typedef struct {
 } DiskDrvTypeDef;
 
 extern DiskDrvTypeDef g_diskDrv;
+#endif
 #ifdef __cplusplus
 #if __cplusplus
 }
