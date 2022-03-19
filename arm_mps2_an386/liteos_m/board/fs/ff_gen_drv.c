@@ -30,7 +30,9 @@
  */
 
 #include "fs_config.h"
-#include "fatfs.h"
 #include "ff_gen_drv.h"
 
+#ifdef LOSCFG_SUPPORT_FATFS
+#include "fatfs.h"
 DiskDrvTypeDef g_diskDrv = { { 0 }, { 0 }, { 0 }, { 0 } };
+#endif
