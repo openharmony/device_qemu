@@ -25,7 +25,7 @@
 #define DEV_ID             0
 #define LAYER_ID           0
 #define FB_PATH            "/dev/fb0"
-#define DISP_WIDTH         800
+#define DISP_WIDTH         960
 #define DISP_HEIGHT        480
 #define BITS_PER_PIXEL     32
 #define BITS_TO_BYTE       8
