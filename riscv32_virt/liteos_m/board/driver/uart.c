@@ -50,7 +50,7 @@ INT32 UartOut(INT32 c, VOID *file)
     return UartGetc();
 }
 
-INT32 UartInit(VOID)
+VOID UartInit(VOID)
 {
     /* Disable all interrupts */
     WriteUartReg(UART_IER_OFFSET, 0x00);
