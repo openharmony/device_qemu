@@ -171,7 +171,7 @@ void ShowMouse(int mouseX, int mouseY)
         ret = g_displayTest.layerFuncs->Flush(g_displayTest.devId, g_displayTest.layerId, &g_displayTest.buffer);
         if (ret != DISPLAY_SUCCESS) {
             HDF_LOGE("flush layer failed");
-            return DISPLAY_FAILURE;
+            return;
         }
     }
 }
