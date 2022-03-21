@@ -39,7 +39,7 @@ extern "C" {
 #define PERIPH_PMM_BASE         0x00000000
 #define PERIPH_PMM_SIZE         0x0F000000
 
-#define SYS_MEM_SIZE_DEFAULT    0x2000000
+#define SYS_MEM_SIZE_DEFAULT    0x4000000
 
 
 /* hwi */
