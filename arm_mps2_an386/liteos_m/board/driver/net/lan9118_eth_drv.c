@@ -1155,7 +1155,7 @@ void LowLevelInit(struct netif* netif)
     ret = lan9118_read_mac_address(g_dev, (char*)netif->hwaddr);
     if (ret != LAN9118_ERROR_NONE) {
         PRINT_ERR("get mac addr error\n");
-        return false;
+        return;
     }
 
     /* Interface capabilities */
