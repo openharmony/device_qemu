@@ -61,7 +61,7 @@ extern "C" {
 extern INT32 UartPutc(INT32 c, VOID *file);
 extern INT32 UartOut(INT32 c, VOID *file);
 
-extern INT32 UartInit(VOID);
+extern VOID UartInit(VOID);
 extern INT32 UartGetc(VOID);
 extern VOID Uart0RxIrqRegister(VOID);
 
