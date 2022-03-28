@@ -8,7 +8,7 @@ The Arm Virt platform is a `qemu-system-arm` target device that simulates a gene
 The board whose **machine** is **virt** in QEMU is configurable. For example, you can select the core type and quantity, memory size, and security extensions when configuring the board.
 
 This tutorial guides you through the configuration of a board based on the Cortex-A7 architecture, with one CPU, extended secure features, Generic Interrupt Controller versions 2 (GICv2), and 1 GB memory.
-The system memory is hardcoded to 32 MB.
+The system memory is hardcoded to 64 MB.
 
 ## 2. Setting Up the Environment
 
@@ -59,7 +59,7 @@ to the options.
     -n, --net-enable           enable net
     -l, --local-desktop        no VNC
     -b, --bootargs             additional boot arguments(-bk1=v1,k2=v2...)
-    -g,  --gdb                 enable gdb for kernel
+    -g, --gdb                  enable gdb for kernel
     -h, --help                 print help info
 
     By default, flash.img will not be rebuilt if exists, and net will not
@@ -68,7 +68,7 @@ to the options.
 
 Simulated network interface is wireless card wlan0, but has no real wifi functions. By default, the network will not be automatically configured if no parameter is specified. If the root directory image file **flash.img** exists, the image will not be re-created.
 
-Note: On the first run, script will also create a MMC image mainly for system and user data files. It is stored at OHOS source tree 'out' sub-directory, named 'smallmmc.img'. Whenever it exists, script will never try to touch it again. More information please refer to `vendor/ohemu/qemu_small_system_demo/qemu_run.sh`.
+Note: On the first run, script will also create a MMC image mainly for system and user data files. The 1st partition will be mounted at /sdcard, 2nd at /userdata, and 3rd is reserved. It is stored at OHOS source tree 'out' sub-directory, named 'smallmmc.img'. Whenever it exists, script will never try to touch it again. More information please refer to `vendor/ohemu/qemu_small_system_demo/qemu_run.sh`.
 
 c) Exit QEMU.
 
@@ -124,7 +124,7 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
 
 - [Running the Graphic Demo](example.md#simple_ui_demo)
 
-- [Observe dsoftbus discovery](example.md#dsoftbus_discover)
+- [Observe dsoftbus Discovery](example.md#dsoftbus_discover)
 
 ## FAQ:
 1. How do I locate a network configuration problem?
@@ -174,7 +174,7 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
         -device virtio-blk-device,drive=mmc \
         -netdev bridge,id=net0 \
         -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
-        -device virtio-gpu-device,xres=800,yres=480 \
+        -device virtio-gpu-device,xres=960,yres=480 \
         -device virtio-tablet-device \
         -device virtio-rng-device \
         -vnc :20 \
@@ -195,7 +195,7 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
    -device virtio-gpu-device    GPU device
    -device virtio-tablet-device Input device
    -device virtio-rng-device    Random generator device
-   -vnc: 20                     [optional] Remote desktop connection, port 5920
+   -vnc: 20                     [recommend] Remote desktop connection, port 5920
    -s -S                        [optional] gdb single step debug
    -global                      QEMU configuration parameter, which cannot be changed
    ```
