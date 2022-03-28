@@ -126,6 +126,8 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
 
 - [Observe dsoftbus Discovery](example.md#dsoftbus_discover)
 
+- [Hack A Sample Desktop](example.md#desktop)
+
 ## FAQ:
 1. How do I locate a network configuration problem?
 

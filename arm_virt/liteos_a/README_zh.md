@@ -131,6 +131,8 @@ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
 
 - [观察dsoftbus组网发现](example.md#dsoftbus_discover)
 
+- [Hack图形桌面](example.md#desktop)
+
 ## FAQ:
 1. 当网络配置出现问题时，如何排查问题？
 
