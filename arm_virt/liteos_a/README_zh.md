@@ -8,7 +8,7 @@ ARM 虚拟化平台是一个 `qemu-system-arm` 的目标设备，通过它来模
 Qemu中machine为 **virt** 的单板就是这种可配置的，例如：选择核的类型、核的个数、内存的大小和安全特性等，单板设备的配置。
 
 这次模拟的配置是：Cortex-A7架构，1个CPU，带安全扩展，GICv2，1G内存。
-提示: 系统内存硬编码为32MB。
+提示: 系统内存硬编码为64MB。
 
 ## 2. 环境搭建
 
@@ -64,7 +64,7 @@ to the options.
     -n, --net-enable           enable net
     -l, --local-desktop        no VNC
     -b, --bootargs             additional boot arguments(-bk1=v1,k2=v2...)
-    -g,  --gdb                 enable gdb for kernel
+    -g, --gdb                  enable gdb for kernel
     -h, --help                 print help info
 
     By default, flash.img will not be rebuilt if exists, and net will not
@@ -73,7 +73,7 @@ to the options.
 
 网卡模拟的是无线网卡wlan0，但无真的wifi功能；默认不加参数的情况下，网络不会自动配置。当根目录镜像文件flash.img存在时，镜像不会被重新制作。
 
-提示：初次运行脚本时，系统还会生成MMC镜像，主要内容为系统和用户数据文件。镜像存放在OHOS源码树的out目录下，文件名为smallmmc.img。只要不被删除，后续就不再重新制作该镜像。具体请见vendor/ohemu/qemu_small_system_demo/qemu_run.sh。
+提示：初次运行脚本时，系统还会生成MMC镜像，主要内容为系统和用户数据文件，第1个分区将安装在/sdcard目录，第2个分区安装在/userdata目录，第3个分区保留。镜像存放在OHOS源码树的out目录下，文件名为smallmmc.img。只要不被删除，后续就不再重新制作该镜像。具体请见vendor/ohemu/qemu_small_system_demo/qemu_run.sh。
 
 c) 退出qemu环境
 
@@ -179,7 +179,7 @@ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
         -device virtio-blk-device,drive=mmc \
         -netdev bridge,id=net0 \
         -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
-        -device virtio-gpu-device,xres=800,yres=480 \
+        -device virtio-gpu-device,xres=960,yres=480 \
         -device virtio-tablet-device \
         -device virtio-rng-device \
         -vnc :20 \
@@ -200,7 +200,7 @@ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
    -device virtio-gpu-device    GPU设备
    -device virtio-tablet-device 输入设备
    -device virtio-rng-device    随机数设备
-   -vnc :20                     [可选]远程桌面连接，端口5920
+   -vnc :20                     [推荐]远程桌面连接，端口5920
    -s -S                        [可选]gdb单步调试
    -global                      QEMU配置参数，不可调整
    ```
