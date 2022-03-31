@@ -167,7 +167,7 @@ static int32_t FakeSdioBind(struct HdfDeviceObject *obj)
         goto ERR_OUT;
     }
 
-    if ((ret = MmcCntlrAdd(cntlr)) != HDF_SUCCESS) {
+    if ((ret = MmcCntlrAdd(cntlr, false)) != HDF_SUCCESS) {
         HDF_LOGE("[%s]add MmcCntlr failed: %d", __func__, ret);
         goto ERR_OUT;
     }
