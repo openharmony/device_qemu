@@ -552,7 +552,7 @@ static int32_t HdfVirtblkBind(struct HdfDeviceObject *obj)
         goto _ERR;
     }
 
-    if ((ret = MmcCntlrAdd(cntlr)) != HDF_SUCCESS) {
+    if ((ret = MmcCntlrAdd(cntlr, true)) != HDF_SUCCESS) {
         goto _ERR;
     }
     (void)MmcCntlrAddDetectMsgToQueue(cntlr);
