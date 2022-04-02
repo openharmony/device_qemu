@@ -463,9 +463,9 @@ static void VirtnetTxHandle(struct VirtNetif *nic)
     q->avail->flag = 0;
 }
 
-static void VirtnetIRQhandle(HwiIrqParam *param)
+static void VirtnetIRQhandle(void *param)
 {
-    struct netif *netif = param->pDevId;
+    struct netif *netif = (struct netif *)param;
     struct VirtNetif *nic = netif->state;
 
     if (!(GET_UINT32(nic->dev.base + VIRTMMIO_REG_INTERRUPTSTATUS) & VIRTMMIO_IRQ_NOTIFY_USED)) {

@@ -37,7 +37,7 @@
 #include "los_compiler.h"
 #include "test_demo.h"
 
-#define DEV_INDEX 1
+#define DEV_INDEX 2
 
 #define INPUT_CHECK_NULL_POINTER(pointer, ret)      \
     do {                                            \

@@ -23,7 +23,7 @@
 #include "los_arch_interrupt.h"
 #include "los_interrupt.h"
 #include "los_task.h"
-#include "los_queue.h"
+#include "cmsis_os2.h"
 #include "virtmmio.h"
 
 #define VIRTQ_EVENT_QSZ     8
@@ -82,12 +82,11 @@ struct VirtinEvent {
 
 struct Virtin {
     struct VirtmmioDev dev;
-
+    osThreadId_t tid;
+    osSemaphoreId_t sem;
     struct VirtinEvent ev[VIRTQ_EVENT_QSZ]; /* event receive buffer */
 };
 static const InputDevice *g_virtInputDev; /* work thread need this data, using global for simplicity */
-
-static UINT32 g_queue;
 
 static bool Feature0(uint32_t features, uint32_t *supported, void *dev)
 {
@@ -125,12 +124,6 @@ static void PopulateEventQ(const struct Virtin *in)
 
     in->dev.vq[0].avail->index += in->dev.vq[0].qsz;
     OSAL_WRITEL(0, in->dev.base + VIRTMMIO_REG_QUEUENOTIFY);
-}
-
-static void VirtinWorkCallback(void *arg)
-{
-    struct VirtinEvent *ev = arg;
-    HidReportEvent(g_virtInputDev, ev->type, ev->code, ev->value);
 }
 
 /*
@@ -171,11 +164,8 @@ static void VirtinHandleEv(struct Virtin *in)
         idx = q->used->ring[q->last % q->qsz].id;
 
         if (VirtinGrabbed(&in->ev[idx])) {
-            int ret = 0;
-            ret = LOS_QueueWriteCopy(g_queue, &in->ev[idx], sizeof(struct VirtinEvent), 0);
-            if(ret != LOS_OK) {
-                HDF_LOGE("send message failure, error: %x\n", ret);
-            }
+            struct VirtinEvent *ev = &in->ev[idx];
+            HidReportEvent(g_virtInputDev, ev->type, ev->code, ev->value);
         }
 
         q->avail->ring[(q->avail->index + add++) % q->qsz] = idx;
@@ -188,20 +178,18 @@ static void VirtinHandleEv(struct Virtin *in)
     if (q->used->flag != VIRTQ_USED_F_NO_NOTIFY) {
         OSAL_WRITEL(0, in->dev.base + VIRTMMIO_REG_QUEUENOTIFY);
     }
+    OSAL_WRITEL(VIRTMMIO_IRQ_NOTIFY_USED, in->dev.base + VIRTMMIO_REG_INTERRUPTACK);
 }
 
-static uint32_t VirtinIRQhandle(HwiIrqParam *param)
+static uint32_t VirtinIRQhandle(void *param)
 {
-    struct Virtin *in = param->pDevId;
+    struct Virtin *in = (struct Virtin *)param;
 
     if (!(OSAL_READL(in->dev.base + VIRTMMIO_REG_INTERRUPTSTATUS) & VIRTMMIO_IRQ_NOTIFY_USED)) {
-        
-        return 1;
+        return HDF_FAILURE;
     }
-    VirtinHandleEv(in);
-
-    OSAL_WRITEL(VIRTMMIO_IRQ_NOTIFY_USED, in->dev.base + VIRTMMIO_REG_INTERRUPTACK);
-    return 0;
+    osSemaphoreRelease(in->sem);
+    return HDF_SUCCESS;
 }
 
 static bool VirtinFillHidCodeBitmap(struct VirtinConfig *conf, HidInfo *devInfo)
@@ -227,7 +215,7 @@ static bool VirtinFillHidCodeBitmap(struct VirtinConfig *conf, HidInfo *devInfo)
                 len = DIV_ROUND_UP(HDF_REL_CNT, BYTE_HAS_BITS);
                 qDest = (uint8_t *)devInfo->relCode;
                 break;
-            case EV_ABS: 
+            case EV_ABS:
                 len = DIV_ROUND_UP(HDF_ABS_CNT, BYTE_HAS_BITS);
                 qDest = (uint8_t *)devInfo->absCode;
                 break;
@@ -310,9 +298,20 @@ ERR_OUT:
 
 static void VirtinDeInit(struct Virtin *in)
 {
-    if (in->dev.irq) { 
+    if (in->sem) {
+        osSemaphoreDelete(in->sem);
+        in->sem = NULL;
+    }
+
+    if (in->tid) {
+        osThreadTerminate(in->tid);
+        in->tid = NULL;
+    }
+
+    if (in->dev.irq) {
         LOS_HwiDelete(in->dev.irq, NULL);
     }
+
     LOS_MemFree(OS_SYS_MEM_ADDR, in);
 }
 
@@ -363,18 +362,16 @@ ERR_OUT:
     return NULL;
 }
 
-static int32_t WorkTask(void) {
-    UINT32 ret = 0;
-    struct VirtinEvent ev;
-    UINT32 readLen = sizeof(ev);
-    
+static int32_t InputWorkTask(void *arg)
+{
+    struct Virtin *in = (struct Virtin *)arg;
+
     while(1) {
-        ret = LOS_QueueReadCopy(g_queue, &ev, &readLen, 0);
-        if(ret == LOS_OK) {
-            HDF_LOGI("VirtinEvent Type: %d, Code: %d, Value: %d\n", 
-                ev.type, ev.code, ev.value);
-            VirtinWorkCallback(&ev);
+        int32_t r = osSemaphoreAcquire(in->sem, osWaitForever);
+        if (r != 0) {
+            continue;
         }
+        VirtinHandleEv(in);
     }
 }
 
@@ -394,28 +391,27 @@ static int32_t HdfVirtinInit(struct HdfDeviceObject *device)
     device->priv = in;
 
     if ((ret = HdfVirtinInitHid(in)) != HDF_SUCCESS) {
+        VirtinDeInit(in);
         return ret;
     }
 
-    ret = LOS_QueueCreate("queue", 50, &g_queue, 0, sizeof(struct VirtinEvent));
-    if(ret != LOS_OK) {
-        HDF_LOGE("create queue failure, error: %x\n", ret);
+    in->sem = osSemaphoreNew(1, 0, NULL);
+    if (in->sem == NULL) {
+        HDF_LOGE("%s: osSemaphoreNew failed", __func__);
+        VirtinDeInit(in);
+        return HDF_FAILURE;
     }
 
-    LOS_TaskLock();
-    UINT32 g_taskLoId;
-    TSK_INIT_PARAM_S initParam = {0};
-
-    initParam.pfnTaskEntry = (TSK_ENTRY_FUNC)WorkTask;
-    initParam.usTaskPrio = 9;
-    initParam.pcName = "WorkTask";
-    initParam.uwStackSize = LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE;
-
-    ret = LOS_TaskCreate(&g_taskLoId, &initParam);
-    if (ret != HDF_SUCCESS) {
-        HDF_LOGE("Create Task failed! ERROR: 0x%x\n", ret);
+    osThreadAttr_t attr = {0};
+    attr.stack_size = LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE;
+    attr.priority = osPriorityNormal;
+    attr.name = "InputWorkTask";
+    in->tid = osThreadNew((osThreadFunc_t)InputWorkTask, in, &attr);
+    if (in->tid == NULL) {
+        HDF_LOGE("%s: osThreadNew failed", __func__);
+        VirtinDeInit(in);
+        return HDF_FAILURE;
     }
-    LOS_TaskUnlock();
 
     PopulateEventQ(in);
     VritmmioInitEnd(&in->dev);  /* now virt queue can be used */
@@ -432,8 +428,6 @@ static void HdfVirtinRelease(struct HdfDeviceObject *deviceObject)
     if (in == NULL) {
         return;
     }
-
-    LOS_QueueDelete(g_queue);
 
     if (g_virtInputDev) {
         HidUnregisterHdfInputDev(g_virtInputDev);
