@@ -24,6 +24,10 @@ if (enable_ramdisk) {
     sources = [ "ohos.its" ]
     outputs = [ "$root_build_dir/ohos.its" ]
   }
+  ohos_copy("ohos_updater.its") {
+    sources = [ "ohos_updater.its" ]
+    outputs = [ "$root_build_dir/ohos_updater.its" ]
+  }
   ohos_copy("fstab.required") {
     sources = [ "etc/fstab.qemu.arm.linux" ]
     outputs = [ "$root_build_dir/fstab.required" ]
@@ -39,6 +43,7 @@ group("chipset_files") {
     deps += [
       ":fstab.required",
       ":ohos.its",
+      ":ohos_updater.its",
     ]
   }
 }
