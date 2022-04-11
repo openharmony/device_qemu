@@ -236,3 +236,54 @@ ifconfig wlan0 inet 10.0.2.XX
 ```
 
 5. 观察：启动快结束时，两台虚拟机的日志显示，相互发现了对方，并试图组网。
+
+## Hack图形桌面<a name="desktop"></a>
+---
+
+[applications_sample_camera](https://gitee.com/openharmony/applications_sample_camera)仓库提供了一个小型桌面应用示例。虽然qemu虚拟机没有摄录放驱动，但可以利用hisilicon的SDK，来Hack一个图形桌面。
+
+1. 让//device/soc/hisilicon仓库：支持我们的板子
+
+修改文件`common/hal/{media/BUILD.gn,middleware/BUILD.gn}`，找到`if (board_name == "hispark_taurus" || board_name == "aegis_hi3516dv300")`，加上`board_name == "arm_virt"`。
+
+2. 让//foundation/multimedia/utils/lite/仓库：到hisilicon那儿找库
+
+修改文件`BUILD.gn`，找到
+```
+      "$ohos_board_adapter_dir/media:hardware_media_sdk",
+      "$ohos_board_adapter_dir/middleware:middleware_source_sdk",
+```
+改成
+```
+      "//device/soc/hisilicon/common/hal/media:hardware_media_sdk",
+      "//device/soc/hisilicon/common/hal/middleware:middleware_source_sdk",
+```
+
+3. //device/qemu仓库：增加一个拷贝hi3516dv300的mpp库动作
+
+修改文件`arm_virt/liteos_a/BUILD.gn`，增加一个`"mpp:copy_mpp_libs"`依赖，同时在该目录下增加一个指向`../../../soc/hisilicon/hi3516dv300/sdk_liteos/mpp/`的符号链接`mpp`。
+
+**重要**：这部分库使用了git-lfs形式存储，因此要恢复其正常内容：
+```
+cd device/soc/hisilicon/hi3516dv300/sdk_liteos/mpp/lib/
+git lfs checkout *.so
+```
+
+4. //vendor/ohemu仓库：增加桌面应用组件
+
+修改文件`qemu_small_system_demo/config.json`，把`"aafwk_lite"`组件的特性值改为`true`，增加如下新组件
+```
+      {
+        "subsystem": "applications",
+        "components": [
+          { "component": "camera_sample_app", "features":[] },
+          { "component": "camera_screensaver_app", "features":[] }
+        ]
+      },
+      {
+        "subsystem": "powermgr",
+        "components": [
+          { "component": "powermgr_lite", "features":[ "enable_screensaver = true" ] }
+        ]
+      },
+```
