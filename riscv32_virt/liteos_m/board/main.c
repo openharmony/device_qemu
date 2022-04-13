@@ -147,6 +147,7 @@ LITE_OS_SEC_TEXT_INIT INT32 main(VOID)
     net_init();
 #endif /* LOSCFG_NET_LWIP */
 
+    SystemAdapterInit();
     ret = LosAppInit();
     if (ret != LOS_OK) {
         PRINT_ERR("LosAppInit failed! ERROR: 0x%x\n", ret);

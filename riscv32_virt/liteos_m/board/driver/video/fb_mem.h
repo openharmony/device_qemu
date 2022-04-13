@@ -34,7 +34,11 @@
 #include <stdint.h>
 #include "sys/types.h"
 #include "sys/stat.h"
+#ifdef LOSCFG_LIBC_NEWLIB
+#include "errno.h"
+#else
 #include "bits/errno.h"
+#endif
 #include "los_list.h"
 #include "los_interrupt.h"
 #include "los_debug.h"

@@ -29,33 +29,8 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "los_debug.h"
-#include "los_task.h"
-
-#define USER_TASK_PRIO 6
-
-static void TaskDisplaySampleEntry(void)
-{
-    MountShellInit();
-    DisplayServiceSample();
-    InputServiceSample();
-}
-
 unsigned int LosAppInit(VOID)
 {
-    unsigned int ret;
-    unsigned int taskID;
-    TSK_INIT_PARAM_S task = {0};
-
-    task.pfnTaskEntry = (TSK_ENTRY_FUNC)TaskDisplaySampleEntry;
-    task.uwStackSize = 0x1000;
-    task.pcName = "TaskDisplaySampleEntry";
-    task.usTaskPrio = USER_TASK_PRIO;
-    ret = LOS_TaskCreate(&taskID, &task);
-    if (ret != LOS_OK) {
-        printf("Create Task failed! ERROR: 0x%x\n", ret);
-        return ret;
-    }
-
+    unsigned int ret = 0;
     return ret;
 }
