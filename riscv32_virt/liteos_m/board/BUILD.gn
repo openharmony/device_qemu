@@ -46,19 +46,13 @@ hdf_driver("bsp_config") {
     "driver/virtmmio.c",
     "driver/virtnet.c",
     "fs/ff_gen_drv.c",
-    "libc/dprintf.c",
     "los_start.S",
     "main.c",
     "riscv_hal.c",
   ]
   if (!defined(LOSCFG_TEST)) {
     # kernel's testsuites not enabled, use ower's
-    sources += [
-      "test/display_test.c",
-      "test/input_demo.c",
-      "test/mount.c",
-      "test/test_demo.c",
-    ]
+    sources += [ "test/test_demo.c" ]
   }
   include_dirs = [
     "driver/cfiflash",
@@ -72,9 +66,14 @@ hdf_driver("bsp_config") {
     "$HDF_PERIPHERAL_PATH/display/interfaces/include",
     "$HDF_PERIPHERAL_PATH/input/interfaces/include",
     "//drivers/adapter/khdf/liteos_m/osal/include",
+    "//third_party/bounds_checking_function/include",
   ]
 
-  deps = [ "hardware" ]
+  deps = [
+    "hardware",
+    "libc",
+    "ui",
+  ]
 }
 
 config("public") {
@@ -84,7 +83,9 @@ config("public") {
     "include/asm",
     "driver",
     "fs",
+    "ui",
   ]
+
   ldflags = [
     "-Wl,-mcmodel=medany",
     "-Wl,-melf32lriscv",
@@ -92,5 +93,35 @@ config("public") {
     "-Wl,-T" + rebase_path("liteos.ld"),
     "-nostdlib",
   ]
-  libs = [ "gcc" ]
+
+  # config force_link_libs from vendor/ohemu/qemu_riscv32_mini_system_demo/config.json
+  ldflags += [ "-L./libs" ]
+  ldflags += [ "-Wl,--whole-archive" ]
+  foreach(force_link_lib, force_link_libs) {
+    ldflags += [ "-l${force_link_lib}" ]
+  }
+  ldflags += [ "-Wl,--no-whole-archive" ]
+
+  libs = [
+    "nosys",
+    "gcc",
+    "stdc++",
+    "ui",
+  ]
+
+  if (defined(LOSCFG_LIBC_NEWLIB)) {
+    ldflags -= [ "-nostdlib" ]
+
+    libs -= [ "nosys" ]
+    libs += [
+      "c",
+      "m",
+    ]
+
+    cflags_c = [
+      "-U__INT32_TYPE__",
+      "-D__INT32_TYPE__=int",
+      "-DLWIP_NO_CTYPE_H=1",
+    ]
+  }
 }
