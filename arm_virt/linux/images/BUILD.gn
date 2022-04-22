@@ -20,3 +20,8 @@ ohos_copy("all_image_conf") {
   ]
   outputs = [ "${product_output_dir}/imagesconf/{{source_file_part}}" ]
 }
+
+ohos_copy("ramdisk_resource_config.ini") {
+  sources = [ "ramdisk_resource_config.ini" ]
+  outputs = [ "$product_output_dir/phone/ramdisk_resource_config.ini" ]
+}
