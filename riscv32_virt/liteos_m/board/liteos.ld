@@ -54,11 +54,11 @@ SECTIONS
     . = ALIGN(0x10);
     *(.start.text)
     *(.interrupt.*)
-    *(.text.*)
+    *(.text .text.*)
     . = ALIGN(0x20);
     __rodata_start = .;
     . = ALIGN(0x10);
-    *(.rodata.* .srodata.*)
+    *(.rodata .rodata.* .srodata .srodata.*)
     . = ALIGN(0x20);
     __text_end = .;
     _hdf_drivers_start = .;
@@ -70,13 +70,114 @@ SECTIONS
     __global_pointer$ = . + 0x800;
     __data_load_start = LOADADDR(.data);
     __data_start = .;
+    /* preinit_array */
+    . = ALIGN(4);
+    PROVIDE_HIDDEN (__preinit_array_start = .);
+    KEEP (*(.preinit_array))
+    PROVIDE_HIDDEN (__preinit_array_end = .);
+    /* init_array */
+    . = ALIGN(4);
+    PROVIDE_HIDDEN (__init_array_start = .);
+    KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*)))
+    KEEP (*(.init_array))
+    PROVIDE_HIDDEN (__init_array_end = .);
+    /* fini_array */
+    . = ALIGN(4);
+    PROVIDE_HIDDEN (__fini_array_start = .);
+    KEEP (*(SORT_BY_INIT_PRIORITY(.fini_array.*)))
+    KEEP (*(.fini_array))
+    PROVIDE_HIDDEN (__fini_array_end = .);
     . = ALIGN(0x10);
-    *(.data.* .sdata.*)
+    *(.data .data.* .sdata .sdata.*)
     . = ALIGN(0x20);
     __data_end = .;
     _edata = .;
   } > ram AT > flash
   __data_load_size = SIZEOF(.data);
+  /* zInit code and data - will be freed after init */
+  .zInit (.) :
+  {
+    __zinitcall_bsp_start = .;
+    KEEP (*(.zinitcall.bsp0.init))
+    KEEP (*(.zinitcall.bsp1.init))
+    KEEP (*(.zinitcall.bsp2.init))
+    KEEP (*(.zinitcall.bsp3.init))
+    KEEP (*(.zinitcall.bsp4.init))
+    __zinitcall_bsp_end = .;
+    . = ALIGN(4);
+    __zinitcall_device_start = .;
+    KEEP (*(.zinitcall.device0.init))
+    KEEP (*(.zinitcall.device1.init))
+    KEEP (*(.zinitcall.device2.init))
+    KEEP (*(.zinitcall.device3.init))
+    KEEP (*(.zinitcall.device4.init))
+    __zinitcall_device_end = .;
+    . = ALIGN(4);
+    __zinitcall_core_start = .;
+    KEEP (*(.zinitcall.core0.init))
+    KEEP (*(.zinitcall.core1.init))
+    KEEP (*(.zinitcall.core2.init))
+    KEEP (*(.zinitcall.core3.init))
+    KEEP (*(.zinitcall.core4.init))
+    __zinitcall_core_end = .;
+    . = ALIGN(4);
+    __zinitcall_sys_service_start = .;
+    KEEP (*(.zinitcall.sys.service0.init))
+    KEEP (*(.zinitcall.sys.service1.init))
+    KEEP (*(.zinitcall.sys.service2.init))
+    KEEP (*(.zinitcall.sys.service3.init))
+    KEEP (*(.zinitcall.sys.service4.init))
+    __zinitcall_sys_service_end = .;
+    . = ALIGN(4);
+    __zinitcall_sys_feature_start = .;
+    KEEP (*(.zinitcall.sys.feature0.init))
+    KEEP (*(.zinitcall.sys.feature1.init))
+    KEEP (*(.zinitcall.sys.feature2.init))
+    KEEP (*(.zinitcall.sys.feature3.init))
+    KEEP (*(.zinitcall.sys.feature4.init))
+    __zinitcall_sys_feature_end = .;
+    . = ALIGN(4);
+    __zinitcall_run_start = .;
+    KEEP (*(.zinitcall.run0.init))
+    KEEP (*(.zinitcall.run1.init))
+    KEEP (*(.zinitcall.run2.init))
+    KEEP (*(.zinitcall.run3.init))
+    KEEP (*(.zinitcall.run4.init))
+    __zinitcall_run_end = .;
+    . = ALIGN(4);
+    __zinitcall_app_service_start = .;
+    KEEP (*(.zinitcall.app.service0.init))
+    KEEP (*(.zinitcall.app.service1.init))
+    KEEP (*(.zinitcall.app.service2.init))
+    KEEP (*(.zinitcall.app.service3.init))
+    KEEP (*(.zinitcall.app.service4.init))
+    __zinitcall_app_service_end = .;
+    . = ALIGN(4);
+    __zinitcall_app_feature_start = .;
+    KEEP (*(.zinitcall.app.feature0.init))
+    KEEP (*(.zinitcall.app.feature1.init))
+    KEEP (*(.zinitcall.app.feature2.init))
+    KEEP (*(.zinitcall.app.feature3.init))
+    KEEP (*(.zinitcall.app.feature4.init))
+    __zinitcall_app_feature_end = .;
+    . = ALIGN(4);
+    __zinitcall_test_start = .;
+    KEEP (*(.zinitcall.test0.init))
+    KEEP (*(.zinitcall.test1.init))
+    KEEP (*(.zinitcall.test2.init))
+    KEEP (*(.zinitcall.test3.init))
+    KEEP (*(.zinitcall.test4.init))
+    __zinitcall_test_end = .;
+    . = ALIGN(4);
+    __zinitcall_exit_start = .;
+    KEEP (*(.zinitcall.exit0.init))
+    KEEP (*(.zinitcall.exit1.init))
+    KEEP (*(.zinitcall.exit2.init))
+    KEEP (*(.zinitcall.exit3.init))
+    KEEP (*(.zinitcall.exit4.init))
+    __zinitcall_exit_end = .;
+    . = ALIGN(4);
+  } > ram
   .bss (NOLOAD): ALIGN(0x20)
   {
     __bss_start = .;

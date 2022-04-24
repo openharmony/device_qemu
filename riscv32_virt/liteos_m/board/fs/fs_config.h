@@ -40,7 +40,7 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#define FF_VOLUME_STRS "system", "inner", "update", "user"
+#define FF_VOLUME_STRS "data", "inner", "update", "user"
 #define FS_MAX_SS      512
 
 #define FAT_MAX_OPEN_FILES 50
