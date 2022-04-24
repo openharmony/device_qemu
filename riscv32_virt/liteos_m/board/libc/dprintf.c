@@ -47,9 +47,13 @@ static void dputs(char const *s, int (*pFputc)(int n, FILE *cookie), void *cooki
     LOS_IntRestore(intSave);
 }
 
+#ifdef LOSCFG_LIBC_NEWLIB
+int __wrap_printf(char const  *fmt, ...)
+#else /* LOSCFG_LIBC_NEWLIB */
 int printf(char const  *fmt, ...)
+#endif /* LOSCFG_LIBC_NEWLIB */
 {
-#define BUFSIZE 256
+#define BUFSIZE 1024  // fit the length of LOG_BUF_SIZE in hiview_log.c
     char buf[BUFSIZE] = { 0 };
     va_list ap;
     va_start(ap, fmt);
@@ -86,4 +90,26 @@ int hal_trace_printf(int attr, const char *fmt, ...)
         dputs("printf error!\n", UartPutc, 0);
     }
     return len;
+}
+
+/* enable hilog output in LOSCFG_BASE_CORE_HILOG mode */
+int HiLogWriteInternal(const char *buffer, size_t bufLen)
+{
+    const int BUFF_TAIL_LEN = 2;
+
+    if (!buffer) {
+        return -1;
+    }
+
+    // because it's called as HiLogWriteInternal(buf, strlen(buf) + 1)
+    if (bufLen < BUFF_TAIL_LEN) {
+        return 0;
+    }
+
+    if (buffer[bufLen - BUFF_TAIL_LEN] != '\n') {
+        printf("%s\n", buffer);
+    } else {
+        dputs(buffer, UartPutc, 0);
+    }
+    return 0;
 }
