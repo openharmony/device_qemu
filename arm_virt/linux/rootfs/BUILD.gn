@@ -13,7 +13,7 @@
 import("//build/ohos.gni")
 
 ohos_prebuilt_etc("qemu.arm.linux.init.cfg") {
-  source = "qemu.arm.linux.init.cfg"
+  source = "init.qemu.arm.linux.cfg"
   if (!enable_ramdisk) {
     install_images = [ "system" ]
   } else {
@@ -23,7 +23,7 @@ ohos_prebuilt_etc("qemu.arm.linux.init.cfg") {
 }
 
 ohos_prebuilt_etc("qemu.arm.linux.usb.cfg") {
-  source = "qemu.arm.linux.usb.cfg"
+  source = "init.qemu.arm.linux.usb.cfg"
   if (!enable_ramdisk) {
     install_images = [ "system" ]
   } else {
