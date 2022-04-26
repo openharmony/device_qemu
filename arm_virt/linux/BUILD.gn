@@ -32,6 +32,7 @@ group("qemu-arm-linux-group") {
     "//device/qemu/arm_virt/linux/chipset:chipset_files",
     "//device/qemu/arm_virt/linux/images:all_image_conf",
     "//device/qemu/arm_virt/linux/images:ramdisk_resource_config.ini",
+    "//device/qemu/arm_virt/linux/images:updater_ramdisk_resource_config.ini",
     "//device/qemu/arm_virt/linux/rootfs:rootfs_files",
   ]
 }
