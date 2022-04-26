@@ -30,6 +30,10 @@
 #include "ui_adapter.h"
 
 #define ENABLE_FPS
+#ifdef ENABLE_ACE
+#include "product_adapter.h"
+#endif
+
 #define FONT_MEM_LEN (512 * 1024)
 
 static uint32_t g_fontMemBaseAddr[OHOS::MIN_FONT_PSRAM_LENGTH / 4];
@@ -73,18 +77,32 @@ __attribute__((weak)) void RunApp(void)
     GRAPHIC_LOGI("RunApp default");
 }
 
+#ifdef ENABLE_ACE
+static void RenderTEHandler()
+{
+}
+#endif
+
 static void UiAdapterTask(void *arg)
 {
     (void)arg;
     UiAdapterInit();
     RunApp();
 
+#ifdef ENABLE_ACE
+    const ACELite::TEHandlingHooks hooks = {RenderTEHandler, nullptr};
+    ACELite::ProductAdapter::RegTEHandlers(hooks);
+#endif
 #ifdef ENABLE_FPS
     uint32_t cnt = 0;
     uint32_t start = HALTick::GetInstance().GetTime();
 #endif
 
     while (1) {
+#ifdef ENABLE_ACE
+        // Here render all js app in the same task.
+        ACELite::ProductAdapter::DispatchTEMessage();
+#endif
         DispDev::GetInstance()->UpdateFBBuffer();
         uint32_t temp = HALTick::GetInstance().GetTime();
         TaskManager* inst = TaskManager::GetInstance();

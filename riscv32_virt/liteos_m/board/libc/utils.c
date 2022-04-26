@@ -13,6 +13,9 @@
  * limitations under the License.
  */
 
+#include <sys/stat.h>
+#include "stdlib.h"
+#include "ohos_mem_pool.h"
 #include "hiview_log.h"
 #include "los_debug.h"
 
@@ -59,4 +62,58 @@ void SystemAdapterInit(void)
 
     /* register hilog output func for mini */
     HiviewRegisterHilogProc(HilogProc_Impl);
+}
+
+/**
+ * @brief implement for ohos_mem_pool.h
+ */
+void *OhosMalloc(MemType type, uint32 size)
+{
+    if (size == 0) {
+        return NULL;
+    }
+    return malloc(size);
+}
+
+void OhosFree(void *ptr)
+{
+    free(ptr);
+}
+
+/* implementation for js_app_host.h: LP_TaskBegin */
+void LP_TaskBegin(void)
+{
+}
+
+/* implementation for js_app_host.h: LP_TaskEnd */
+void LP_TaskEnd(void)
+{
+}
+
+/**
+ * @brief adapter for js_ability.cpp
+ * #ifdef OHOS_ACELITE_PRODUCT_WATCH
+ */
+void RestoreSystemWrapper(const char *crashMessage)
+{
+    printf("%s\n", crashMessage);
+}
+
+int access(const char *pathname, int mode)
+{
+    struct stat f_info;
+
+    if (stat(pathname, &f_info) == 0) {
+        if (f_info.st_mode & S_IFDIR) {
+            return 0;
+        } else if (f_info.st_mode & S_IFREG) {
+            return 0;
+        } else {
+            return -1;
+        }
+    } else {
+        return -1;
+    }
+
+    return 0;
 }
