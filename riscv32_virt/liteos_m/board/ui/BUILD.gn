@@ -33,7 +33,7 @@ hdf_driver("ui_adapter") {
   public_deps = [ "//foundation/graphic/ui:ui" ]
   if (riscv_ace_enable) {
     defines = [ "ENABLE_ACE" ]
-    public_deps += [ "//foundation/ace/ace_engine_lite/frameworks:ace_lite" ]
+    public_deps += [ "//foundation/arkui/ace_engine_lite/frameworks:ace_lite" ]
   }
 
   include_dirs = [
