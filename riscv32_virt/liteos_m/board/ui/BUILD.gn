@@ -12,7 +12,7 @@
 # limitations under the License.
 
 declare_args() {
-  riscv_ace_enable = false
+  riscv_ace_enable = true
 }
 
 import("//drivers/adapter/khdf/liteos_m/hdf.gni")
