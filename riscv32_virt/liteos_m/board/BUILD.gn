@@ -34,6 +34,7 @@ hdf_driver("bsp_config") {
   asmflags = board_asmflags
   sources = [
     "driver/cfiflash/cfiflash.c",
+    "driver/cfiflash/cfiflash_fs_hal.c",
     "driver/cfiflash/hdf_cfi.c",
     "driver/plic.c",
     "driver/uart.c",
