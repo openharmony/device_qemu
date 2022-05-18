@@ -71,7 +71,7 @@ VOID UartInit(VOID)
     WriteUartReg(UART_FCR_OFFSET, UART_FCR_FIFO_EN | UART_FCR_RXSR | UART_FCR_TXSR);
 }
 
-VOID UartReciveHandler(VOID)
+VOID UartReceiveHandler(VOID)
 {
     if (ReadUartReg(UART_LSR_OFFSET) & UART_LSR_DR) {
         (void)LOS_EventWrite(&g_shellInputEvent, 0x1);
@@ -82,7 +82,7 @@ VOID UartReciveHandler(VOID)
 VOID Uart0RxIrqRegister(VOID)
 {
     WriteUartReg(UART_IER_OFFSET, ReadUartReg(UART_IER_OFFSET) | UART_IER_RDI);
-    uint32_t ret = LOS_HwiCreate(RISCV_UART0_Rx_IRQn, OS_HWI_PRIO_HIGHEST, 0, (HWI_PROC_FUNC)UartReciveHandler, 0);
+    uint32_t ret = LOS_HwiCreate(RISCV_UART0_Rx_IRQn, OS_HWI_PRIO_HIGHEST, 0, (HWI_PROC_FUNC)UartReceiveHandler, 0);
     if (ret != LOS_OK) {
         return;
     }

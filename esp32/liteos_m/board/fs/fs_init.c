@@ -57,7 +57,7 @@ static void FileSystemEntry(void)
         printf("Mkdir failed 0x%x.\n", ret);
         return;
     }
-    printf("Littlefs init successed!\n");
+    printf("Littlefs init successfully!\n");
 }
 
 void FileSystemInit(void)

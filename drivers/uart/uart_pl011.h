@@ -38,7 +38,7 @@ extern "C" {
 #define UART_FR                0x18 /* flag register */
 #define UART_CLR               0x44 /* interrupt clear register */
 #define UART_CR                0x30 /* control register */
-#define UART_IBRD              0x24 /* interge baudrate register */
+#define UART_IBRD              0x24 /* integer baudrate register */
 #define UART_FBRD              0x28 /* decimal baudrate register */
 #define UART_LCR_H             0x2C
 #define UART_IFLS              0x34 /* fifo register */

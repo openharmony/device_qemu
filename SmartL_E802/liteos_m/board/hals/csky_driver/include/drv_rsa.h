@@ -175,7 +175,7 @@ int32_t csi_rsa_encrypt(rsa_handle_t handle, void *n, void *e, void *src, uint32
   \brief       decrypt
   \param[in]   handle  rsa handle to operate.
   \param[in]   n         Pointer to the public modulus
-  \param[in]   d         Pointer to the privte exponent
+  \param[in]   d         Pointer to the private exponent
   \param[in]   src       Pointer to the source data.
   \param[in]   src_size  the source data len
   \param[out]  out       Pointer to the result buffer
@@ -189,7 +189,7 @@ int32_t csi_rsa_decrypt(rsa_handle_t handle, void *n, void *d, void *src, uint32
   \brief       rsa sign
   \param[in]   handle  rsa handle to operate.
   \param[in]   n         Pointer to the public modulus
-  \param[in]   d         Pointer to the privte exponent
+  \param[in]   d         Pointer to the private exponent
   \param[in]   src       Pointer to the source data.
   \param[in]   src_size  the source data len
   \param[out]  signature Pointer to the signature

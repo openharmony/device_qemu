@@ -54,7 +54,7 @@ typedef enum {
     DMA_EVENT_TRANSFER_DONE        = 0,  ///< transfer complete
     DMA_EVENT_TRANSFER_HALF_DONE   = 1,  ///< transfer half done
     DMA_EVENT_TRANSFER_MODE_DONE   = 2,  ///< transfer complete in a certain dma trigger mode.
-    DMA_EVENT_CAHNNEL_PEND         = 3,  ///< it happens when there is a low priority channel was preempted by a high priority channel
+    DMA_EVENT_CHANNEL_PEND         = 3,  ///< it happens when there is a low priority channel was preempted by a high priority channel
     DMA_EVENT_TRANSFER_ERROR       = 4,  ///< transfer error
 } dma_event_e;
 
@@ -103,7 +103,7 @@ typedef struct {
     uint8_t                preemption;     ///< determine whether if a channel can be preempted by a higher priority channel, 0 -- not allow preempt, 1 -- allow preempt.
     dma_trans_type_e       type;           ///< transfer type
     dma_trig_trans_mode_e  mode;           ///< channel trigger mode
-    dma_channel_req_mode_e ch_mode;        ///< software or hardware to tigger dma channel work.
+    dma_channel_req_mode_e ch_mode;        ///< software or hardware to trigger dma channel work.
     dma_single_dir_e       single_dir;     ///< after select single mode control for source(read) or destination(write) transfer.
     uint32_t               group_len;      ///< group transaction length (unit: bytes) when use DMA_GROUP_TRIGGER mode.
 } dma_config_t;
@@ -112,7 +112,7 @@ typedef void (*dma_event_cb_t)(int32_t ch, dma_event_e event);   ///< Pointer to
 
 /**
   \brief     get one free dma channel
-  \return    dma channel num. if -1 alloc channle error
+  \return    dma channel num. if -1 alloc channel error
  */
 int32_t csi_dma_alloc_channel(void);
 

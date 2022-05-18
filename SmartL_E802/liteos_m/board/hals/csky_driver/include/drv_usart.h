@@ -83,7 +83,7 @@ typedef enum {
 /*----- USART Control Codes: Mode Parameters: Clock Polarity (Synchronous mode) -----*/
 typedef enum {
     USART_CPOL0                  = 0,    ///< CPOL = 0 (default). data are captured on rising edge (low->high transition)
-    USART_CPOL1                          ///< CPOL = 1. data are captured on falling edge (high->lowh transition)
+    USART_CPOL1                          ///< CPOL = 1. data are captured on falling edge (high->low transition)
 } usart_cpol_e;
 
 /*----- USART Control Codes: Mode Parameters: Clock Phase (Synchronous mode) -----*/
@@ -122,7 +122,7 @@ typedef struct {
     uint32_t ri  : 1;                     ///< RI  state: 1=Active, 0=Inactive
 } usart_modem_stat_t;
 
-/*----- USART Control Codes: on-off intrrupte type-----*/
+/*----- USART Control Codes: on-off interrupt type-----*/
 typedef enum {
     USART_INTR_WRITE,
     USART_INTR_READ
@@ -140,7 +140,7 @@ typedef struct  {
     uint32_t rx_framing_error : 1;        ///< Framing error detected on receive (cleared on start of next receive operation)
     uint32_t rx_parity_error  : 1;        ///< Parity error detected on receive (cleared on start of next receive operation)
     uint32_t tx_enable        : 1;        ///< Transmitter enable flag
-    uint32_t rx_enable        : 1;        ///< Receiver enbale flag
+    uint32_t rx_enable        : 1;        ///< Receiver enable flag
 } usart_status_t;
 
 /****** USART Event *****/
