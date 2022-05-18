@@ -46,7 +46,7 @@ INT32 UartPutc(INT32 c, VOID *file)
     return arm_uart_write(&g_uartDev, (UINT8)c);
 }
 
-VOID UartReciveHandler(VOID)
+VOID UartReceiveHandler(VOID)
 {
     if (arm_uart_get_interrupt_status(&g_uartDev) == ARM_UART_IRQ_RX) {
         (void)LOS_EventWrite(&g_shellInputEvent, 0x1);
@@ -66,7 +66,7 @@ VOID UartInit()
 VOID Uart0RxIrqRegister(VOID)
 {
     (void)arm_uart_irq_rx_enable(&g_uartDev);
-    (void)LOS_HwiCreate(UART0_RX_IRQn, 0, 0, (HWI_PROC_FUNC)UartReciveHandler, 0);
+    (void)LOS_HwiCreate(UART0_RX_IRQn, 0, 0, (HWI_PROC_FUNC)UartReceiveHandler, 0);
     return;
 }
 #ifdef __cplusplus

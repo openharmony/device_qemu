@@ -48,7 +48,7 @@ typedef struct {
 
 /****** RTC Event *****/
 typedef enum {
-    RTC_EVENT_TIMER_INTRERRUPT  = 0   ///< generate interrupt
+    RTC_EVENT_TIMER_INTERRUPT  = 0   ///< generate interrupt
 } rtc_event_e;
 
 typedef void (*rtc_event_cb_t)(int32_t idx, rtc_event_e event);  ///< Pointer to \ref rtc_event_cb_t : RTC Event call back.
