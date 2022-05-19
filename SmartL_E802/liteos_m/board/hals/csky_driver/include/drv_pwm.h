@@ -62,7 +62,7 @@ int32_t csi_pwm_power_control(pwm_handle_t handle, csi_power_stat_e state);
 /**
   \brief       config pwm mode.
   \param[in]   handle           pwm handle to operate.
-  \param[in]   channel          chnnel num.
+  \param[in]   channel          channel num.
   \param[in]   period_us        the PWM period in us
   \param[in]   pulse_width_us   the PMW pulse width in us
   \return      error code
@@ -75,14 +75,14 @@ int32_t csi_pwm_config(pwm_handle_t handle,
 /**
   \brief       start generate pwm signal.
   \param[in]   handle   pwm handle to operate.
-  \param[in]   channel  chnnel num.
+  \param[in]   channel  channel num.
 */
 void csi_pwm_start(pwm_handle_t handle, uint8_t channel);
 
 /**
   \brief       Stop generate pwm signal.
   \param[in]   handle   pwm handle to operate.
-  \param[in]   channel  chnnel num.
+  \param[in]   channel  channel num.
 */
 void csi_pwm_stop(pwm_handle_t handle, uint8_t channel);
 

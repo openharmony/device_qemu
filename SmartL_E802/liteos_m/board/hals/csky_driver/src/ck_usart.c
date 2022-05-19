@@ -84,7 +84,7 @@ static const usart_capabilities_t usart_capabilities = {
 };
 
 /**
-  \brief       set the bautrate of usart.
+  \brief       set the baudrate of usart.
   \param[in]   addr  usart base to operate.
   \return      error code
 */
@@ -97,7 +97,7 @@ int32_t csi_usart_config_baudrate(usart_handle_t handle, uint32_t baud)
 
     WAIT_USART_IDLE(addr);
 
-    /* baudrate=(seriak clock freq)/(16*divisor); algorithm :rounding*/
+    /* baudrate=(serial clock freq)/(16*divisor); algorithm :rounding*/
     uint32_t divisor = ((drv_get_sys_freq()  * 10) / baud) >> 4;
 
     if ((divisor % 10) >= 5) {
@@ -261,7 +261,7 @@ int32_t csi_usart_config_databits(usart_handle_t handle, usart_data_bits_e datab
 /**
   \brief       get character in query mode.
   \param[in]   instance  usart instance to operate.
-  \param[in]   the pointer to the recieve charater.
+  \param[in]   the pointer to the receive charater.
   \return      error code
 */
 int32_t csi_usart_getchar(usart_handle_t handle, uint8_t *ch)

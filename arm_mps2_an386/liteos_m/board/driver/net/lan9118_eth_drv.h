@@ -513,7 +513,7 @@ void Lan9118PacketRx(void);
  *
  * This task is handle rx data.
  */
-void EthernetReciveHandler(void);
+void EthernetReceiveHandler(void);
 
 /**
  * \brief In this function, the hardware should be initialized.
