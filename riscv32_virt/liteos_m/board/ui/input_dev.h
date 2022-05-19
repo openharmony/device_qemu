@@ -46,7 +46,7 @@ public:
     }
 
 private:
-    static void ReportEventPkgCallback(const EventPackage **pkgs, uint32_t count, uint32_t devIndex);
+    static void ReportEventPkgCallback(const InputEventPackage **pkgs, uint32_t count, uint32_t devIndex);
     bool init = false;
     IInputInterface *inputInterface = nullptr;
     InputEventCb inputEventCb = {0};

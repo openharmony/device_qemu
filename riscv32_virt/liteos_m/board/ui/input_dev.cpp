@@ -50,7 +50,7 @@ InputDev *InputDev::GetInstance()
     return &instance;
 }
 
-void InputDev::ReportEventPkgCallback(const EventPackage **pkgs, uint32_t count, uint32_t devIndex)
+void InputDev::ReportEventPkgCallback(const InputEventPackage **pkgs, uint32_t count, uint32_t devIndex)
 {
     if (pkgs == NULL) {
         return;
