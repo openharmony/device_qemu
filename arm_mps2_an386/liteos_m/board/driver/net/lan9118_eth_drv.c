@@ -284,15 +284,6 @@ static void DelayMs(uint32_t ms)
     usleep(delayMs);
 }
 
-static struct pbuf* GetNextNode(const struct pbuf* buf)
-{
-    if (!buf) {
-        return NULL;
-    }
-    struct pbuf* next = buf->next;
-    return next;
-}
-
 static void* GetPayloadAddr(const struct pbuf* buf)
 {
     return buf->payload;
