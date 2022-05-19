@@ -180,7 +180,7 @@ int32_t csi_i2s_config_sample_rate(i2s_handle_t handle, uint32_t rate);
 int32_t csi_i2s_send(i2s_handle_t handle, const void *data, uint32_t data_size);
 
 /**
-  \brief       abort send data to I2S transmmitter.
+  \brief       abort send data to I2S transmitter.
   \param[in]   handle       i2s handle to operate.
   \return      0 for success, negative for error code
 */

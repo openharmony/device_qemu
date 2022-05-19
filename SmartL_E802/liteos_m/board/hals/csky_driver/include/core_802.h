@@ -222,7 +222,7 @@ typedef union {
 #define CCR_MP_Msk                        (0x3UL << CCR_MP_Pos)                          /*!< CCR: MP Mask */
 
 /**
-  \brief  Consortium definition for accessing high ease access permission configutation registers(CAPR, CR<19,0>)
+  \brief  Consortium definition for accessing high ease access permission configuration registers(CAPR, CR<19,0>)
  */
 typedef union {
     struct {

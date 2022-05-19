@@ -128,7 +128,7 @@ static int32_t gpio_write(void *port, uint32_t mask)
  * Configure a GPIO gpio_set_irq_mode.
  * @param[in]   pin         the addr store the pin num.
  * @param[in]   _irqmode    the irqmode of gpio
- * @return      zero on success. -1 on falure.
+ * @return      zero on success. -1 on failure.
  */
 static int32_t gpio_set_irq_mode(gpio_pin_handle_t pin, gpio_irq_mode_e irq_mode)
 {

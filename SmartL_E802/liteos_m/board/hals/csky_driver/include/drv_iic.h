@@ -131,7 +131,7 @@ int32_t csi_iic_config(iic_handle_t handle,
                This function is non-blocking,\ref iic_event_e is signaled when transfer completes or error happens.
                \ref csi_iic_get_status can get operating status.
   \param[in]   handle         iic handle to operate.
-  \param[in]   devaddr        iic addrress of slave device.
+  \param[in]   devaddr        iic address of slave device.
   \param[in]   data           data to send to IIC Slave
   \param[in]   num            Number of data items to send
   \param[in]   xfer_pending   Transfer operation is pending - Stop condition will not be generated
@@ -145,7 +145,7 @@ int32_t csi_iic_master_send(iic_handle_t handle, uint32_t devaddr, const void *d
                This function is non-blocking,\ref iic_event_e is signaled when transfer completes or error happens.
                \ref csi_iic_get_status can get operating status.
   \param[in]   handle  iic handle to operate.
-  \param[in]   devaddr        iic addrress of slave device.
+  \param[in]   devaddr        iic address of slave device.
   \param[out]  data    Pointer to buffer for data to receive from IIC receiver
   \param[in]   num     Number of data items to receive
   \param[in]   xfer_pending   Transfer operation is pending - Stop condition will not be generated

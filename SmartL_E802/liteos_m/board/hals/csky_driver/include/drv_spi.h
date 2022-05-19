@@ -224,7 +224,7 @@ int32_t csi_spi_config_mode(spi_handle_t handle, spi_mode_e  mode);
 /**
   \brief       config the SPI block mode.
   \param[in]   handle   spi handle
-  \param[in]   flag 1 - enbale the block mode. 0 - disable the block mode
+  \param[in]   flag 1 - enable the block mode. 0 - disable the block mode
   \return      error code
 */
 int32_t csi_spi_config_block_mode(spi_handle_t handle, int32_t flag);
