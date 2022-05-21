@@ -10,6 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import("//base/startup/init_lite/services/etc/param/param_fixer.gni")
 import("//build/ohos.gni")
 
 ohos_prebuilt_etc("qemu.arm.linux.init.cfg") {
@@ -38,8 +39,16 @@ ohos_prebuilt_etc("qemu.arm.linux.updater.cfg") {
   part_name = "qemu_arm_linux_chipset"
 }
 
+ohos_prebuilt_para("default_param") {
+  source = "default.para"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "etc/param"
+  part_name = "qemu_arm_linux_chipset"
+}
+
 group("rootfs_files") {
   deps = [
+    ":default_param",
     ":qemu.arm.linux.init.cfg",
     ":qemu.arm.linux.updater.cfg",
     ":qemu.arm.linux.usb.cfg",
