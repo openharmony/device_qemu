@@ -16,48 +16,29 @@ Quick Emulator \(QEMU\) can simulate the scenario where a kernel runs on differe
 
 ```
 /device/qemu
-├── arm_virt                # ARM virt board
-│   └── liteos_a            # Configuration related to the LiteOS Cortex-A kernel
-│       └── config          # Configuration related to drivers
-├── drivers                 # Platform drivers
-│   └── libs                # Driver library
-│       └── virt            # virt platform
-├── riscv32_virt            # RISCV32 virt board
-│   ├── driver              # Driver code
-│   ├── include             # APIs exposed externally
-│   ├── libc                # Basic libc library
-│   ├── fs                  # fs configuration
-│   ├── test                # Test the demo
-│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
-├── arm_mps2_an386          # cortex-m4 mps2_an386 board
-│   ├── driver              # Driver code
-│   ├── include             # APIs exposed externally
-│   ├── libc                # Basic libc library
-│   ├── fs                  # fs configuration
-│   ├── test                # Test the demo
-│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
-├── arm_mps3_an547          # cortex-m55 mps3_an547 board
-│   ├── driver              # Driver code
-│   ├── include             # APIs exposed externally
-│   ├── libc                # Basic libc library
-│   ├── fs                  # fs configuration
-│   ├── test                # Test the demo
-│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
-├── esp32                   # Xtensa esp32 board
-│   ├── hals                # Hardware adaptation layer
-│   ├── driver              # Driver code
-│   ├── include             # APIs exposed externally
-│   ├── libc                # Basic libc library
-│   ├── fs                  # fs configuration
-│   ├── test                # Test the demo
-│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
-├── SmartL_E802             # C-SKY SmartL_E802 board
-│   ├── hals                # Hardware adaptation layer
-│   ├── driver              # Driver code
-│   ├── libc                # Basic libc library
-│   ├── fs                  # fs configuration
-│   ├── test                # Test the demo
-│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
+├── arm_virt                                # arm virt board
+│   |── liteos_a                            # Configuration related to the liteos_a kernel
+|   |── liteos_a_mini                       # Configuration related to the liteos_a_mini kernel
+|   └── linux                               # Configuration related to the linux kernel
+├── riscv32_virt                            # riscv32 virt board
+│   └── liteos_m                            # Configuration related to the liteos_m kernel
+├── arm_mps2_an386                          # cortex-m4 mps2_an386 board
+│   └── liteos_m                            # Configuration related to the liteos_m kernel
+├── arm_mps3_an547                          # cortex-m55 mps3_an547 board
+│ └── liteos_m                              # Configuration related to the liteos_m kernel
+├── esp32                                   # Xtensa LX6 esp32 board
+│   ├── adapter                             # Hardware adaptation code
+│   └── liteos_m                            # Configuration related to the liteos_m kernel
+├── SmartL_E802                             # C-SKY SmartL virtual board
+│   ├── adapter                             # Hardware adaptation code
+│   └── liteos_m                            # Configuration related to the liteos_m kernel
+├── hardware                                # Hardware adaptation code
+│   └── display                             # Default hardware adaptation code
+├── drivers                                 # Platform-dependent driver directory
+│   ├── cfiflash                            # CFI related code
+│   ├── char                                # char related code
+│   ├── uart                                # uart related code
+│   └── virtio                              # vitrio related code
 ```
 
 ## Constraints<a name="section119744591305"></a>
