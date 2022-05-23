@@ -1,7 +1,6 @@
 # QEMU（Quick Emulator）<a name="ZH-CN_TOPIC_0000001101286951"></a>
 
 -   [简介](#section11660541593)
--   [目录](#section161941989596)
 -   [约束](#section119744591305)
 -   [QEMU安装](#section119744591307)
 -   [使用说明](#section169045116126)
@@ -11,36 +10,6 @@
 ## 简介<a name="section11660541593"></a>
 
 QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依赖。
-
-## 目录<a name="section161941989596"></a>
-
-```
-/device/qemu
-├── arm_virt                # arm virt单板
-│   |── liteos_a            # 与liteos_a内核相关的配置
-|   |── liteos_a_mini       # 与liteos_a_mini内核相关的配置
-|   └── linux               # 与linux内核相关的配置
-├── riscv32_virt            # riscv32 virt单板
-│   └── liteos_m            # 与liteos_m内核相关的配置
-├── arm_mps2_an386          # cortex-m4 mps2_an386单板
-│   └── liteos_m            # 与liteos_m内核相关的配置
-├── arm_mps3_an547          # cortex-m55 mps3_an547单板
-│   └── liteos_m            # 与liteos_m内核相关的配置
-├── esp32                   # Xtensa LX6 esp32单板
-│   ├── adapter             # 硬件适配代码
-│   └── liteos_m            # 与liteos_m内核相关的配置
-├── SmartL_E802             # C-SKY SmartL虚拟单板
-│   ├── adapter             # 硬件适配代码
-│   └── liteos_m            # 与liteos_m内核相关的配置
-├── drivers                 # 与平台相关的驱动目录
-│   ├── cfiflash            # CFI相关代码
-│   ├── char                # char相关代码
-│   ├── uart                # uart相关代码
-│   └── virtio              # vitrio相关代码
-├── hardware                # 硬件适配代码
-│   └── display             # 默认硬件适配代码
-
-```
 
 ## 约束<a name="section119744591305"></a>
 
