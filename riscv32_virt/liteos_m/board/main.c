@@ -116,7 +116,7 @@ LITE_OS_SEC_TEXT_INIT INT32 main(VOID)
 
     ret = LOS_KernelInit();
     if (ret != LOS_OK) {
-        PRINT_ERR("Liteos kernel init failed! ERROR: 0x%x\n", ret);
+        PRINT_ERR("LiteOS kernel init failed! ERROR: 0x%x\n", ret);
         goto START_FAILED;
     }
 
