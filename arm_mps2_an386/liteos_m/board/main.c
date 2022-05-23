@@ -52,7 +52,7 @@ LITE_OS_SEC_TEXT_INIT int main(void)
 
     ret = LOS_KernelInit();
     if (ret != LOS_OK) {
-        printf("Liteos kernel init failed! ERROR: 0x%x\n", ret);
+        printf("LiteOS kernel init failed! ERROR: 0x%x\n", ret);
         goto EXIT;
     }
 

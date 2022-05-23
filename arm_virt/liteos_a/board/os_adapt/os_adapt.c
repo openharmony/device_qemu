@@ -128,7 +128,7 @@ void SystemInit(void)
 #endif
     dprintf("OsUserInitProcess start ...\n");
     if (OsUserInitProcess()) {
-        PRINT_ERR("Create user init process faialed!\n");
+        PRINT_ERR("Create user init process failed!\n");
         return;
     }
     dprintf("OsUserInitProcess end ...\n");

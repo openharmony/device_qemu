@@ -40,7 +40,7 @@ extern "C" {
 #endif /* __cplusplus */
 #endif /* __cplusplus */
 
-#define WDT_WRWITE_MASK                0x50d83aa1
+#define WDT_WRITE_MASK                 0x50d83aa1
 #define RTC_CNTL                       0x3ff48000
 #define RTC_WDT_PROTECT                0x3ff480a4
 #define RTC_WDT_CFG0                   0x3ff4808c
