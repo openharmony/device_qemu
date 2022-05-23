@@ -32,7 +32,7 @@ struct DisplayDesc {
 
 static LayerInfo g_layerInfo = {};
 static DisplayDesc g_display = {};
-constexpr const uint8_t DISPALY_DEV_ID = 0;
+constexpr const uint8_t DISPLAY_DEV_ID = 0;
 #ifdef LAYER_PF_ARGB1555
 constexpr const uint8_t LAYER_BPP = 16;
 constexpr const PixelFormat HDI_LAYER_PIXEL_FORMAT = PIXEL_FMT_RGBA_5551;
@@ -75,7 +75,7 @@ static void DisplayInit(void)
         return;
     }
     if (g_display.layerFuncs->InitDisplay != nullptr) {
-        ret = g_display.layerFuncs->InitDisplay(DISPALY_DEV_ID);
+        ret = g_display.layerFuncs->InitDisplay(DISPLAY_DEV_ID);
         if (ret != DISPLAY_SUCCESS) {
             GRAPHIC_LOGE("InitDisplay fail");
             return;
@@ -88,7 +88,7 @@ static void OpenLayer(void)
     if (g_display.layerFuncs->GetDisplayInfo == nullptr) {
         return;
     }
-    g_display.devId = DISPALY_DEV_ID;
+    g_display.devId = DISPLAY_DEV_ID;
     DisplayInfo displayInfo = {};
     int32_t ret = g_display.layerFuncs->GetDisplayInfo(g_display.devId, &displayInfo);
     if (ret != DISPLAY_SUCCESS) {
