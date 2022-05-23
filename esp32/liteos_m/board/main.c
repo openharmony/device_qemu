@@ -56,7 +56,7 @@ INT32 main(VOID)
 
     ret = LOS_KernelInit();
     if (ret != LOS_OK) {
-        printf("Liteos kernel init failed! ERROR: 0x%x\n", ret);
+        printf("LiteOS kernel init failed! ERROR: 0x%x\n", ret);
     }
     FileSystemInit();
 

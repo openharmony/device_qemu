@@ -23,7 +23,7 @@
         <policylist>
             <policy name="projectPolicy" desc="">
                 <policyitem type="copyright" name="Huawei Technologies Co., Ltd. All rights reserved." path=".*" desc="original liteos copyright"/>
-                <policyitem type="license" name="BSD-3-Clause" path=".*" desc="Liteos kernel use bsd3 license"/>
+                <policyitem type="license" name="BSD-3-Clause" path=".*" desc="LiteOS kernel use bsd3 license"/>
             </policy>
         </policylist>
         <filefilterlist>
