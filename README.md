@@ -1,7 +1,6 @@
 # QEMU<a name="EN-US_TOPIC_0000001101286951"></a>
 
 -   [Introduction](#section11660541593)
--   [Directory Structure](#section161941989596)
 -   [Constraints](#section119744591305)
 -   [QEMU Install](#section119744591307)
 -   [Usage](#section169045116126)
@@ -11,35 +10,6 @@
 ## Introduction<a name="section11660541593"></a>
 
 Quick Emulator \(QEMU\) can simulate the scenario where a kernel runs on different boards, so that the kernel no longer depends on physical development boards.
-
-## Directory Structure<a name="section161941989596"></a>
-
-```
-/device/qemu
-├── arm_virt                                # arm virt board
-│   |── liteos_a                            # Configuration related to the liteos_a kernel
-|   |── liteos_a_mini                       # Configuration related to the liteos_a_mini kernel
-|   └── linux                               # Configuration related to the linux kernel
-├── riscv32_virt                            # riscv32 virt board
-│   └── liteos_m                            # Configuration related to the liteos_m kernel
-├── arm_mps2_an386                          # cortex-m4 mps2_an386 board
-│   └── liteos_m                            # Configuration related to the liteos_m kernel
-├── arm_mps3_an547                          # cortex-m55 mps3_an547 board
-│ └── liteos_m                              # Configuration related to the liteos_m kernel
-├── esp32                                   # Xtensa LX6 esp32 board
-│   ├── adapter                             # Hardware adaptation code
-│   └── liteos_m                            # Configuration related to the liteos_m kernel
-├── SmartL_E802                             # C-SKY SmartL virtual board
-│   ├── adapter                             # Hardware adaptation code
-│   └── liteos_m                            # Configuration related to the liteos_m kernel
-├── hardware                                # Hardware adaptation code
-│   └── display                             # Default hardware adaptation code
-├── drivers                                 # Platform-dependent driver directory
-│   ├── cfiflash                            # CFI related code
-│   ├── char                                # char related code
-│   ├── uart                                # uart related code
-│   └── virtio                              # vitrio related code
-```
 
 ## Constraints<a name="section119744591305"></a>
 
