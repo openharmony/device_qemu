@@ -1,7 +1,6 @@
 # QEMU<a name="EN-US_TOPIC_0000001101286951"></a>
 
 -   [Introduction](#section11660541593)
--   [Directory Structure](#section161941989596)
 -   [Constraints](#section119744591305)
 -   [QEMU Install](#section119744591307)
 -   [Usage](#section169045116126)
@@ -11,54 +10,6 @@
 ## Introduction<a name="section11660541593"></a>
 
 Quick Emulator \(QEMU\) can simulate the scenario where a kernel runs on different boards, so that the kernel no longer depends on physical development boards.
-
-## Directory Structure<a name="section161941989596"></a>
-
-```
-/device/qemu
-├── arm_virt                # ARM virt board
-│   └── liteos_a            # Configuration related to the LiteOS Cortex-A kernel
-│       └── config          # Configuration related to drivers
-├── drivers                 # Platform drivers
-│   └── libs                # Driver library
-│       └── virt            # virt platform
-├── riscv32_virt            # RISCV32 virt board
-│   ├── driver              # Driver code
-│   ├── include             # APIs exposed externally
-│   ├── libc                # Basic libc library
-│   ├── fs                  # fs configuration
-│   ├── test                # Test the demo
-│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
-├── arm_mps2_an386          # cortex-m4 mps2_an386 board
-│   ├── driver              # Driver code
-│   ├── include             # APIs exposed externally
-│   ├── libc                # Basic libc library
-│   ├── fs                  # fs configuration
-│   ├── test                # Test the demo
-│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
-├── arm_mps3_an547          # cortex-m55 mps3_an547 board
-│   ├── driver              # Driver code
-│   ├── include             # APIs exposed externally
-│   ├── libc                # Basic libc library
-│   ├── fs                  # fs configuration
-│   ├── test                # Test the demo
-│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
-├── esp32                   # Xtensa esp32 board
-│   ├── hals                # Hardware adaptation layer
-│   ├── driver              # Driver code
-│   ├── include             # APIs exposed externally
-│   ├── libc                # Basic libc library
-│   ├── fs                  # fs configuration
-│   ├── test                # Test the demo
-│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
-├── SmartL_E802             # C-SKY SmartL_E802 board
-│   ├── hals                # Hardware adaptation layer
-│   ├── driver              # Driver code
-│   ├── libc                # Basic libc library
-│   ├── fs                  # fs configuration
-│   ├── test                # Test the demo
-│   └── liteos_m            # Configuration related to the LiteOS Cortex-m kernel
-```
 
 ## Constraints<a name="section119744591305"></a>
 

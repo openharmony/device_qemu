@@ -1,7 +1,6 @@
 # QEMU（Quick Emulator）<a name="ZH-CN_TOPIC_0000001101286951"></a>
 
 -   [简介](#section11660541593)
--   [目录](#section161941989596)
 -   [约束](#section119744591305)
 -   [QEMU安装](#section119744591307)
 -   [使用说明](#section169045116126)
@@ -11,54 +10,6 @@
 ## 简介<a name="section11660541593"></a>
 
 QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依赖。
-
-## 目录<a name="section161941989596"></a>
-
-```
-/device/qemu
-├── arm_virt                # arm virt单板
-│   └── liteos_a            # 与liteos_a内核相关的配置
-│       └── config          # 驱动相关配置
-├── drivers                 # 与平台相关的驱动目录
-│   └── libs                # 驱动库
-│       └── virt            # virt平台
-├── riscv32_virt            # riscv32 virt单板
-│   ├── driver              # 驱动目录
-│   ├── include             # 对外接口存放目录
-│   ├── libc                # 基础libc库
-│   ├── fs                  # fs 配置
-│   ├── test                # 测试样例
-│   └── liteos_m            # 与liteos_m内核相关的配置
-├── arm_mps2_an386          # cortex-m4 mps2_an386单板
-│   ├── driver              # 驱动目录
-│   ├── include             # 对外接口存放目录
-│   ├── libc                # 基础libc库
-│   ├── fs                  # fs 配置
-│   ├── test                # 测试样例
-│   └── liteos_m            # 与liteos_m内核相关的配置
-├── arm_mps3_an547          # cortex-m55 mps3_an547单板
-│   ├── driver              # 驱动目录
-│   ├── include             # 对外接口存放目录
-│   ├── libc                # 基础libc库
-│   ├── fs                  # fs 配置
-│   ├── test                # 测试样例
-│   └── liteos_m            # 与liteos_m内核相关的配置
-├── esp32                   # Xtensa LX6 esp32单板
-│   ├── hals                # 硬件适配层
-│   ├── driver              # 驱动目录
-│   ├── include             # 对外接口存放目录
-│   ├── libc                # 基础libc库
-│   ├── fs                  # fs 配置
-│   ├── test                # 测试样例
-│   └── liteos_m            # 与liteos_m内核相关的配置
-├── SmartL_E802             # C-SKY SmartL虚拟单板
-│   ├── hals                # 硬件适配层
-│   ├── driver              # 驱动目录
-│   ├── libc                # 基础libc库
-│   ├── fs                  # fs 配置
-│   ├── test                # 测试样例
-│   └── liteos_m            # 与liteos_m内核相关的配置
-```
 
 ## 约束<a name="section119744591305"></a>
 
