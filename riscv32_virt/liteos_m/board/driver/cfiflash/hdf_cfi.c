@@ -14,25 +14,10 @@
  */
 
 #include "los_debug.h"
-#include "ff_gen_drv.h"
-#include "diskio.h"
 #include "hdf_log.h"
 #include "hdf_device_desc.h"
 #include "device_resource_if.h"
 #include "cfiflash_internal.h"
-
-static DiskioDrvTypeDef g_cfiBlkops = {
-    DiskInit,
-    DiskStatus,
-    DisckRead,
-    DiskWrite,
-    DiskIoctl,
-};
-
-DiskioDrvTypeDef *GetCfiBlkOps()
-{
-    return &g_cfiBlkops;
-}
 
 int HdfCfiDriverInit(struct HdfDeviceObject *deviceObject)
 {

@@ -86,6 +86,10 @@ static void RenderTEHandler()
 static void UiAdapterTask(void *arg)
 {
     (void)arg;
+
+    static constexpr uint32_t UI_TASK_DELAY = 100; // 1 sec delay for services init finish
+    osDelay(UI_TASK_DELAY);
+    
     UiAdapterInit();
     RunApp();
 

@@ -16,7 +16,6 @@
 #define __CFIFLASH_INTERNAL_H__
 
 #include "cfiflash.h"
-#include "diskio.h"
 
 #define CFIFLASH_ONE_BANK_BITS          24
 
@@ -52,10 +51,4 @@
 
 #define CFIFLASH_STATUS_READY_MASK      0x80
 
-DSTATUS DiskInit(BYTE);
-DSTATUS DiskStatus(BYTE);
-DSTATUS DisckRead(BYTE, BYTE *, DWORD, UINT);
-DSTATUS DiskWrite(BYTE, const BYTE *, DWORD, UINT);
-DSTATUS DiskIoctl(BYTE, BYTE, void *);
-
-#endif
+#endif /* __CFIFLASH_INTERNAL_H__ */

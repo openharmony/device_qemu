@@ -18,6 +18,12 @@
 #include "ohos_mem_pool.h"
 #include "hiview_log.h"
 #include "los_debug.h"
+#if (LOSCFG_SUPPORT_FATFS == 1)
+#include "fatfs.h"
+#endif /* LOSCFG_SUPPORT_FATFS == 1 */
+#if (LOSCFG_SUPPORT_LITTLEFS == 1)
+#include "lfs.h"
+#endif /* LOSCFG_SUPPORT_LITTLEFS == 1 */
 
 /**
  * @brief implement for hilog_lite featured/mini
@@ -31,6 +37,23 @@ boolean HilogProc_Impl(const HiLogContent *hilogContent, uint32 len)
     }
     return TRUE;
 }
+
+#if (LOSCFG_SUPPORT_FATFS == 1)
+void SetupDefaultVolToPartTable(void)
+{
+    int i = 0;
+    PARTITION defaultVToP[FF_VOLUMES] = {
+        {0, 1, 1},     /* "0:" ==> Physical drive 1, 1st partition */
+        {1, 1, 2},     /* "1:" ==> Physical drive 1, 2nd partition */
+        {2, 1, 3},     /* "2:" ==> Physical drive 1, 3rd partition */
+        {3, 1, 4}      /* "3:" ==> Physical drive 1, 4th partition */
+    };
+
+    for (i = 0; i < FF_VOLUMES; i++) {
+        SetupVolToPartTable(i, defaultVToP[i], GetCfiBlkOps());
+    }
+}
+#endif /* LOSCFG_SUPPORT_FATFS == 1 */
 
 void _init(void) {}
 void _fini(void) {}
@@ -48,14 +71,21 @@ void SystemAdapterInit(void)
     };
     __libc_init_array();
 
-    if (!DiscDrvInit()) {
-        /* mount fs in fs_storage.img，for font.ttf used by graphic */
-        if (ret = mount("p0", "/data", "vfat", 0, NULL)) {
-            PRINT_ERR("Mount error:%d\n", ret);
+#if (LOSCFG_SUPPORT_LITTLEFS == 1)
+    if (LittlefsDriverInit(1) == 0) {
+        struct lfs_config *littlefsConfig = GetCfiLfsCfg();
+        ret = mount(NULL, "/data", "littlefs", 0, littlefsConfig);
+        if (ret != LOS_OK) {
+            PRINT_ERR("Mount Littlefs error:0x%x\n", ret);
         }
-    } else {
-        PRINT_ERR("SetupDiscDrv error\n");
     }
+#elif (LOSCFG_SUPPORT_FATFS == 1)
+    SetupDefaultVolToPartTable();
+    /* mount fs in fat.img，for font.ttf used by graphic */
+    if (ret = mount("p0", "/data", "vfat", 0, NULL)) {
+        PRINT_ERR("Mount Fatfs error:0x%x\n", ret);
+    }
+#endif /* LOSCFG_SUPPORT_FATFS == 1 */
 
     /* bootstrap init */
     OHOS_SystemInit();
