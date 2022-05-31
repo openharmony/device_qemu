@@ -57,6 +57,7 @@ Run a OHOS image in qemu according to the options.
     -n,  --network            auto setup network for qemu (sudo required).
     -i,  --instance id        start qemu images with specified instance id (from 01 to 99).
                               it will also setup network when running in multiple instance mode.
+         -f                   force override instance image with a new copy.
     -h,  --help               print this help info.
 
     If no image_path specified, it will find OHOS image in current working directory; then try .
@@ -102,3 +103,5 @@ qemu_run.sh默认会启动当前工作目录或out/qemu-arm-linux/packages/phone
         Serial number:  {instanceID}23456789
 
 instanceID的取值格式为两个数字字符：范围为01到99。
+
+当镜像输出目录中已存在该instanceID的实例时，默认不重新拷贝镜像。若要重新拷贝镜像可在调用qemu_run.sh时传入-f选项将原镜像覆盖。
