@@ -23,16 +23,16 @@ shared_library("display_layer") {
     "//drivers/peripheral/base",
     "//drivers/peripheral/display/hal",
     "//drivers/peripheral/display/interfaces/include",
-    "//drivers/adapter/uhdf/posix/include",
-    "//drivers/framework/include/utils",
-    "//drivers/framework/ability/sbuf/include",
-    "//drivers/framework/utils/include",
-    "//drivers/framework/include/core",
+    "//drivers/hdf_core/adapter/uhdf/posix/include",
+    "//drivers/hdf_core/framework/include/utils",
+    "//drivers/hdf_core/framework/ability/sbuf/include",
+    "//drivers/hdf_core/framework/utils/include",
+    "//drivers/hdf_core/framework/include/core",
     "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
   ]
   deps = [
-    "//drivers/adapter/uhdf/manager:hdf_core",
-    "//drivers/adapter/uhdf/posix:hdf_posix_osal",
+    "//drivers/hdf_core/adapter/uhdf/manager:hdf_core",
+    "//drivers/hdf_core/adapter/uhdf/posix:hdf_posix_osal",
     "//third_party/bounds_checking_function:libsec_shared",
   ]
   defines = [ "__USER__" ]
@@ -56,13 +56,13 @@ shared_library("display_gralloc") {
     "//drivers/peripheral/display/hal",
     "//drivers/drivers/peripheral/display/hal",
     "//drivers/peripheral/display/interfaces/include",
-    "//drivers/framework/include/utils",
+    "//drivers/hdf_core/framework/include/utils",
     "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
-    "//drivers/adapter/uhdf/posix/include",
+    "//drivers/hdf_core/adapter/uhdf/posix/include",
   ]
 
   deps = [
-    "//drivers/adapter/uhdf/posix:hdf_posix_osal",
+    "//drivers/hdf_core/adapter/uhdf/posix:hdf_posix_osal",
     "//third_party/bounds_checking_function:libsec_shared",
   ]
   cflags = [
@@ -84,13 +84,13 @@ shared_library("display_gfx") {
     "//drivers/peripheral/base",
     "//drivers/peripheral/display/hal",
     "//drivers/peripheral/display/interfaces/include",
-    "//drivers/framework/include/utils",
+    "//drivers/hdf_core/framework/include/utils",
     "//base/hiviewdfx/hilog_lite/interfaces/native/innerkits",
-    "//drivers/adapter/uhdf/posix/include",
+    "//drivers/hdf_core/adapter/uhdf/posix/include",
   ]
 
   deps = [
-    "//drivers/adapter/uhdf/posix:hdf_posix_osal",
+    "//drivers/hdf_core/adapter/uhdf/posix:hdf_posix_osal",
     "//third_party/bounds_checking_function:libsec_shared",
   ]
   cflags = [
