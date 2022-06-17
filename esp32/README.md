@@ -77,7 +77,7 @@ QEMU can simulate the kernel to run on different boards ,eliminate dependence on
             --disable-sdl --disable-gtk
          ```
 
-      b) Waitting for the completion of the compilation and executing the installation command (If the compilation fail, please refer to https://github.com/espressif/qemu/issues/21):
+      b) Waiting for the completion of the compilation and executing the installation command (If the compilation fail, please refer to https://github.com/espressif/qemu/issues/21):
 
          ```shell
          ninja -C build
