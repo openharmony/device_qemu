@@ -27,7 +27,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import("//drivers/adapter/khdf/liteos_m/hdf.gni")
+import("//drivers/hdf_core/adapter/khdf/liteos_m/hdf.gni")
 
 module_name = "hdf_config"
 hdf_driver(module_name) {

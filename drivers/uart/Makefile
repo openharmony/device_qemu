@@ -14,7 +14,7 @@
 #
 
 include $(LITEOSTOPDIR)/config.mk
-include $(LITEOSTOPDIR)/../../drivers/adapter/khdf/liteos/lite.mk
+include $(LITEOSTOPDIR)/../../drivers/hdf_core/adapter/khdf/liteos/lite.mk
 
 MODULE_NAME := hdf_uart
 
