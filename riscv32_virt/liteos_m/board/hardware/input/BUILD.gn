@@ -28,7 +28,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import("//build/lite/config/component/lite_component.gni")
-import("//drivers/adapter/khdf/liteos_m/hdf.gni")
+import("//drivers/hdf_core/adapter/khdf/liteos_m/hdf.gni")
 
 hdf_driver("hdi_input") {
   sources = [

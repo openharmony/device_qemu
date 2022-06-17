@@ -27,7 +27,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import("//drivers/adapter/khdf/liteos_m/hdf.gni")
+import("//drivers/hdf_core/adapter/khdf/liteos_m/hdf.gni")
 import("//kernel/liteos_m/liteos.gni")
 
 hdf_driver("bsp_config") {
@@ -66,7 +66,7 @@ hdf_driver("bsp_config") {
     "$HDF_PERIPHERAL_PATH/base",
     "$HDF_PERIPHERAL_PATH/display/interfaces/include",
     "$HDF_PERIPHERAL_PATH/input/interfaces/include",
-    "//drivers/adapter/khdf/liteos_m/osal/include",
+    "//drivers/hdf_core/adapter/khdf/liteos_m/osal/include",
     "//third_party/bounds_checking_function/include",
   ]
 
