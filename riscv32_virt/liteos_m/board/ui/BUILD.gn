@@ -15,7 +15,7 @@ declare_args() {
   riscv_ace_enable = true
 }
 
-import("//drivers/adapter/khdf/liteos_m/hdf.gni")
+import("//drivers/hdf_core/adapter/khdf/liteos_m/hdf.gni")
 
 config("public") {
   include_dirs = [ "." ]
