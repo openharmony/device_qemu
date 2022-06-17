@@ -12,7 +12,7 @@
 # limitations under the License.
 
 import("//build/lite/config/component/lite_component.gni")
-import("//drivers/adapter/khdf/liteos_m/hdf.gni")
+import("//drivers/hdf_core/adapter/khdf/liteos_m/hdf.gni")
 
 hdf_driver("display_layer") {
   output_name = "display_layer"

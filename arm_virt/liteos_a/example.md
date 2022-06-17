@@ -56,7 +56,7 @@ int main(int argc, char **argv)
 }
 ```
 
-3. 为helloword创建BUILD.gn文件
+3. 为helloworld创建BUILD.gn文件
 ```
 在 applications/sample/helloworld下添加BUILD.gn文件，并添加如下代码：
 ```
@@ -75,7 +75,7 @@ executable("helloworld") {
 }
 ```
 
-**提示**：hellworld最后目录结构为
+**提示**：helloworld最后目录结构为
 ```
 applications/sample/helloworld
 applications/sample/helloworld/BUILD.gn
@@ -129,7 +129,7 @@ applications/sample/helloworld/src/helloworld.c
 
 参考链接: [编译方法](README_zh.md)
 
-**注意**：helloworld 正常编译后会出现在 out/arm_virt/qemu_small_system_demo/bin中，如果没有，请返回检查相关配置文件中的路径和名称是否有误，并尝试重新编译直到出现helloword
+**注意**：helloworld 正常编译后会出现在 out/arm_virt/qemu_small_system_demo/bin中，如果没有，请返回检查相关配置文件中的路径和名称是否有误，并尝试重新编译直到出现helloworld
 
 ```
 提示：编译完成后，代码根目录下会生成qemu-run脚本，直接运行该脚本默认以非root权限运行qemu环境(不含网络配置)。其他参数配置
@@ -139,7 +139,7 @@ applications/sample/helloworld/src/helloworld.c
 
 7. 运行helloworld
 
-helloworld在qemu虚拟机的bin目录下面，进入qemu虚拟机环境后，在bin目录下执行 ./helloword，会出现如下信息，表示Hello World程序添加成功
+helloworld在qemu虚拟机的bin目录下面，进入qemu虚拟机环境后，在bin目录下执行 ./helloworld，会出现如下信息，表示Hello World程序添加成功
 
 ```
 OHOS # ./helloworld
