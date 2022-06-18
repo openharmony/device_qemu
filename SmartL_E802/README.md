@@ -92,7 +92,7 @@ QEMU can simulate the kernel to run on different boards, freeing the dependence 
 
 Hint : You can use the `repo` command to get the source code.
 
-## 4.Source buildding
+## 4.Source building
 
    1. Execute the hb set command and select the project`qemu_csky_mini_system_demo`.
 
@@ -103,7 +103,7 @@ Hint : You can use the `repo` command to get the source code.
       hb clean && hb build
       ```
 
-   3. After the buildding is complete,the corresponding executable file is in the home directory:
+   3. After the building is complete,the corresponding executable file is in the home directory:
 
       ```
       out/SmartL_E802/qemu_csky_mini_system_demo/
