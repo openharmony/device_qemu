@@ -1,5 +1,5 @@
 root {
-    platfrom {
+    platform {
         template uart_controller {
             match_attr = "";
             num = 0;
