@@ -26,55 +26,10 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import("//kernel/liteos_m/liteos.gni")
-
-module_name = "bsp_config"
-
-kernel_module(module_name) {
-  asmflags = board_asmflags
-
-  sources = [
-    "driver/arm_uart_drv.c",
-    "driver/net/lan9118_eth_drv.c",
-    "driver/uart.c",
-    "fs/ff_gen_drv.c",
-    "libc/dprintf.c",
-    "main.c",
-    "startup.s",
-  ]
-  deps = [ "//device/qemu/arm_mps2_an386/liteos_m/board/fs:fs_adapter" ]
-  include_dirs = [ "//device/qemu/arm_mps2_an386/liteos_m/board/fs" ]
-  if (!defined(LOSCFG_TEST)) {
-    # kernel's testsuites not enabled, use ower's
-    sources += [ "test/test_demo.c" ]
-  }
-  include_dirs += [ "driver/net/" ]
-}
-
-config("public") {
+static_library("flash") {
+  sources = [ "ram_virt_flash.c" ]
   include_dirs = [
-    ".",
-    "include",
-    "fs",
-    "driver",
+    "//kernel/liteos_m/kernel/include",
+    "//kernel/liteos_m/kernel/arch/include",
   ]
-  ldflags = [
-    "-nostartfiles",
-    "-Wl,-T" + rebase_path("liteos.ld"),
-    "-nostdlib",
-  ]
-
-  libs = [
-    "nosys",
-    "gcc",
-  ]
-
-  if (defined(LOSCFG_LIBC_NEWLIB)) {
-    ldflags -= [ "-nostdlib" ]
-    libs -= [ "nosys" ]
-    libs += [
-      "c",
-      "m",
-    ]
-  }
 }
