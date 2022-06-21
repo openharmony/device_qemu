@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2013-2019 Huawei Technologies Co., Ltd. All rights reserved.
- * Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+ * Copyright (c) 2022-2022 Huawei Device Co., Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -29,42 +28,48 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef FF_GEN_DRV_H
-#define FF_GEN_DRV_H
+#include "los_config.h"
+#include "ram_virt_flash.h"
 
-#include "stdint.h"
-#ifdef LOSCFG_SUPPORT_FATFS
-#include "diskio.h"
-#endif
+#if (LOSCFG_SUPPORT_LITTLEFS == 1)
+#include "fs_lowlevel.h"
 
-#ifdef __cplusplus
-#if __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-#endif /* __cplusplus */
+struct fs_cfg {
+    CHAR *mount_point;
+    struct lfs_config lfs_cfg;
+};
 
-#if (LOSCFG_SUPPORT_FATFS == 1)
-typedef struct {
-    DSTATUS (*disk_initialize)(BYTE);
-    DSTATUS (*disk_status)(BYTE);
-    DSTATUS (*disk_read)(BYTE, BYTE *, DWORD, UINT);
-    DSTATUS (*disk_write)(BYTE, const BYTE *, DWORD, UINT);
-    DSTATUS (*disk_ioctl)(BYTE, BYTE, void *);
-} DiskioDrvTypeDef;
+STATIC struct fs_cfg fs[LOSCFG_LFS_MAX_MOUNT_SIZE] = {0};
 
-typedef struct {
-    uint8_t initialized[FF_VOLUMES];
-    const DiskioDrvTypeDef *drv[FF_VOLUMES];
-    uint8_t lun[FF_VOLUMES];
-    volatile uint8_t nbr;
-} DiskDrvTypeDef;
+INT32 LfsLowLevelInit()
+{
+    INT32 ret;
 
-extern DiskDrvTypeDef g_diskDrv;
-#endif
-#ifdef __cplusplus
-#if __cplusplus
+    fs[0].mount_point = "/littlefs";
+    fs[0].lfs_cfg.block_size = 4096; /* 4096, lfs block size */
+    fs[0].lfs_cfg.block_count = 2048; /* 2048, lfs block count */
+    fs[0].lfs_cfg.context = FLASH_PARTITION_DATA0;
+    fs[0].lfs_cfg.read = littlefs_block_read;
+    fs[0].lfs_cfg.prog = littlefs_block_write;
+    fs[0].lfs_cfg.erase = littlefs_block_erase;
+    fs[0].lfs_cfg.sync = littlefs_block_sync;
+
+    fs[0].lfs_cfg.read_size = 256; /* 256, lfs read size */
+    fs[0].lfs_cfg.prog_size = 256; /* 256, lfs prog size */
+    fs[0].lfs_cfg.cache_size = 256; /* 256, lfs cache size */
+    fs[0].lfs_cfg.lookahead_size = 16; /* 16, lfs lookahead size */
+    fs[0].lfs_cfg.block_cycles = 1000; /* 1000, lfs block cycles */
+
+    ret = mount(NULL, fs[0].mount_point, "littlefs", 0, &fs[0].lfs_cfg);
+    printf("%s: mount fs on '%s' %s\n", __func__, fs[0].mount_point, (ret == 0) ? "succeed" : "failed");
+    if (ret != 0) {
+        return -1;
+    }
+    ret = mkdir(fs[0].mount_point);
+    printf("%s: mkdir '%s' %s\n", __func__, fs[0].mount_point, (ret == 0) ? "succeed" : "failed");
+    if (ret != 0) {
+        return -1;
+    }
+    return 0;
 }
-#endif /* __cplusplus */
-#endif /* __cplusplus */
-
-#endif /* FS_CONFIG_H */
+#endif
