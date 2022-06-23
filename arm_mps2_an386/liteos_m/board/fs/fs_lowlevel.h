@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2013-2019 Huawei Technologies Co., Ltd. All rights reserved.
- * Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+ * Copyright (c) 2022-2022 Huawei Device Co., Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -29,8 +28,29 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if (LOSCFG_SUPPORT_FATFS == 1)
-#include "ff_gen_drv.h"
-#include "fatfs.h"
-DiskDrvTypeDef g_diskDrv = { { 0 }, { 0 }, { 0 }, { 0 } };
+#ifndef __FS_LOWLEVEL_H__
+#define __FS_LOWLEVEL_H__
+
+#include "los_config.h"
+
+#if (LOSCFG_SUPPORT_LITTLEFS == 1)
+#include "lfs.h"
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if (LOSCFG_SUPPORT_LITTLEFS == 1)
+INT32 littlefs_block_read(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, VOID *dst, lfs_size_t size);
+INT32 littlefs_block_write(const struct lfs_config *c, lfs_block_t block,
+                           lfs_off_t off, const VOID *dst, lfs_size_t size);
+INT32 littlefs_block_erase(const struct lfs_config *c, lfs_block_t block);
+INT32 littlefs_block_sync(const struct lfs_config *c);
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
