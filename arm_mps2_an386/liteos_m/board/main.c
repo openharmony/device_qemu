@@ -55,6 +55,9 @@ LITE_OS_SEC_TEXT_INIT int main(void)
         printf("Liteos kernel init failed! ERROR: 0x%x\n", ret);
         goto EXIT;
     }
+#if (LOSCFG_SUPPORT_LITTLEFS == 1)
+    LfsLowLevelInit();
+#endif
 
     Uart0RxIrqRegister();
 

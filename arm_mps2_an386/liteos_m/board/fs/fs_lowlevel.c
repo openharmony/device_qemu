@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2013-2019 Huawei Technologies Co., Ltd. All rights reserved.
- * Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+ * Copyright (c) 2022-2022 Huawei Device Co., Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -29,8 +28,34 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if (LOSCFG_SUPPORT_FATFS == 1)
-#include "ff_gen_drv.h"
-#include "fatfs.h"
-DiskDrvTypeDef g_diskDrv = { { 0 }, { 0 }, { 0 }, { 0 } };
+
+#include "ram_virt_flash.h"
+
+#if (LOSCFG_SUPPORT_LITTLEFS == 1)
+#include "fs_lowlevel.h"
+
+INT32 littlefs_block_read(const struct lfs_config *c, lfs_block_t block,
+                          lfs_off_t off, VOID *dst, lfs_size_t size)
+{
+    UINT32 addr = c->block_size * block + off;
+    return virt_flash_read((HalPartition)c->context, &addr, dst, size);
+}
+
+INT32 littlefs_block_write(const struct lfs_config *c, lfs_block_t block,
+                           lfs_off_t off, const VOID *dst, lfs_size_t size)
+{
+    UINT32 addr = c->block_size * block + off;
+    return virt_flash_write((HalPartition)c->context, &addr, dst, size);
+}
+
+INT32 littlefs_block_erase(const struct lfs_config *c, lfs_block_t block)
+{
+    UINT32 addr = c->block_size * block;
+    return virt_flash_erase((HalPartition)c->context, addr, c->block_size);
+}
+
+INT32 littlefs_block_sync(const struct lfs_config *c)
+{
+    return 0;
+}
 #endif
