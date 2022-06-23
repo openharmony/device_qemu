@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2013-2019 Huawei Technologies Co., Ltd. All rights reserved.
- * Copyright (c) 2020-2021 Huawei Device Co., Ltd. All rights reserved.
+ * Copyright (c) 2022-2022 Huawei Device Co., Ltd. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -29,8 +28,34 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if (LOSCFG_SUPPORT_FATFS == 1)
-#include "ff_gen_drv.h"
-#include "fatfs.h"
-DiskDrvTypeDef g_diskDrv = { { 0 }, { 0 }, { 0 }, { 0 } };
+#ifndef _RAM_VIRT_FLASH_H_
+#define _RAM_VIRT_FLASH_H_
+
+#include "los_compiler.h"
+#ifdef __cplusplus
+extern "C" {
 #endif
+
+typedef enum {
+    FLASH_PARTITION_DATA0 = 0,
+    FLASH_PARTITION_DATA1 = 1,
+    FLASH_PARTITION_MAX,
+} HalPartition;
+
+typedef struct {
+    const CHAR *partitionDescription;
+    UINT32 partitionStartAddr;
+    UINT32 partitionLength;
+    UINT32 partitionOptions;
+} HalLogicPartition;
+
+INT32 virt_flash_erase(HalPartition in_partition, UINT32 off_set, UINT32 size);
+INT32 virt_flash_write(HalPartition in_partition, UINT32 *off_set, const VOID *in_buf, UINT32 in_buf_len);
+INT32 virt_flash_erase_write(HalPartition in_partition, UINT32 *off_set, const VOID *in_buf, UINT32 in_buf_len);
+INT32 virt_flash_read(HalPartition in_partition, UINT32 *off_set, VOID *out_buf, UINT32 in_buf_len);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _RAM_VIRT_FLASH_H_ */
