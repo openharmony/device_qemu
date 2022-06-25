@@ -144,7 +144,7 @@ int32_t csi_crc_config(crc_handle_t handle,
   \param[in]   handle  crc handle to operate.
   \param[in]   in      Pointer to the input data
   \param[out]  out     Pointer to the result.
-  \param[in]   len     intput data len.
+  \param[in]   len     input data len.
   \return      error code
 */
 int32_t csi_crc_calculate(crc_handle_t handle, const void *in, void *out, uint32_t len);

@@ -111,7 +111,7 @@ int32_t csi_usart_config_baudrate(usart_handle_t handle, uint32_t baud)
     addr->DLL = divisor & 0xff;
     addr->DLH = (divisor >> 8) & 0xff;
     /*
-     * The DLAB must be cleared after the baudrate is setted
+     * The DLAB must be cleared after the baudrate is set
      * to access other registers.
      */
     addr->LCR &= (~LCR_SET_DLAB);
@@ -261,7 +261,7 @@ int32_t csi_usart_config_databits(usart_handle_t handle, usart_data_bits_e datab
 /**
   \brief       get character in query mode.
   \param[in]   instance  usart instance to operate.
-  \param[in]   the pointer to the receive charater.
+  \param[in]   the pointer to the received character.
   \return      error code
 */
 int32_t csi_usart_getchar(usart_handle_t handle, uint8_t *ch)
@@ -282,7 +282,7 @@ int32_t csi_usart_getchar(usart_handle_t handle, uint8_t *ch)
 /**
   \brief       transmit character in query mode.
   \param[in]   instance  usart instance to operate.
-  \param[in]   ch  the input charater
+  \param[in]   ch  the input character
   \return      error code
 */
 int32_t csi_usart_putchar(usart_handle_t handle, uint8_t ch)

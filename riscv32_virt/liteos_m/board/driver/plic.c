@@ -68,7 +68,7 @@ VOID PlicIrqInit()
 
     ret = LOS_HwiCreate(RISCV_MACH_EXT_IRQ, 0x1, 0, OsMachineExternalInterrupt, 0);
     if (ret != LOS_OK) {
-        PRINT_ERR("Creat machine external failed! ret : 0x%x\n", ret);
+        PRINT_ERR("Create machine external failed! ret : 0x%x\n", ret);
     }
 }
 
