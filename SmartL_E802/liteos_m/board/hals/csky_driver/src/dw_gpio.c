@@ -88,9 +88,9 @@ static int32_t gpio_set_direction(
 }
 
 /*
- * Read the statu of the Port choosed.
+ * Read the status of the chosen port.
  * Parameters:
- *   port:  use to choose a I/O port among Port A, B, or C.
+ *   port:  use to chose a I/O port among Port A, B, or C.
  * return: the value of the corresponding Port.
  */
 
@@ -250,7 +250,7 @@ void dw_gpio_irqhandler(int idx)
     uint32_t value = gpio_control_reg->INTSTATUS;
     uint8_t i;
 
-    /* find the interrput pin */
+    /* find the interrupt pin */
     for (i = 0; i < 32; i++) {
         if (value & (1U << i)) {
             uint32_t pin_idx = i;

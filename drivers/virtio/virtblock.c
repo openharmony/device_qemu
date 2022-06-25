@@ -253,7 +253,7 @@ ERR_OUT:
  * send I/O request, receive response data.
  * We act like a card adapter, receive requests, control MMC bus, drive 'card'
  * execution, and report result. Yes, we are part of MmcCntlr -- MMC controller!
- * Every hardware internal infomation are in our scope, such as state, CRC, RCA.
+ * Every hardware internal information are in our scope, such as state, CRC, RCA.
  * So, we COULD(SHOULD) safely ignore them!
  */
 
