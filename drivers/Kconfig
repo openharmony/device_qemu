@@ -43,7 +43,7 @@ config DRIVERS_NETDEV
 # mtd configs tart
 config DRIVERS_MTD
     bool "Enable MTD"
-    default y
+    default n
     depends on DRIVERS && FS_VFS
     help
       Answer Y to enable LiteOS support jffs2 multipartion.
@@ -80,3 +80,7 @@ config DRIVERS_MTD_NAND
       Answer Y to support nandflash.
 
 # mtd configs end
+
+config DRIVERS_EMMC
+    bool "Enable MMC"
+    default y

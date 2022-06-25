@@ -35,9 +35,7 @@ hb set
 hb build
 ```
 
-这个命令构建会产生 `OHOS_Image.bin`、`rootfs_jffs2.img` 和 `userfs_jffs2.img`  的镜像文件。
-
-在构建完成之后，对应的镜像文件在out/arm_virt/qemu_small_system_demo/目录。
+在构建完成之后，对应的结果文件在out/arm_virt/qemu_small_system_demo/目录。
 
 
 ## 5. 在Qemu中运行镜像
@@ -51,29 +49,11 @@ b) 制作以及运行镜像
 
 在代码根目录下，编译后会生成qemu-run脚本，可直接运行该脚本，根据脚本提示制作、运行镜像。
 
-执行`./qemu-run --help`提示如下：
+执行`./qemu-run --help`获取帮助。
 
-```
-Usage: ./qemu-run [OPTION]...
-Make a qemu image(flash.img) for OHOS, and run the image in qemu according
-to the options.
+网卡模拟的是无线网卡wlan0，但无真的wifi功能；默认不加参数的情况下，网络不会自动配置。
 
-    Options:
-
-    -f, --force                rebuild flash.img
-    -n, --net-enable           enable net
-    -l, --local-desktop        no VNC
-    -b, --bootargs             additional boot arguments(-bk1=v1,k2=v2...)
-    -g, --gdb                  enable gdb for kernel
-    -h, --help                 print help info
-
-    By default, flash.img will not be rebuilt if exists, and net will not
-    be enabled, gpu enabled and waiting for VNC connection at port 5920.
-```
-
-网卡模拟的是无线网卡wlan0，但无真的wifi功能；默认不加参数的情况下，网络不会自动配置。当根目录镜像文件flash.img存在时，镜像不会被重新制作。
-
-提示：初次运行脚本时，系统还会生成MMC镜像，主要内容为系统和用户数据文件，第1个分区将安装在/sdcard目录，第2个分区安装在/userdata目录，第3个分区保留。镜像存放在OHOS源码树的out目录下，文件名为smallmmc.img。只要不被删除，后续就不再重新制作该镜像。具体请见vendor/ohemu/qemu_small_system_demo/qemu_run.sh。
+当镜像文件out/smallmmc.img存在时，默认不会被重新制作。MMC镜像主要内容为rootfs和userfs，第1个分区为rootfs，第2个分区为userfs，安装在/storage目录，第3个分区为用户数据，安装在/userdata目录。
 
 c) 退出qemu环境
 
@@ -176,8 +156,8 @@ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
 
    ```
    qemu-system-arm -M virt,gic-version=2,secure=on -cpu cortex-a7 -smp cpus=1 -m 1G \
-        -drive if=pflash,file=flash.img,format=raw \
-        -drive if=none,file=./out/smallmmc.img,format=qcow2,id=mmc
+        -bios out/arm_virt/qemu_small_system_demo/OHOS_Image.bin \
+        -drive if=none,file=out/smallmmc.img,format=raw,id=mmc
         -device virtio-blk-device,drive=mmc \
         -netdev bridge,id=net0 \
         -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
@@ -194,7 +174,7 @@ gdb-multiarch out/arm_virt/qemu_small_system_demo/OHOS_Image
    -cpu                         CPU型号
    -smp                         SMP设置，单核
    -m                           虚拟机可使用的内存限制
-   -drive if=pflash             CFI闪存盘设置
+   -bios                        内核启动映像
    -drive if=none               块设备映像文件设置
    -netdev                      [可选]网卡后端设置，桥接类型
    -device virtio-blk-device    块存储设备
