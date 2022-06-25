@@ -29,8 +29,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-unsigned int LosAppInit(VOID)
+unsigned int LosAppInit(void)
 {
-    unsigned int ret = 0;
-    return ret;
+    return 0;
 }
