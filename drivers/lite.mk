@@ -17,8 +17,7 @@ SOC_PLATFORM := $(subst $\",,$(LOSCFG_PLATFORM))
 DRIVERS_ROOT := $(LITEOSTOPDIR)/../../device/$(SOC_COMPANY)/drivers/
 
 ###################### SELF-DEVELOPED DRIVER ######################
-LITEOS_BASELIB +=  -lcfiflash -lvirtio -lplatform_char
-LIB_SUBDIRS    += $(DRIVERS_ROOT)/cfiflash
+LITEOS_BASELIB +=  -lvirtio -lplatform_char
 LIB_SUBDIRS    += $(DRIVERS_ROOT)/virtio
 LIB_SUBDIRS    += $(DRIVERS_ROOT)/char
 

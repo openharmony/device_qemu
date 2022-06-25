@@ -298,8 +298,8 @@ static void VirtMmcFillRespCid(struct MmcCmd *cmd, const struct Virtblk *blk)
 {
     uint8_t *b = (uint8_t *)cmd->resp;
 
-    /* removable card, so OHOS will auto-detect partitions */
-    FillCidCsdBits(cmd->resp, MMC_CID_CBX_SBIT, MMC_CID_CBX_WIDTH, 0);
+    /* embedded card, so can leverage kernel eMMC rootfs support */
+    FillCidCsdBits(cmd->resp, MMC_CID_CBX_SBIT, MMC_CID_CBX_WIDTH, 1);
 
     (void)memcpy_s(&b[MMC_CID_PNM_SBYTE], MMC_CID_PNM_BYTES, VIRTMMIO_BLK_NAME, MMC_CID_PNM_BYTES);
     *(uint32_t *)&b[MMC_CID_PSN_SBYTE] = (uint32_t)blk; /* unique sn */
