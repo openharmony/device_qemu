@@ -32,6 +32,7 @@
 #define _FBMEM_H
 
 #include <stdint.h>
+#include <stdlib.h>
 #include "sys/types.h"
 #include "sys/stat.h"
 #ifdef LOSCFG_LIBC_NEWLIB
@@ -43,6 +44,7 @@
 #include "los_interrupt.h"
 #include "los_debug.h"
 #include "los_task.h"
+#include "los_mux.h"
 
 #define PATH_MAX 256
 #define V_CREATE     (1 << 0)

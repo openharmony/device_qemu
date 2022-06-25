@@ -139,7 +139,6 @@ int fb_ioctl(struct fb_mem *fbMem, int cmd, unsigned long arg)
         case FIOC_MMAP:
             { /* Get color plane info */
                 void **ppv = (void **)((uintptr_t)arg);
-                uintptr_t fbmem = (uintptr_t)fb->fbmem;
                 /* Return the address corresponding to the start of frame buffer. */
                 DEBUGASSERT(ppv != NULL);
                 *ppv = fb->fbmem;

@@ -366,13 +366,14 @@ static int32_t InputWorkTask(void *arg)
 {
     struct Virtin *in = (struct Virtin *)arg;
 
-    while(1) {
+    while (1) {
         int32_t r = osSemaphoreAcquire(in->sem, osWaitForever);
         if (r != 0) {
             continue;
         }
         VirtinHandleEv(in);
     }
+    return HDF_FAILURE;
 }
 
 static int32_t HdfVirtinInit(struct HdfDeviceObject *device)
@@ -449,5 +450,5 @@ struct HdfDeviceObject *GetHdfDeviceObject(void)
     if(g_virtInputDev != NULL){
         return g_virtInputDev->hdfDevObj;
     }
-    return HDF_FAILURE;
+    return NULL;
 }
