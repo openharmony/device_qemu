@@ -17,6 +17,7 @@
 
 #include "los_arch_interrupt.h"
 #include "los_interrupt.h"
+#include "riscv_hal.h"
 
 #ifdef __cplusplus
 #if __cplusplus
