@@ -16,6 +16,7 @@
 #include "hdf_syscall_adapter.h"
 #include "hdf_log.h"
 #include "hdf_sbuf.h"
+#include "osal_mem.h"
 #include "devsvc_manager_clnt.h"
 
 #define HDF_LOG_TAG hdf_syscall_adapter
