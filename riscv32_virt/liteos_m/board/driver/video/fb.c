@@ -189,7 +189,7 @@ int fb_ioctl(struct fb_mem *fbMem, int cmd, unsigned long arg)
             break;
 
         case FBIOPUT_CURSOR:
-            { /* Set cursor attibutes */
+            { /* Set cursor attributes */
                 struct fb_setcursor_s *cursor = (struct fb_setcursor_s *)((uintptr_t)arg);
                 DEBUGASSERT(fb->vtable != NULL && fb->vtable->setcursor != NULL);
                 ret = fb->vtable->setcursor(fb->vtable, &cursor);

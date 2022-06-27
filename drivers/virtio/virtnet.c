@@ -434,7 +434,7 @@ static int32_t VirtNetDeviceSetMacAddr(NetDevice *netDev, void *addr)
 static struct NetDeviceInterFace g_netDevOps = {
     .setMacAddr = VirtNetDeviceSetMacAddr,
     /*
-     * Link layer packet transmition chain:
+     * Link layer packet transmission chain:
      *   LWIP netif->linkoutput = driverif_output, in kernel, pbuf
      *       KHDF netif->drv_send = LwipSend, in HDF adapter, NetBuf
      *           NetDevice .xmit = our driver, NetBuf

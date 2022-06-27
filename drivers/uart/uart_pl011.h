@@ -155,7 +155,7 @@ struct UartDriverData {
 };
 
 struct UartDmaTransfer {
-    /* dma alloced channel */
+    /* dma allocated channel */
     uint32_t channel;
     /* dma created task id */
     uint32_t thread_id;
