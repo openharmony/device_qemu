@@ -449,7 +449,7 @@ typedef struct
     __IOM uint32_t CIR;                    /*!< Offset: 0x004 (R/W)  Cache invalid register */
     __IOM uint32_t CRCR[4U];               /*!< Offset: 0x008 (R/W)  Cache Configuration register */
           uint32_t RSERVED0[1015U];
-    __IOM uint32_t CPFCR;                  /*!< Offset: 0xFF4 (R/W)  Cache performance analisis control register */
+    __IOM uint32_t CPFCR;                  /*!< Offset: 0xFF4 (R/W)  Cache performance analysis control register */
     __IOM uint32_t CPFATR;                 /*!< Offset: 0xFF8 (R/W)  Cache access times register */
     __IOM uint32_t CPFMTR;                 /*!< Offset: 0xFFC (R/W)  Cache missing times register */
 } CACHE_Type;
@@ -1376,7 +1376,7 @@ typedef enum {
 } access_permission_e;
 
 typedef struct {
-    uint32_t nx: 1;               /* instruction fetched excution */
+    uint32_t nx: 1;               /* instruction fetched execution */
     access_permission_e ap: 2;    /* super user and normal user access.*/
     uint32_t s: 1;                /* security */
 } mpu_region_attr_t;

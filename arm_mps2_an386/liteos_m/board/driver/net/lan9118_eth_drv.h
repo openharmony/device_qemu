@@ -266,8 +266,8 @@ enum lan9118_error_t lan9118_soft_reset(const struct lan9118_eth_dev_t* dev);
 
 /**
  * \brief Sets the Maximum Transmission Unit by Tx fifo size.
- *        Note: The MTU will be smaller by 512 bytes,
- *        whis is used by the status.
+ *        Note: The MTU will be smaller than 512 bytes,
+ *        which is used by the status.
  *
  * \param[in] dev Ethernet device structure \ref lan9118_eth_dev_t
  * \param[in] val Size of the fifo in kbytes

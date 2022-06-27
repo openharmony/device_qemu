@@ -401,7 +401,7 @@ struct VirtgpuMemEntry {
     uint64_t addr;
     uint32_t length;
     uint32_t padding;
-};                                  /* vaddr's physical address should be continuos */
+};                                  /* vaddr's physical address should be continuous */
 static bool CMDResourceAttachBacking(uint32_t resourceId, uint64_t vaddr, uint32_t len)
 {
     struct VirtgpuResourceAttachBacking req = {
