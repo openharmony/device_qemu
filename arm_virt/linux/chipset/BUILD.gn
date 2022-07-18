@@ -19,31 +19,9 @@ ohos_prebuilt_etc("fstab.qemu.arm.linux") {
   install_images = [ vendor_base_dir ]
 }
 
-if (enable_ramdisk) {
-  ohos_copy("ohos.its") {
-    sources = [ "ohos.its" ]
-    outputs = [ "$root_build_dir/ohos.its" ]
-  }
-  ohos_copy("ohos_updater.its") {
-    sources = [ "ohos_updater.its" ]
-    outputs = [ "$root_build_dir/ohos_updater.its" ]
-  }
-  ohos_copy("fstab.required") {
-    sources = [ "etc/fstab.qemu.arm.linux" ]
-    outputs = [ "$root_build_dir/fstab.required" ]
-  }
-}
-
 group("chipset_files") {
   deps = [
     ":fstab.qemu.arm.linux",
     "//kernel/linux/build:linux_kernel",
   ]
-  if (enable_ramdisk) {
-    deps += [
-      ":fstab.required",
-      ":ohos.its",
-      ":ohos_updater.its",
-    ]
-  }
 }
