@@ -31,7 +31,6 @@ config("fs_adapter_config") {
     ".",
     "//device/qemu/arm_mps2_an386/liteos_m/board/driver/flash/",
     "//third_party/littlefs",
-    "//third_party/musl/porting/liteos_m/kernel/include",
   ]
 }
 
