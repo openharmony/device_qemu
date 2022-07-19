@@ -52,6 +52,7 @@ root {
                 }
                 bootUpTimeOut = 32;
                 bus {
+                    busEnable = 1;   /* 0-not enable; 1-enable */
                     busType = 0;        /* 0-sdio */
                     busIdx = 2;
                     funcNum = [1];
