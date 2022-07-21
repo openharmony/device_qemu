@@ -49,6 +49,8 @@ typedef struct {
     UINT32 partitionOptions;
 } HalLogicPartition;
 
+
+HalLogicPartition *getPartitionInfo(VOID);
 INT32 virt_flash_erase(HalPartition in_partition, UINT32 off_set, UINT32 size);
 INT32 virt_flash_write(HalPartition in_partition, UINT32 *off_set, const VOID *in_buf, UINT32 in_buf_len);
 INT32 virt_flash_erase_write(HalPartition in_partition, UINT32 *off_set, const VOID *in_buf, UINT32 in_buf_len);

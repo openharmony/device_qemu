@@ -50,12 +50,16 @@ HalLogicPartition g_halPartitions[] = {
     },
 };
 
+HalLogicPartition *getPartitionInfo(VOID)
+{
+    return g_halPartitions;
+}
+
 INT32 virt_flash_erase(HalPartition pdrv, UINT32 offSet, UINT32 size)
 {
-    UINT32 startAddr;
+    UINT32 startAddr = offSet;
     UINT32 partitionEnd;
 
-    startAddr = g_halPartitions[pdrv].partitionStartAddr + offSet;
     partitionEnd = g_halPartitions[pdrv].partitionStartAddr + g_halPartitions[pdrv].partitionLength;
     if (startAddr >= partitionEnd) {
         printf("flash over erase, 0x%x, 0x%x\r\n", startAddr, partitionEnd);
@@ -75,10 +79,9 @@ INT32 virt_flash_erase(HalPartition pdrv, UINT32 offSet, UINT32 size)
 
 INT32 virt_flash_write(HalPartition pdrv, UINT32 *offSet, const VOID *buf, UINT32 bufLen)
 {
-    UINT32 startAddr;
+    UINT32 startAddr = *offSet;
     UINT32 partitionEnd;
 
-    startAddr = g_halPartitions[pdrv].partitionStartAddr + *offSet;
     partitionEnd = g_halPartitions[pdrv].partitionStartAddr + g_halPartitions[pdrv].partitionLength;
     if (startAddr >= partitionEnd) {
         printf("flash over write, 0x%x, 0x%x\r\n", startAddr, partitionEnd);
@@ -98,10 +101,9 @@ INT32 virt_flash_write(HalPartition pdrv, UINT32 *offSet, const VOID *buf, UINT3
 
 INT32 virt_flash_erase_write(HalPartition pdrv, UINT32 *offSet, const VOID *buf, UINT32 bufLen)
 {
-    UINT32 startAddr;
+    UINT32 startAddr = *offSet;
     UINT32 partitionEnd;
 
-    startAddr = g_halPartitions[pdrv].partitionStartAddr + *offSet;
     partitionEnd = g_halPartitions[pdrv].partitionStartAddr + g_halPartitions[pdrv].partitionLength;
     if (startAddr >= partitionEnd) {
         printf("flash over e&w, 0x%x, 0x%x\r\n", startAddr, partitionEnd);
@@ -121,9 +123,9 @@ INT32 virt_flash_erase_write(HalPartition pdrv, UINT32 *offSet, const VOID *buf,
 
 INT32 virt_flash_read(HalPartition pdrv, UINT32 *offSet, VOID *buf, UINT32 bufLen)
 {
-    UINT32 startAddr;
+    UINT32 startAddr = *offSet;
     UINT32 partitionEnd;
-    startAddr = g_halPartitions[pdrv].partitionStartAddr + *offSet;
+
     partitionEnd = g_halPartitions[pdrv].partitionStartAddr + g_halPartitions[pdrv].partitionLength;
     if (startAddr >= partitionEnd) {
         printf("flash over read, 0x%x, 0x%x\r\n", startAddr, partitionEnd);

@@ -30,46 +30,62 @@
 
 #include "los_config.h"
 #include "ram_virt_flash.h"
+#include "los_fs.h"
 
 #if (LOSCFG_SUPPORT_LITTLEFS == 1)
 #include "fs_lowlevel.h"
 
 struct fs_cfg {
     CHAR *mount_point;
-    struct lfs_config lfs_cfg;
+    struct PartitionCfg partCfg;
 };
-
-STATIC struct fs_cfg fs[LOSCFG_LFS_MAX_MOUNT_SIZE] = {0};
 
 INT32 LfsLowLevelInit()
 {
     INT32 ret;
+    struct fs_cfg fs[LOSCFG_LFS_MAX_MOUNT_SIZE] = {0};
+    HalLogicPartition *halPartitionsInfo = getPartitionInfo();
+
+    INT32 lengthArray = halPartitionsInfo[FLASH_PARTITION_DATA0].partitionLength;
+    INT32 addrArray = halPartitionsInfo[FLASH_PARTITION_DATA0].partitionStartAddr;
+    ret = LOS_DiskPartition("flash0", "littlefs", &lengthArray, &addrArray, 1);
+    printf("%s: DiskPartition %s\n", __func__, (ret == 0) ? "succeed" : "failed");
+    if (ret != 0) {
+        return -1;
+    }
 
     fs[0].mount_point = "/littlefs";
-    fs[0].lfs_cfg.block_size = 4096; /* 4096, lfs block size */
-    fs[0].lfs_cfg.block_count = 2048; /* 2048, lfs block count */
-    fs[0].lfs_cfg.context = FLASH_PARTITION_DATA0;
-    fs[0].lfs_cfg.read = littlefs_block_read;
-    fs[0].lfs_cfg.prog = littlefs_block_write;
-    fs[0].lfs_cfg.erase = littlefs_block_erase;
-    fs[0].lfs_cfg.sync = littlefs_block_sync;
+    fs[0].partCfg.partNo = FLASH_PARTITION_DATA0;
+    fs[0].partCfg.blockSize = 4096; /* 4096, lfs block size */
+    fs[0].partCfg.blockCount = 2048; /* 2048, lfs block count */
+    fs[0].partCfg.readFunc = virt_flash_read;
+    fs[0].partCfg.writeFunc = virt_flash_write;
+    fs[0].partCfg.eraseFunc = virt_flash_erase;
 
-    fs[0].lfs_cfg.read_size = 256; /* 256, lfs read size */
-    fs[0].lfs_cfg.prog_size = 256; /* 256, lfs prog size */
-    fs[0].lfs_cfg.cache_size = 256; /* 256, lfs cache size */
-    fs[0].lfs_cfg.lookahead_size = 16; /* 16, lfs lookahead size */
-    fs[0].lfs_cfg.block_cycles = 1000; /* 1000, lfs block cycles */
+    fs[0].partCfg.readSize = 256; /* 256, lfs read size */
+    fs[0].partCfg.writeSize = 256; /* 256, lfs prog size */
+    fs[0].partCfg.cacheSize = 256; /* 256, lfs cache size */
+    fs[0].partCfg.lookaheadSize = 16; /* 16, lfs lookahead size */
+    fs[0].partCfg.blockCycles = 1000; /* 1000, lfs block cycles */
 
-    ret = mount(NULL, fs[0].mount_point, "littlefs", 0, &fs[0].lfs_cfg);
+    ret = LOS_PartitionFormat("flash0", "littlefs", &fs[0].partCfg);
+    printf("%s: PartitionFormat %s\n", __func__, (ret == 0) ? "succeed" : "failed");
+    if (ret != 0) {
+        return -1;
+    }
+
+    ret = mount(NULL, fs[0].mount_point, "littlefs", 0, &fs[0].partCfg);
     printf("%s: mount fs on '%s' %s\n", __func__, fs[0].mount_point, (ret == 0) ? "succeed" : "failed");
     if (ret != 0) {
         return -1;
     }
-    ret = mkdir(fs[0].mount_point);
+
+    ret = mkdir(fs[0].mount_point, 0777); /* 0777, set dir permissions */
     printf("%s: mkdir '%s' %s\n", __func__, fs[0].mount_point, (ret == 0) ? "succeed" : "failed");
     if (ret != 0) {
         return -1;
     }
+
     return 0;
 }
 #endif
