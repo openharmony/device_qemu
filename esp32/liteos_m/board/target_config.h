@@ -102,7 +102,6 @@ extern UINTPTR __heap_start;
 #define LOSCFG_SYS_HEAP_ADDR                                (CHAR *)(UINTPTR)(&__heap_start)
 #define LOSCFG_SYS_EXTERNAL_HEAP                            1
 #define LOSCFG_SYS_HEAP_SIZE                                0x24000
-#define LOSCFG_BASE_MEM_NODE_INTEGRITY_CHECK                0
 #define LOSCFG_BASE_MEM_NODE_SIZE_CHECK                     1
 #define LOSCFG_MEM_MUL_POOL                                 1
 #define OS_SYS_MEM_NUM                                      20
@@ -110,8 +109,6 @@ extern UINTPTR __heap_start;
 /*=============================================================================
                                         Exception module configuration
 =============================================================================*/
-#define LOSCFG_PLATFORM_EXC                                 0
-#define LOSCFG_BACKTRACE_TYPE                               4
 #define LOSCFG_KERNEL_PRINTF                                1
 
 #ifdef __cplusplus

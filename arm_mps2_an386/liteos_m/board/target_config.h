@@ -64,7 +64,6 @@
 #define LOSCFG_BASE_CORE_TIMESLICE                          1
 #define LOSCFG_BASE_CORE_TIMESLICE_TIMEOUT                  20000
 #define LOSCFG_BASE_CORE_TSK_MONITOR                        1
-#define LOSCFG_BASE_CORE_CPUP                               1
 #define LOSCFG_BASE_CORE_EXC_TSK_SWITCH                     1
 
 /*=============================================================================
@@ -99,26 +98,12 @@ extern unsigned int __heap_size;
 #define LOSCFG_MEM_MUL_POOL                                 1
 #define OS_SYS_MEM_NUM                                      20
 #define LOSCFG_MEM_FREE_BY_TASKID                           1
-#define LOSCFG_BASE_MEM_NODE_INTEGRITY_CHECK                1
-#define LOSCFG_MEM_LEAKCHECK                                0
 #define LOSCFG_MEMORY_BESTFIT                               1
 
-/*=============================================================================
-                                       Exception module configuration
-=============================================================================*/
-#define LOSCFG_PLATFORM_EXC                                 0
 /* =============================================================================
                                        printf module configuration
 ============================================================================= */
 #define LOSCFG_KERNEL_PRINTF                                1
-
-#define LOSCFG_BACKTRACE_TYPE                               1
-
-#define LOSCFG_DEBUG_HOOK                                   0
-
-#define LOSCFG_KERNEL_PM                                    1
-
-#define LOSCFG_KERNEL_PM_DEBUG                              1
 
 #define LOS_KERNEL_TEST_NOT_SMOKE                           0
 
