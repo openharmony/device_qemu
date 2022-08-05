@@ -89,10 +89,6 @@ extern "C" {
 #define LOSCFG_BASE_CORE_SWTMR_ALIGN                        1
 #define LOSCFG_BASE_CORE_SWTMR_LIMIT                        48
 /*=============================================================================
-                                       Exception module configuration
-=============================================================================*/
-#define LOSCFG_PLATFORM_EXC                                 0
-/*=============================================================================
                                        Memory module configuration
 =============================================================================*/
 extern UINTPTR __heap_start;
@@ -103,11 +99,9 @@ extern UINTPTR __heap_size;
 #define LOSCFG_MEM_MUL_POOL                                 1
 #define OS_SYS_MEM_NUM                                      20
 #define LOSCFG_MEM_FREE_BY_TASKID                           1
-#define LOSCFG_BASE_MEM_NODE_INTEGRITY_CHECK                0
 /*=============================================================================
                                         Exception module configuration
 =============================================================================*/
-#define LOSCFG_BACKTRACE_TYPE                               5
 #define LOSCFG_KERNEL_PRINTF                                1
 
 #ifdef __cplusplus
