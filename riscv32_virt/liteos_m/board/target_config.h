@@ -50,7 +50,6 @@ extern "C" {
 #define LOSCFG_BASE_CORE_TIMESLICE                          1
 #define LOSCFG_BASE_CORE_TIMESLICE_TIMEOUT                  20000
 #define LOSCFG_BASE_CORE_TSK_MONITOR                        1
-#define LOSCFG_BASE_CORE_CPUP                               1
 
 /*=============================================================================
                                        Semaphore module configuration
@@ -81,7 +80,6 @@ extern UINTPTR __heap_size;
 #define LOSCFG_SYS_EXTERNAL_HEAP                            1
 #define LOSCFG_SYS_HEAP_ADDR                                (VOID *)&__heap_start
 #define LOSCFG_SYS_HEAP_SIZE                                (UINTPTR)&__heap_size
-#define LOSCFG_BASE_MEM_NODE_INTEGRITY_CHECK                0
 #define LOSCFG_BASE_MEM_NODE_SIZE_CHECK                     0
 #define LOSCFG_MEM_MUL_POOL                                 1
 #define OS_SYS_MEM_NUM                                      20
@@ -90,15 +88,9 @@ extern UINTPTR __heap_size;
 /*=============================================================================
                                         Exception module configuration
 =============================================================================*/
-#define LOSCFG_PLATFORM_EXC                                 0
-
 #define LOSCFG_PLATFORM_HWI_WITH_ARG                        1
 
-#define LOSCFG_BACKTRACE_TYPE                               2
-
 #define LOSCFG_KERNEL_PRINTF                                1
-
-#define LOSCFG_KERNEL_PM                                    1
 
 #define LOS_KERNEL_TEST_NOT_SMOKE                           0
 #define LOS_KERNEL_HWI_TEST                                 0
