@@ -128,22 +128,3 @@ void RestoreSystemWrapper(const char *crashMessage)
 {
     printf("%s\n", crashMessage);
 }
-
-int access(const char *pathname, int mode)
-{
-    struct stat f_info;
-
-    if (stat(pathname, &f_info) == 0) {
-        if (f_info.st_mode & S_IFDIR) {
-            return 0;
-        } else if (f_info.st_mode & S_IFREG) {
-            return 0;
-        } else {
-            return -1;
-        }
-    } else {
-        return -1;
-    }
-
-    return 0;
-}
