@@ -46,7 +46,7 @@ STATIC VOID OsMachineExternalInterrupt(VOID *arg)
 
 #define OS_PLIC_MAX ((OS_RISCV_CUSTOM_IRQ_VECTOR_CNT >> 5) + 1)
 
-VOID PlicIrqInit()
+VOID PlicIrqInit(VOID)
 {
     volatile UINT32 *plicPrioReg = (volatile UINT32 *)PLIC_PRIO_BASE;
     volatile UINT32 *plicEnReg = (volatile UINT32 *)PLIC_ENABLE_BASE;

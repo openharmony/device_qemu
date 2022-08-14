@@ -31,7 +31,7 @@ static const struct arm_uart_dev_cfg_t g_uartCfg = {UART0_BASE, 115200};
 static struct arm_uart_dev_data_t g_uartData = {0};
 struct arm_uart_dev_t g_uartDev;
 
-INT32 UartGetc()
+INT32 UartGetc(VOID)
 {
     UINT8 c;
     if (arm_uart_read(&g_uartDev, &c) == ARM_UART_ERR_NOT_READY) {
@@ -55,7 +55,7 @@ VOID UartReceiveHandler(VOID)
     return;
 }
 
-VOID UartInit()
+VOID UartInit(VOID)
 {
     g_uartDev.cfg = &g_uartCfg;
     g_uartDev.data = &g_uartData;
@@ -63,7 +63,7 @@ VOID UartInit()
     return;
 }
 
-VOID Uart0RxIrqRegister()
+VOID Uart0RxIrqRegister(VOID)
 {
     (void)arm_uart_irq_rx_enable(&g_uartDev);
     (void)LOS_HwiCreate(Uart0_Rx_IRQn, 0, 0, (HWI_PROC_FUNC)UartReceiveHandler, 0);

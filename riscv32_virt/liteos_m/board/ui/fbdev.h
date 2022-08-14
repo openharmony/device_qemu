@@ -40,12 +40,12 @@ struct LiteSurfaceData {
 /**
  * @brief Get dev surface data.
  */
-LiteSurfaceData* GetDevSurfaceData();
+LiteSurfaceData* GetDevSurfaceData(void);
 
 /**
  * @brief Get layer rotate type.
  */
-LayerRotateType GetLayerRotateType();
+LayerRotateType GetLayerRotateType(void);
 
 /**
  * @brief Initialize fbdev.
@@ -55,11 +55,11 @@ void FbdevInit(void);
 /**
  * @brief Close fbdev.
  */
-void FbdevClose();
+void FbdevClose(void);
 
 /**
  * @brief flush
  */
-void FbdevFlush();
+void FbdevFlush(void);
 } // namespace OHOS
 #endif // GRAPHIC_LITE_HI_FBDEV_H
