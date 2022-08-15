@@ -45,7 +45,7 @@ constexpr const ImagePixelFormat LAYER_PIXEL_FORMAT = IMAGE_PIXEL_FORMAT_ARGB888
 constexpr const uint8_t BITS_PER_BYTE = 8;
 static LiteSurfaceData g_devSurfaceData = {};
 
-void FbdevFlush()
+void FbdevFlush(void)
 {
     if (g_display.layerFuncs->Flush != nullptr) {
         int32_t ret =
@@ -57,12 +57,12 @@ void FbdevFlush()
     }
 }
 
-LayerRotateType GetLayerRotateType()
+LayerRotateType GetLayerRotateType(void)
 {
     return g_display.rotateType;
 }
 
-LiteSurfaceData* GetDevSurfaceData()
+LiteSurfaceData* GetDevSurfaceData(void)
 {
     return &g_devSurfaceData;
 }
@@ -145,7 +145,7 @@ static void AllocDisplayBuffer(void)
     }
 }
 
-void FbdevInit()
+void FbdevInit(void)
 {
     DisplayInit();
     OpenLayer();
@@ -162,7 +162,7 @@ void FbdevInit()
     g_devSurfaceData.bytePerPixel = g_layerInfo.bpp / BITS_PER_BYTE;
 }
 
-void FbdevClose()
+void FbdevClose(void)
 {
     if (g_display.layerFuncs->CloseLayer == nullptr) {
         return;

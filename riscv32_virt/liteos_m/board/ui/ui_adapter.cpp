@@ -49,7 +49,7 @@ static void InitFontEngine(void)
         DEFAULT_VECTOR_FONT_FILENAME);
 }
 
-static void InitImageDecodeAbility()
+static void InitImageDecodeAbility(void)
 {
     uint32_t imageType = IMG_SUPPORT_BITMAP | OHOS::IMG_SUPPORT_JPEG | OHOS::IMG_SUPPORT_PNG;
     ImageDecodeAbility::GetInstance().SetImageDecodeAbility(imageType);
@@ -78,7 +78,7 @@ __attribute__((weak)) void RunApp(void)
 }
 
 #ifdef ENABLE_ACE
-static void RenderTEHandler()
+static void RenderTEHandler(void)
 {
 }
 #endif
