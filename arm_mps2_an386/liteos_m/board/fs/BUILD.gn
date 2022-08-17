@@ -38,7 +38,6 @@ static_library("fs_adapter") {
   sources = [
     "ff_gen_drv.c",
     "fs_init.c",
-    "fs_lowlevel.c",
   ]
 
   public_configs = [ ":fs_adapter_config" ]
