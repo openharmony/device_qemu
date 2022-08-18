@@ -31,7 +31,7 @@ kernel_module("bsp_config") {
     "hals/driver",
     "test",
     "fs",
-    "//utils/native/lite/include",
+    "//commonlibrary/utils_lite/include",
   ]
 }
 
