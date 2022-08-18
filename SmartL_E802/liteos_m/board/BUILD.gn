@@ -33,7 +33,7 @@ kernel_module("bsp_config") {
     sources += [ "test/task_demo.c" ]
   }
   include_dirs = [
-    "//utils/native/lite/include",
+    "//commonlibrary/utils_lite/include",
     "test",
     "libc",
   ]
