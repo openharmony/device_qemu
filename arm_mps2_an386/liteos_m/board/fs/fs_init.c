@@ -33,7 +33,6 @@
 #include "los_fs.h"
 
 #if (LOSCFG_SUPPORT_LITTLEFS == 1)
-#include "fs_lowlevel.h"
 
 struct fs_cfg {
     CHAR *mount_point;
