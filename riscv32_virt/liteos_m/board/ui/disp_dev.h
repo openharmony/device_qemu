@@ -25,7 +25,7 @@ public:
     virtual ~DispDev() {}
     static DispDev *GetInstance();
 
-    void Flush() override;
+    void Flush(const OHOS::Rect& flushRect) override;
     BufferInfo *GetFBBufferInfo() override;
     void UpdateFBBuffer();
 
