@@ -56,7 +56,7 @@ void DispDev::UpdateFBBuffer()
     }
 }
 
-void DispDev::Flush()
+void DispDev::Flush(const OHOS::Rect& flushRect)
 {
     FbdevFlush();
 }
