@@ -60,7 +60,7 @@ extern void tcpip_init(tcpip_init_done_fn initfunc, void* arg);
 
 /** Getter bit manipulation macro */
 #define GET_BIT(WORD, BIT_INDEX)                            \
-    ({                                                      \                                   
+    ({                                                      \
         UINT32 r = (bool)(((WORD) & ((1U) << (BIT_INDEX))));  \
         DSB;                                                \
         r;                                                  \
