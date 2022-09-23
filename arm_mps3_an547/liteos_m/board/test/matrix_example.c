@@ -71,5 +71,6 @@ int32_t test_dsp(void)
     timeCost = (unsigned int)(end.tv_sec - start.tv_sec) * MS_PER_S + (unsigned int)(end.tv_usec - start.tv_usec) /
                MS_PER_S;
     printf("time cost: %d\n", timeCost);
+    return 0;
 }
 
