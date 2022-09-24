@@ -55,6 +55,11 @@
                 <filteritem type="filepath" name="arm_virt/linux/rootfs/*.para" desc="默认系统参数文件，不添加注释"/>
             </filefilter>
             <filefilter name="defaultFilter" desc="Files not to check">
+                <filteritem type="filepath" name="x86_64_virt/linux/chipset/etc/fstab*.*" desc="fstab配置文件，不能加其他注释"/>
+                <filteritem type="filepath" name="x86_64_virt/linux/rootfs/*.cfg" desc="init配置文件，不能加其他注释"/>
+                <filteritem type="filepath" name="x86_64_virt/linux/rootfs/*.para" desc="默认系统参数文件，不添加注释"/>
+            </filefilter>
+            <filefilter name="defaultFilter" desc="Files not to check">
                 <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->

@@ -1,0 +1,10 @@
+{
+  "parts": {
+    "device_x86_64_virt": {
+      "module_list": [
+        "//device/qemu/x86_64_virt:x86_64_virt"
+      ]
+    }
+  },
+  "subsystem": "device_x86_64_virt"
+}

@@ -1,0 +1,6 @@
+#<src> <mnt_point> <type> <mnt_flags and options> <fs_mgr_flags>
+/dev/block/platform/soc/10100000.himci.eMMC/by-name/system /system ext4 ro,barrier=1 wait
+/dev/block/platform/soc/10100000.himci.eMMC/by-name/vendor /vendor ext4 ro,barrier=1 wait
+/dev/block/platform/soc/10100000.himci.eMMC/by-name/userdata /data ext4 nosuid,nodev,noatime,barrier=1,data=ordered,noauto_da_alloc wait,reservedsize=104857600
+/dev/block/platform/soc/10100000.himci.eMMC/by-name/misc /misc none none wait
+/dev/block/platform/soc/100f0000.himci.SD/mmcblk1p1 /sdcard ext4 rw wait
