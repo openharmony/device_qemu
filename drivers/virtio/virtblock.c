@@ -481,7 +481,7 @@ static int32_t VirtMmcDoRequest(struct MmcCntlr *cntlr, struct MmcCmd *cmd)
     return cmd->returnError;
 }
 
-static bool VirtMmcPluged(struct MmcCntlr *cntlr)
+static bool VirtMmcPlugged(struct MmcCntlr *cntlr)
 {
     (void)cntlr;
     return true;
@@ -495,7 +495,7 @@ static bool VirtMmcBusy(struct MmcCntlr *cntlr)
 
 static struct MmcCntlrOps g_virtblkOps = {
     .request = VirtMmcDoRequest,
-    .devPluged = VirtMmcPluged,
+    .devPlugged = VirtMmcPlugged,
     .devBusy = VirtMmcBusy,
 };
 
