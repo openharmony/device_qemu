@@ -104,7 +104,7 @@ board_ld_flags += [
 ]
 
 # Board related headfiles search path.
-board_include_dirs = [ "//utils/native/lite/include" ]
+board_include_dirs = [ "//commonlibrary/utils_lite/include" ]
 
 # Board adapter dir for OHOS components.
 board_adapter_dir = "//device/qemu/riscv32_virt/driver"
