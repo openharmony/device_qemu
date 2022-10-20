@@ -16,7 +16,7 @@ ohos_prebuilt_etc("fstab.qemu.arm.linux") {
   source = "etc/fstab.qemu.arm.linux"
   module_install_dir = "etc"
   part_name = "qemu_arm_linux_chipset"
-  install_images = [ vendor_base_dir ]
+  install_images = [ chipset_base_dir ]
 }
 
 group("chipset_files") {
