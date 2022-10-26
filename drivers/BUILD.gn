@@ -31,7 +31,6 @@ import("//drivers/hdf_core/adapter/khdf/liteos/hdf.gni")
 
 group("drivers") {
   deps = [
-    "cfiflash",
     "char",
     "uart",
     "virtio",
@@ -39,5 +38,4 @@ group("drivers") {
 }
 
 config("public") {
-  configs = [ "cfiflash:public" ]
 }

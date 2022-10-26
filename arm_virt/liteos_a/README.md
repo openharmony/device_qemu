@@ -34,7 +34,7 @@ Run the following build command:
 hb build
 ```
 
-After this command is executed, the image files `OHOS_Image.bin`, `rootfs_jffs2.img`, and `userfs_jffs2.img` are generated in out/arm_virt/qemu_small_system_demo/ directory.
+After this command is executed, the result files are generated in out/arm_virt/qemu_small_system_demo/ directory.
 
 ## 5. Running an Image in QEMU
 
@@ -46,29 +46,11 @@ b) Create and run an image.
 
 After the source code is built, the **qemu-run** script is generated in the root directory of the code. You can run the script to create and run an image as prompted.
 
-Run the `./qemu-run --help` command. The following information is displayed:
+Run `./qemu-run --help` to get help.
 
-```
-Usage: ./qemu-run [OPTION]...
-Make a qemu image(flash.img) for OHOS, and run the image in qemu according
-to the options.
+Simulated network interface is wireless card wlan0, but has no real wifi functions. By default, the network will not be automatically configured if no parameter is specified.
 
-    Options:
-
-    -f, --force                rebuild flash.img
-    -n, --net-enable           enable net
-    -l, --local-desktop        no VNC
-    -b, --bootargs             additional boot arguments(-bk1=v1,k2=v2...)
-    -g, --gdb                  enable gdb for kernel
-    -h, --help                 print help info
-
-    By default, flash.img will not be rebuilt if exists, and net will not
-    be enabled, gpu enabled and waiting for VNC connection at port 5920.
-```
-
-Simulated network interface is wireless card wlan0, but has no real wifi functions. By default, the network will not be automatically configured if no parameter is specified. If the root directory image file **flash.img** exists, the image will not be re-created.
-
-Note: On the first run, script will also create a MMC image mainly for system and user data files. The 1st partition will be mounted at /sdcard, 2nd at /userdata, and 3rd is reserved. It is stored at OHOS source tree 'out' sub-directory, named 'smallmmc.img'. Whenever it exists, script will never try to touch it again. More information please refer to `vendor/ohemu/qemu_small_system_demo/qemu_run.sh`.
+If the image file **out/smallmmc.img** exists, the image will not be re-created by default. MMC image mainly for rootfs and userfs. The 1st partition is rootfs, 2nd is userfs and mounted at /userdata, 3rd is for user data and mounted at /userdata.
 
 c) Exit QEMU.
 
@@ -171,8 +153,8 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
 
    ```
    qemu-system-arm -M virt,gic-version=2,secure=on -cpu cortex-a7 -smp cpus=1 -m 1G \
-        -drive if=pflash,file=flash.img,format=raw \
-        -drive if=none,file=./out/smallmmc.img,format=qcow2,id=mmc
+        -bios out/arm_virt/qemu_small_system_demo/OHOS_Image.bin \
+        -drive if=none,file=out/smallmmc.img,format=raw,id=mmc
         -device virtio-blk-device,drive=mmc \
         -netdev bridge,id=net0 \
         -device virtio-net-device,netdev=net0,mac=12:22:33:44:55:66 \
@@ -189,7 +171,6 @@ More GDB related debugging can refer to [GDB instruction manual](https://sourcew
    -cpu                         CPU model
    -smp                         SMP setting, single core
    -m                           Maximum memory size that can be used by the virtual machines
-   -drive if=pflash             CFI flash drive setting
    -drive if=none               Block device image setting
    -netdev                      [optional] NIC bridge type
    -device virtio-blk-device    Block device
