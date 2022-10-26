@@ -99,16 +99,6 @@
         }
         storage :: host {
             hostName = "storage_host";
-            cfi_flash :: device {
-                cfi_flash0 :: deviceNode {
-                    policy = 0;
-                    priority = 50;
-                    permission = 0660;
-                    moduleName = "cfi_flash_driver";
-                    serviceName = "HDF_PLATFORM_CFI_0";
-                    deviceMatchAttr = "qemu_virt_cfi_0";
-                }
-            }
             device_mmc:: device {
                 device0 :: deviceNode {
                     policy = 1;

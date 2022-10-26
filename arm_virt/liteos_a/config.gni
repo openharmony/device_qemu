@@ -58,4 +58,4 @@ board_adapter_dir = "//device/qemu/hardware"
 board_configed_sysroot = ""
 
 # Board storage type, it used for file system generation.
-storage_type = "spinor"
+storage_type = "emmc"
