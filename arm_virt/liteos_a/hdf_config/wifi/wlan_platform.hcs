@@ -65,7 +65,7 @@ root {
             chipVirtnet {
                 match_attr = "";
                 driverName = "fakewifi";
-                sdio {
+                bus {
                     vendorId = 0x1af4;
                     deviceId = [0x1000];
                 }
