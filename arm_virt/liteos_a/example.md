@@ -246,7 +246,7 @@ ifconfig wlan0 inet 10.0.2.XX
 
 修改文件`common/hal/{media/BUILD.gn,middleware/BUILD.gn}`，找到`if (board_name == "hispark_taurus" || board_name == "aegis_hi3516dv300")`，加上`board_name == "arm_virt"`。
 
-2. 让//foundation/multimedia/utils/lite/仓库：到hisilicon那儿找库
+2. 让//foundation/multimedia/media_utils_lite/仓库：到hisilicon那儿找库
 
 修改文件`BUILD.gn`，找到
 ```
