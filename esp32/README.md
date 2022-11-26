@@ -14,13 +14,7 @@ QEMU can simulate the kernel to run on different boards ,eliminate dependence on
 
       Annotation: If you skip the installation of esp-idf, you can install the toolchain as follows:
 
-      Tip: Users can also skip this step by using the following instructions directly to use the compiler configured in the default environment.
-
-      To use the default environment, execute '3.Get source code' and then install the default compiler in the root directory by executing the following instructions.
-
-         ```shell
-         sh build/prebuilts_download.sh
-         ```
+      Note: [Downloadable directly](https://repo.huaweicloud.com/openharmony/compiler/gcc_esp/2019r2-8.2.0/linux/esp-2019r2-8.2.0.zip)
 
       Optional compiler installation process:
 
@@ -33,20 +27,6 @@ QEMU can simulate the kernel to run on different boards ,eliminate dependence on
          cd esp-idf-v4.3.1/
          ./install.sh
          . ./export.sh
-         ```
-
-      c) Delete the default compiler path:
-
-         change esp32\liteos_m\config.gni:
-
-         ```c
-         board_toolchain_path = "$ohos_root_path/prebuilts/gcc/linux-x86/esp/esp-2019r2-8.2.0/xtensa-esp32-elf/bin/"
-         ```
-
-         to
-
-         ```c
-         board_toolchain_path = ""
          ```
 
       Annotation: The version of the toolchain used in the test is GCC Version 8.2.0 (Crosstool-ng ESP-2019R2) or GCC Version 8.4.0 (Crosstool-ng ESP-2021R1).  
