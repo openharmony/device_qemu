@@ -8,13 +8,7 @@ QEMU can simulate the kernel to run on different boards, freeing the dependence 
 
    1. Set up the Compilation tool chain
 
-      Tip: Users can also skip this step by using the following instructions directly to use the compiler configured in the default environment.
-
-      To use the default environment, execute '3.Get source code' and then install the default compiler in the root directory by executing the following instructions.
-
-         ```shell
-         sh build/prebuilts_download.sh
-         ```
+      Note: [Downloadable directly](https://repo.huaweicloud.com/openharmony/compiler/gcc_csky/v3.10.29/linux/csky-v3.10.29.tar.gz)
 
       Optional compiler installation process:
 
@@ -37,20 +31,6 @@ QEMU can simulate the kernel to run on different boards, freeing the dependence 
          vim ~/.bashrc
          export PATH=$PATH:user_toolchain_xxx_path/csky_toolchain/bin
          source ~/.bashrc
-         ```
-
-      d) Delete the default compiler path:
-
-         change SmartL_E802\liteos_m\config.gni:
-
-         ```c
-         board_toolchain_path = "$ohos_root_path/prebuilts/gcc/linux-x86/csky/csky/bin"
-         ```
-
-         to
-
-         ```c
-         board_toolchain_path = ""
          ```
 
    2. Install qemu
