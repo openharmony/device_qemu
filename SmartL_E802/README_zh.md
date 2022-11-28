@@ -8,13 +8,7 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
 
    1. 编译工具链安装
 
-      提示：用户也可以直接使用下列指令来使用默认环境中配置好的编译器，跳过该步骤。
-
-      若要使用默认环境请先执行 '3.获取源码' ，然后在根目录下执行下列指令安装默认编译器。
-
-         ```shell
-         sh build/prebuilts_download.sh
-         ```
+      提示: [可直接下载](https://repo.huaweicloud.com/openharmony/compiler/gcc_csky/v3.10.29/linux/csky-v3.10.29.tar.gz)
 
       可选的编译器安装流程：
 
@@ -37,20 +31,6 @@ QEMU可以模拟内核运行在不同的单板，解除对物理开发板的依�
          vim ~/.bashrc
          export PATH=$PATH:user_toolchain_xxx_path/csky_toolchain/bin
          source ~/.bashrc
-         ```
-
-      d) 删除默认的编译器路径：
-
-         修改SmartL_E802\liteos_m\config.gni：
-
-         ```c
-         board_toolchain_path = "$ohos_root_path/prebuilts/gcc/linux-x86/csky/csky/bin"
-         ```
-
-         改为
-
-         ```c
-         board_toolchain_path = ""
          ```
 
    2. qemu安装
