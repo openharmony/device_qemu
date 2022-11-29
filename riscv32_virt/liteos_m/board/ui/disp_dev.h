@@ -16,10 +16,10 @@
 #ifndef DISP_DEV_H
 #define DISP_DEV_H
 
-#include "engines/gfx/gfx_engine_manager.h"
+#include "engines/gfx/soft_engine.h"
 
 namespace OHOS {
-class DispDev : public BaseGfxEngine {
+class DispDev : public SoftEngine {
 public:
     DispDev() {}
     virtual ~DispDev() {}
