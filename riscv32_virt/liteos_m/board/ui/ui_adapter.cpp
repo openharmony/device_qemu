@@ -20,7 +20,7 @@
 #include "common/image_decode_ability.h"
 #include "common/input_device_manager.h"
 #include "common/task_manager.h"
-#include "engines/gfx/gfx_engine_manager.h"
+#include "engines/gfx/soft_engine.h"
 #include "font/ui_font.h"
 #include "font/ui_font_header.h"
 #include "font/ui_font_vector.h"
@@ -58,7 +58,7 @@ static void InitImageDecodeAbility(void)
 static void InitHal(void)
 {
     DispDev *display = DispDev::GetInstance();
-    BaseGfxEngine::InitGfxEngine(display);
+    SoftEngine::InitGfxEngine(display);
 
     InputDev *input = InputDev::GetInstance();
     InputDeviceManager::GetInstance()->Add(input);
