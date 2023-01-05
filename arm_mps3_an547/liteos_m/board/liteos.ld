@@ -47,7 +47,6 @@ MEMORY
 
 SECTIONS
 {
-  _stext = .;
   .vector : {
       KEEP (*(SORT_NONE(.Vector_Table)))
   } > flash
@@ -62,6 +61,7 @@ SECTIONS
   .text : {
     . = ALIGN(0x4);
     __text_start = .;
+    _stext = .;
     *(.text.*)
     . = ALIGN(0x4);
     _etext = .;
