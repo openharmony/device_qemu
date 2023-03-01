@@ -44,6 +44,10 @@ INT32 LfsLowLevelInit()
     INT32 ret;
     struct fs_cfg fs[LOSCFG_LFS_MAX_MOUNT_SIZE] = {0};
     HalLogicPartition *halPartitionsInfo = getPartitionInfo();
+    if (halPartitionsInfo == NULL) {
+        printf("%s: getPartitionInfo failed!\n", __func__);
+        return -1;
+    }
 
     INT32 lengthArray = halPartitionsInfo[FLASH_PARTITION_DATA0].partitionLength;
     INT32 addrArray = halPartitionsInfo[FLASH_PARTITION_DATA0].partitionStartAddr;
