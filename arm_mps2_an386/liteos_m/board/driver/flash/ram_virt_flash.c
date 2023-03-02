@@ -52,6 +52,25 @@ HalLogicPartition g_halPartitions[] = {
 
 HalLogicPartition *getPartitionInfo(VOID)
 {
+    UINTPTR partitionMem;
+#if (LOSCFG_SUPPORT_LITTLEFS == 1)
+    partitionMem = (UINTPTR)malloc(g_halPartitions[FLASH_PARTITION_DATA0].partitionLength);
+    if (!partitionMem) {
+        return NULL;
+    }
+    g_halPartitions[FLASH_PARTITION_DATA0].partitionStartAddr = partitionMem;
+#endif
+#if (LOSCFG_SUPPORT_FATFS == 1)
+    partitionMem = (UINTPTR)malloc(g_halPartitions[FLASH_PARTITION_DATA1].partitionLength);
+    if (!partitionMem) {
+#if (LOSCFG_SUPPORT_LITTLEFS == 1)
+        free(g_halPartitions[FLASH_PARTITION_DATA0].partitionStartAddr);
+#endif
+        return NULL;
+    }
+    g_halPartitions[FLASH_PARTITION_DATA1].partitionStartAddr = partitionMem;
+#endif
+
     return g_halPartitions;
 }
 
