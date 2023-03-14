@@ -67,6 +67,7 @@ hdf_driver("bsp_config") {
     "$HDF_PERIPHERAL_PATH/display/interfaces/include",
     "$HDF_PERIPHERAL_PATH/input/interfaces/include",
     "//drivers/hdf_core/adapter/khdf/liteos_m/osal/include",
+    "//drivers/hdf_core/interfaces/inner_api/osal/shared",
     "//third_party/bounds_checking_function/include",
   ]
 
