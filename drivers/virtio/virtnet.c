@@ -22,11 +22,11 @@
 #include "los_vm_zone.h"
 #include "netinet/if_ether.h"
 #include "arpa/inet.h"
-#include "core/hdf_device_desc.h"
+#include "hdf_device_desc.h"
 #include "wifi/hdf_wlan_chipdriver_manager.h"
 #include "wifi/wifi_mac80211_ops.h"
 #include "osal.h"
-#include "osal/osal_io.h"
+#include "osal_io.h"
 #include "eapol.h"
 #include "virtmmio.h"
 
