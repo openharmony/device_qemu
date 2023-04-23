@@ -12,7 +12,7 @@ The system memory is hardcoded to 64 MB.
 
 ## 2. Setting Up the Environment
 
-For details, see [Environment Setup](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/quick-start/quickstart-lite-env-setup.md).
+For details, see [Environment Setup](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/Readme-EN.md).
 
 ## 3. Obtaining the Source Code
 

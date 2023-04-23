@@ -79,7 +79,7 @@ For details about the C-SKY architecture, see  [Qemu C-SKY Virt HOWTO](https://g
 
 ## Contribution<a name="section169045116136"></a>
 
-[How to involve](https://gitee.com/openharmony/docs/blob/HEAD/en/contribute/contribution.md)
+[How to involve](https://gitee.com/openharmony/docs/blob/master/en/contribute/how-to-contribute.md)
 
 [Commit message spec](https://gitee.com/openharmony/device_qemu/wikis/Commit%20message%E8%A7%84%E8%8C%83?sort_id=4042860)
 
