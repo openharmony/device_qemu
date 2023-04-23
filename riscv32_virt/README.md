@@ -12,9 +12,9 @@ Note: System memory size is hard-coded to 128MB.
 
 #### 2. Setting up environment
 
-[Setting up a development environment](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/quick-start/quickstart-lite-env-setup.md)
+[Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/Readme-EN.md)
 
-[Compiler install:gcc_riscv32](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/quick-start/quickstart-lite-steps-hi3861-setting.md#section34435451256),
+[Compiler install:gcc_riscv32](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/quickstart-pkg-3861-tool.md),
 Note: [Downloadable directly](https://repo.huaweicloud.com/harmonyos/compiler/gcc_riscv32/7.3.0/linux/gcc_riscv32-linux-7.3.0.tar.gz)
 
 #### 3. Code acquisition

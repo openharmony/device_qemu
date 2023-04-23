@@ -12,7 +12,7 @@ Note: System memory size is hard-coded to 16MB.
 
 #### 2. Setting up environment
 
-[Setting up a development environment](https://gitee.com/openharmony/docs/blob/HEAD/en/device-dev/quick-start/quickstart-lite-env-setup.md)
+[Setting up a development environment](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/Readme-EN.md)
 
 Compiler install
 
