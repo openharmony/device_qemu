@@ -12,7 +12,7 @@ Qemu中machine为 **virt** 的单板就是这种可配置的，例如：选择�
 
 ## 2. 环境搭建
 
-参考链接: [环境搭建](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/quick-start/quickstart-standard.md)
+参考链接: [环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/porting/Readme-CN.md)
 
 ## 3. 获取源码
 
