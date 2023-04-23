@@ -10,7 +10,7 @@ Arm Cortex-m55 虚拟化平台是一个 `qemu-system-arm` 的目标设备，通�
 
 ## 2. 环境搭建
 
-[环境搭建](https://gitee.com/openharmony/docs/blob/HEAD/zh-cn/device-dev/quick-start/quickstart-lite-env-setup.md)
+[环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/porting/Readme-CN.md)
 
 编译器安装
 
