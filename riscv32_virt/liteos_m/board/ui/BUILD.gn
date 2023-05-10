@@ -30,7 +30,7 @@ hdf_driver("ui_adapter") {
   ]
 
   public_configs = [ ":public" ]
-  public_deps = [ "//foundation/graphic/ui:ui" ]
+  public_deps = [ "//foundation/arkui/ui_lite:ui" ]
   if (riscv_ace_enable) {
     defines = [ "ENABLE_ACE" ]
     public_deps += [ "//foundation/arkui/ace_engine_lite/frameworks:ace_lite" ]
@@ -40,7 +40,7 @@ hdf_driver("ui_adapter") {
     "//drivers/peripheral/display/interfaces/include",
     "//drivers/peripheral/input/interfaces/include",
     "//drivers/peripheral/base",
-    "//foundation/graphic/ui/frameworks",
+    "//foundation/arkui/ui_lite/frameworks",
     "//third_party/freetype/include",
     "//third_party/FreeBSD/sys/dev/evdev",
   ]
