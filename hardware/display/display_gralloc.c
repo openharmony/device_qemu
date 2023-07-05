@@ -153,7 +153,7 @@ static int32_t AllocShm(BufferHandle *buffer)
         return DISPLAY_FAILURE;
     }
     buffer->virAddr = pBase;
-    buffer->key = key;
+    buffer->fd = key;
     ((PriBufferHandle*)buffer)->shmid = shmid;
     key++;
     (void)memset_s(pBase, buffer->size, 0x0, buffer->size);
@@ -342,7 +342,7 @@ static void *MmapShm(BufferHandle *buffer)
 {
     int32_t shmid;
 
-    shmid = shmget(buffer->key, buffer->size, IPC_EXCL | DEFAULT_READ_WRITE_PERMISSIONS);
+    shmid = shmget(buffer->fd, buffer->size, IPC_EXCL | DEFAULT_READ_WRITE_PERMISSIONS);
     if (shmid < 0) {
         HDF_LOGE("%s: Fail to mmap the shared memory, errno = %d", __func__, errno);
         return NULL;
