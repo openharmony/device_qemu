@@ -41,7 +41,7 @@ hdf_driver("ui_adapter") {
     "//drivers/peripheral/input/interfaces/include",
     "//drivers/peripheral/base",
     "//foundation/arkui/ui_lite/frameworks",
-    "//third_party/freetype/include",
     "//third_party/FreeBSD/sys/dev/evdev",
   ]
+  deps = [ "//third_party/freetype:freetype" ]
 }
