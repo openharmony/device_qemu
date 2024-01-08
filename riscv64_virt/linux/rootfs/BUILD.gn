@@ -1,0 +1,56 @@
+# Copyright (c) 2020 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+import("//base/startup/init/services/etc/param/param_fixer.gni")
+import("//build/ohos.gni")
+
+ohos_prebuilt_etc("qemu.riscv64.linux.init.cfg") {
+  source = "init.qemu.riscv64.linux.cfg"
+  if (!enable_ramdisk) {
+    install_images = [ "system" ]
+  } else {
+    install_images = [ chipset_base_dir ]
+  }
+  part_name = "qemu_riscv64_linux_chipset"
+}
+
+ohos_prebuilt_etc("qemu.riscv64.linux.usb.cfg") {
+  source = "init.qemu.riscv64.linux.usb.cfg"
+  if (!enable_ramdisk) {
+    install_images = [ "system" ]
+  } else {
+    install_images = [ chipset_base_dir ]
+  }
+  part_name = "qemu_riscv64_linux_chipset"
+}
+
+ohos_prebuilt_etc("qemu.riscv64.linux.updater.cfg") {
+  source = "qemu.riscv64.linux.updater.cfg"
+  install_images = [ "updater" ]
+  part_name = "qemu_riscv64_linux_chipset"
+}
+
+ohos_prebuilt_para("default_param") {
+  source = "default.para"
+  install_images = [ chipset_base_dir ]
+  module_install_dir = "etc/param"
+  part_name = "qemu_riscv64_linux_chipset"
+}
+
+group("rootfs_files") {
+  deps = [
+    ":default_param",
+    ":qemu.riscv64.linux.init.cfg",
+    ":qemu.riscv64.linux.updater.cfg",
+    ":qemu.riscv64.linux.usb.cfg",
+  ]
+}
