@@ -1,0 +1,10 @@
+{
+  "subsystem": "device_riscv64_virt",
+  "parts": {
+    "qemu_riscv64_linux_chipset": {
+      "module_list": [
+        "//device/qemu/riscv64_virt/linux:qemu-riscv64-linux-group"
+      ]
+    }
+  }
+}
