@@ -47,7 +47,6 @@ static void TaskSampleEntry2(void)
 
 static void TaskSampleEntry1(void)
 {
-    test_dsp();
     while (1) {
         printf("TaskSampleEntry1 running...\n\r");
         LOS_TaskDelay(TASK_DELAY_TICKS);

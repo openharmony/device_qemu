@@ -44,11 +44,7 @@ kernel_module(module_name) {
   ]
   if (!defined(LOSCFG_TEST)) {
     # kernel's testsuites not enabled, use ower's
-    sources += [
-      "test/matrix_example.c",
-      "test/test_demo.c",
-    ]
-    sources += CMSIS_DSP_SOURCE
+    sources += [ "test/test_demo.c" ]
   }
 }
 
