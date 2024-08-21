@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import("//base/startup/init/services/etc/param/param_fixer.gni")
+import("//build/config/components/init/param/param_fixer.gni")
 import("//build/ohos.gni")
 
 ohos_prebuilt_etc("qemu.arm.linux.init.cfg") {
