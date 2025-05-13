@@ -99,4 +99,7 @@ SECTIONS
   __heap_size = PS_RAM_SIZE - (__heap_start - __text_start);
   end = .;
   /DISCARD/ : { *(.note.GNU-stack) *(.gnu_debuglink) *(.gnu.lto_*) }
+
+  /* .ARM.exidx is sorted, so has to go in its own output section.  */
+  .ARM.exidx ALIGN(0x8) : { __exidx_start = .; *(.ARM.exidx* .gnu.linkonce.armexidx.*) ;__exidx_end = .;} > ram
 }
