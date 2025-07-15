@@ -27,6 +27,6 @@
  # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /
-104960000
+128000000
 --fs_type=ext4
 --dac_config ../../build/ohos/images/mkimage/dac.txt
