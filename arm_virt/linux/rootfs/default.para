@@ -13,4 +13,4 @@
 
 persist.hdc.mode=tcp
 persist.hdc.port=5555
-
+const.security.developermode.state=true
