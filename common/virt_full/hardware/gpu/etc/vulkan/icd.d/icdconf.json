@@ -1,0 +1,8 @@
+{
+	"file_format_version": "1.0.0",
+	"ICD": {
+		"_comment": "library_path can be a relative path as long as it's in the default search path",
+		"library_path": "libVK_IMG.so",
+		"api_version": "1.0.0"
+	}
+}

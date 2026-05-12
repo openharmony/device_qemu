@@ -1,0 +1,143 @@
+# Copyright (c) 2024 Institute of Software, Chinese Academy of Sciences .
+
+import("//build/ohos.gni")
+virt_subsystem_name = "device_arm64_virt"
+
+ohos_prebuilt_etc("rtw89_core") {
+  source = "rtw89_core.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+ohos_prebuilt_etc("rtw89_pci") {
+  source = "rtw89_pci.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+ohos_prebuilt_etc("rtw89_8852a") {
+  source = "rtw89_8852a.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+ohos_prebuilt_etc("rtw89_8852ae") {
+  source = "rtw89_8852ae.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+ohos_prebuilt_etc("mt7601u") {
+  source = "mt7601u.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+ohos_prebuilt_etc("mac80211_hwsim") {
+  source = "mac80211_hwsim.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+ohos_prebuilt_etc("virt_wifi") {
+  source = "virt_wifi.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+ohos_prebuilt_etc("libarc4") {
+  source = "libarc4.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+ohos_prebuilt_etc("mac80211") {
+  source = "mac80211.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+ohos_prebuilt_etc("cfg80211") {
+  source = "cfg80211.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+ohos_prebuilt_etc("iwlwifi") {
+  source = "iwlwifi.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+ohos_prebuilt_etc("iwlmvm") {
+  source = "iwlmvm.ko"
+  install_images = [ vendor_base_dir ]
+  module_install_dir = "modules"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+
+  deps = [ "//device/qemu/common/virt_full/kernel:build_kernel" ]
+}
+
+
+
+group("virt_ko") {
+  deps = [
+    ":rtw89_core",
+    ":rtw89_pci",
+    ":rtw89_8852a",
+    ":rtw89_8852ae",
+    ":mt7601u",
+    ":mac80211_hwsim",
+    ":virt_wifi",
+    ":libarc4",
+    ":mac80211",
+    ":cfg80211",
+    ":iwlwifi",
+    ":iwlmvm"
+  ]
+}
