@@ -1,0 +1,24 @@
+diff --git a/include/linux/pwm.h b/include/linux/pwm.h
+index 44fe5fae2..1a3596da8 100644
+--- a/include/linux/pwm.h
++++ b/include/linux/pwm.h
+@@ -399,6 +399,8 @@ struct pwm_device *pwm_request_from_chip(struct pwm_chip *chip,
+ 					 unsigned int index,
+ 					 const char *label);
+ 
++void pwm_free(struct pwm_device *pwm);
++
+ struct pwm_device *of_pwm_xlate_with_flags(struct pwm_chip *chip,
+ 		const struct of_phandle_args *args);
+ struct pwm_device *of_pwm_single_xlate(struct pwm_chip *chip,
+@@ -419,6 +421,10 @@ static inline int pwm_apply_might_sleep(struct pwm_device *pwm,
+ 	return -ENOTSUPP;
+ }
+ 
++static inline void pwm_free(struct pwm_device *pwm)
++{
++}
++
+ static inline int pwm_adjust_config(struct pwm_device *pwm)
+ {
+ 	return -ENOTSUPP;

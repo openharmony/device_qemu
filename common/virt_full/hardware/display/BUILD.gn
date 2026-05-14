@@ -1,0 +1,240 @@
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//drivers/hdf_core/adapter/uhdf2/uhdf.gni")
+
+root_path = "../../../../../.."
+virt_subsystem_name = "device_arm64_virt"
+
+group("display_buffer_model") {
+  deps = [
+    ":libdisplay_buffer_vdi_impl",
+    ":libdisplay_buffer_vendor",
+  ]
+}
+
+config("libdisplay_buffer_vdi_impl_config") {
+  include_dirs = [ "./src/display_gralloc" ]
+}
+
+ohos_shared_library("libdisplay_buffer_vdi_impl") {
+  sources = [ "src/display_gralloc/display_buffer_vdi_impl.cpp" ]
+
+  public_configs = [ ":libdisplay_buffer_vdi_impl_config" ]
+
+  include_dirs = [
+    "./src/display_gralloc",
+    "${root_path}/drivers/peripheral/base",
+    "${root_path}/drivers/interface/display/composer/hdifd_parcelable",
+    "${root_path}/drivers/interface/display/buffer",
+    "${root_path}/drivers/peripheral/display/utils/include",
+    "${root_path}/drivers/peripheral/display/buffer/hdi_service/include",
+  ]
+
+  output_name = "libdisplay_buffer_vdi_impl"
+  cflags = [
+    "-DGRALLOC_GBM_SUPPORT",
+    "-Wno-macro-redefined",
+  ]
+  deps = [ ":libdisplay_buffer_vendor" ]
+
+  external_deps = [
+    "c_utils:utils",
+    "drivers_interface_display:display_buffer_idl_headers",
+    "drivers_interface_display:display_composer_idl_headers",
+    "hdf_core:libhdf_utils",
+    "hilog:libhilog",
+    "ipc:ipc_single",
+  ]
+
+  install_enable = true
+  install_images = [ chipset_base_dir ]
+  innerapi_tags = [ "passthrough" ]
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+}
+
+ohos_shared_library("libdisplay_buffer_vendor") {
+  sources = [ "src/display_gralloc/display_gralloc_gbm.cpp" ]
+
+  include_dirs = [
+    "include",
+    "./src/display_gralloc",
+    "${root_path}/drivers/peripheral/base",
+    "${root_path}/drivers/interface/display/composer/hdifd_parcelable",
+    "${root_path}/drivers/peripheral/display/utils/include",
+    "${root_path}/foundation/communication/ipc/interfaces/innerkits/ipc_core/include",
+  ]
+
+  output_name = "libdisplay_buffer_vendor"
+  cflags = [
+    "-DGRALLOC_GBM_SUPPORT",
+    "-Wno-macro-redefined",
+  ]
+
+  deps = [
+    ":libhigbm_vendor",
+    "${root_path}/third_party/libdrm:libdrm",
+  ]
+
+  external_deps = [
+    "c_utils:utils",
+    "drivers_interface_display:display_buffer_idl_headers",
+    "drivers_interface_display:display_composer_idl_headers",
+    "hdf_core:libhdf_utils",
+    "hilog:libhilog",
+  ]
+
+  install_enable = true
+  install_images = [ chipset_base_dir ]
+  innerapi_tags = [ "passthrough" ]
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+}
+
+ohos_static_library("libhigbm_vendor") {
+  sources = [ "src/display_gralloc/hi_gbm.cpp" ]
+  include_dirs = [
+    "./src/display_gralloc",
+    "${root_path}/drivers/peripheral/display/utils/include",
+    "${root_path}/foundation/communication/ipc/interfaces/innerkits/ipc_core/include",
+  ]
+  output_name = "libhigbm_vendor"
+  cflags = [
+    "-DGRALLOC_GBM_SUPPORT",
+    "-Wno-macro-redefined",
+  ]
+  deps = [ "${root_path}/third_party/libdrm:libdrm" ]
+
+  external_deps = [
+    "c_utils:utils",
+    "hilog:libhilog",
+  ]
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+}
+
+group("display_composer_model") {
+  deps = [
+    ":display_composer_vendor",
+    ":display_gfx",
+    ":libdisplay_composer_vdi_impl",
+  ]
+}
+
+ohos_shared_library("libdisplay_composer_vdi_impl") {
+  sources = [ "src/display_device/display_composer_vdi_impl.cpp" ]
+
+  include_dirs = [
+    "src/display_device",
+    "${root_path}/drivers/peripheral/display/utils/include",
+    "${root_path}/drivers/interface/display/composer",
+    "${root_path}/drivers/peripheral/display/composer/hdi_service/include",
+    "${root_path}/drivers/interface/display/composer/hdifd_parcelable",
+  ]
+
+  deps = [ ":display_composer_vendor" ]
+
+  external_deps = [
+    "c_utils:utils",
+    "drivers_interface_display:display_composer_idl_headers",
+    "graphic_surface:buffer_handle",
+    "hilog:libhilog",
+    "ipc:ipc_single",
+  ]
+
+  install_enable = true
+  install_images = [ chipset_base_dir ]
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+}
+
+ohos_shared_library("display_composer_vendor") {
+  sources = [
+    "src/display_device/drm_connector.cpp",
+    "src/display_device/drm_crtc.cpp",
+    "src/display_device/drm_device.cpp",
+    "src/display_device/drm_display.cpp",
+    "src/display_device/drm_encoder.cpp",
+    "src/display_device/drm_plane.cpp",
+    "src/display_device/drm_vsync_worker.cpp",
+    "src/display_device/hdi_composer.cpp",
+    "src/display_device/hdi_device_interface.cpp",
+    "src/display_device/hdi_display.cpp",
+    "src/display_device/hdi_drm_composition.cpp",
+    "src/display_device/hdi_drm_layer.cpp",
+    "src/display_device/hdi_gfx_composition.cpp",
+    "src/display_device/hdi_layer.cpp",
+    "src/display_device/hdi_netlink_monitor.cpp",
+    "src/display_device/hdi_session.cpp",
+  ]
+  output_name = "display_composer_vendor"
+  include_dirs = [
+    "src/display_gralloc",
+    "src/display_device",
+    "${root_path}/drivers/peripheral/display/buffer/hdi_service/include",
+    "${root_path}/drivers/peripheral/display/utils/include",
+    "${root_path}/drivers/peripheral/base",
+    "${root_path}/drivers/interface/display/composer",
+    "${root_path}/foundation/communication/ipc/interfaces/innerkits/ipc_core/include",
+    "${root_path}/drivers/interface/display/composer/hdifd_parcelable",
+  ]
+
+  deps = [
+    ":libdisplay_buffer_vdi_impl",
+    "${root_path}/third_party/libdrm:libdrm",
+  ]
+  cflags_cc = [
+    "-Wno-error=unused-function",
+    "-Wno-error=missing-braces",
+    "-Wno-error=#warnings",
+  ]
+  external_deps = [
+    "c_utils:utils",
+    "drivers_interface_display:display_buffer_idl_headers",
+    "drivers_interface_display:display_composer_idl_headers",
+    "hdf_core:libhdf_utils",
+    "hilog:libhilog",
+    "hitrace:hitrace_meter",
+  ]
+  install_enable = true
+  install_images = [ chipset_base_dir ]
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+}
+
+ohos_shared_library("display_gfx") {
+  sources = [ "src/display_gfx/display_gfx.c" ]
+  include_dirs = [
+    "${root_path}/base/hiviewdfx/interfaces/innerkits/libhilog/include",
+    "${root_path}/commonlibrary/c_utils/base/include",
+    "${root_path}/drivers/peripheral/display/interfaces/include",
+    "${root_path}/drivers/peripheral/display/utils/include",
+    "${root_path}/drivers/peripheral/base",
+    "${root_path}/foundation/graphic/standard/utils/include",
+  ]
+  output_name = "display_gfx"
+  cflags = [ "-Wno-macro-redefined" ]
+
+  external_deps = [
+    "c_utils:utils",
+    "hdf_core:libhdf_utils",
+    "hilog:libhilog",
+  ]
+
+  install_enable = true
+  install_images = [ chipset_base_dir ]
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+}

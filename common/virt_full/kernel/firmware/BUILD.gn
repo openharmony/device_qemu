@@ -1,0 +1,38 @@
+# Copyright (c) 2024 Institute of Software, Chinese Academy of Sciences .
+
+import("//build/ohos.gni")
+virt_subsystem_name = "device_arm64_virt"
+
+ohos_prebuilt_etc("rtw8852a_fw") {
+  source = "rtw89/rtw8852a_fw.bin"
+  install_images = [ "system" ]
+  module_install_dir = "lib/firmware/rtw89"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+}
+
+ohos_prebuilt_etc("iwlwifi_fw") {
+  source = "iwlwifi/iwlwifi-so-a0-gf-a0-83.ucode"
+  install_images = [ "system" ]
+  # Note: it cannot be installed to any directory UNDER /lib/firmware
+  # but /lib/firmware itself.
+  module_install_dir = "lib/firmware"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+}
+
+ohos_prebuilt_etc("iwlwifi_pnvm") {
+  source = "iwlwifi/iwlwifi-so-a0-gf-a0.pnvm"
+  install_images = [ "system" ]
+  module_install_dir = "lib/firmware"
+  subsystem_name = virt_subsystem_name
+  part_name = "qemu_virt_full"
+}
+
+group("virt_firmware") {
+  deps = [
+    ":rtw8852a_fw",
+    ":iwlwifi_fw",
+    ":iwlwifi_pnvm"
+  ]
+}
