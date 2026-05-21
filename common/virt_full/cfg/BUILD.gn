@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/startup/init/services/etc/param/param_fixer.gni")
+import("//build/config/components/init/param/param_fixer.gni")
 import("//build/ohos.gni")
 virt_subsystem_name = "device_arm64_virt"
 
