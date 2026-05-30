@@ -1,0 +1,53 @@
+SPDX-License-Identifier: GPL-2.0
+OpenHarmony QEMU ARM Linux-6.6 MD Stop Writes Fix Patch
+
+This patch fixes the __md_stop_writes() function in drivers/md/md.c to
+match the upstream linux-6.6 kernel API.
+
+Root cause: The OpenHarmony kernel source contains a broken version of
+__md_stop_writes() that:
+1. References sync_work instead of del_work (upstream changed the field name)
+2. Wraps quiesce and bitmap flush in a broken conditional using mddev_is_dm()
+   and md_bitmap_enabled() / bitmap_ops->flush() which are not present in 6.6
+3. Has a malformed if statement missing the "if" keyword and md_is_rdwr()
+
+The fix aligns the function with the actual upstream linux-6.6 implementation:
+- Use del_work instead of sync_work
+- Make quiesce unconditional (no mddev_is_dm wrapper)
+- Use md_bitmap_flush() instead of md_bitmap_enabled/bitmap_ops->flush
+- Properly form the if condition with md_is_rdwr(mddev) &&
+
+diff -Naur a/drivers/md/md.c b/drivers/md/md.c
+--- a/drivers/md/md.c	2026-05-19 14:27:18.892122654 +0800
++++ b/drivers/md/md.c	2026-05-30 16:50:02.797210990 +0800
+@@ -6299,7 +6299,7 @@
+ static void __md_stop_writes(struct mddev *mddev)
+ {
+ 	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+-	if (work_pending(&mddev->sync_work))
++	if (work_pending(&mddev->del_work))
+ 		flush_workqueue(md_misc_wq);
+ 	if (mddev->sync_thread) {
+ 		set_bit(MD_RECOVERY_INTR, &mddev->recovery);
+@@ -6308,15 +6308,13 @@
+ 
+ 	del_timer_sync(&mddev->safemode_timer);
+ 
+-	if (md_is_rdwr(mddev) || !mddev_is_dm(mddev)) {
+-		if (mddev->pers && mddev->pers->quiesce) {
+-			mddev->pers->quiesce(mddev, 1);
+-			mddev->pers->quiesce(mddev, 0);
+-		}
+-
+-		if (md_bitmap_enabled(mddev, true))
+-			mddev->bitmap_ops->flush(mddev);
++	if (mddev->pers && mddev->pers->quiesce) {
++		mddev->pers->quiesce(mddev, 1);
++		mddev->pers->quiesce(mddev, 0);
+ 	}
++	md_bitmap_flush(mddev);
++
++	if (md_is_rdwr(mddev) &&
+ 	    ((!mddev->in_sync && !mddev_is_clustered(mddev)) ||
+ 	     mddev->sb_flags)) {
+ 		/* mark array as shutdown cleanly */
