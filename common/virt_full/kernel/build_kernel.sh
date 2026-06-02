@@ -79,6 +79,7 @@ function copy_kernel(){
     patch -d ${KERNEL_BUILD_ROOT} -p1 <${KERNEL_PATCH_PATH}/patch/es1370.patch
     patch -d ${KERNEL_BUILD_ROOT} -p1 <${KERNEL_PATCH_PATH}/patch/power.patch
     patch -d ${KERNEL_BUILD_ROOT} -p1 <${KERNEL_PATCH_PATH}/patch/pwm_free.patch
+    patch -d ${KERNEL_BUILD_ROOT} -p1 <${KERNEL_PATCH_PATH}/patch/md_stop_writes.patch
 }
 
 function cp_ko(){
