@@ -10,5 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-persist.hdc.mode tcp
-persist.hdc.port 55555
+persist.hdc.mode=tcp
+persist.hdc.mode.tcp=enable
+persist.hdc.port=5555
+const.security.developermode.state=true

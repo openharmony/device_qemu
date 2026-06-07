@@ -18,7 +18,7 @@ group("virt_group") {
   deps = [
     "cfg:init_configs",
     "//device/qemu/common/virt_full/kernel:build_kernel",
-    "//device/qemu/common/virt_full/kernel/ko:virt_ko",
+    "//device/qemu/common/virt_full/kernel:virt_ko",
     "//device/qemu/common/virt_full/kernel/firmware:virt_firmware",
     "//device/qemu/common/virt_full/distributedhardware:distributedhardware",
     "//device/qemu/common/virt_full/updater:updater_files",
