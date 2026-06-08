@@ -4,6 +4,7 @@
 
 set -e
 
+ACTION_ROOT=$(pwd)
 pushd ${1}
 
 export OHOS_SOURCE_ROOT=${2}
@@ -14,6 +15,7 @@ export OHOS_IMAGES_DIR=${3}
 export KERNEL_SOURCE_DIR=${4}
 export KERNEL_PATCH_PATH=${5}
 export KERNEL_CONFIG_NAME=${6}_virt_defconfig
+export KERNEL_MODULES_OUT=$(realpath -m ${ACTION_ROOT}/${7})
 
 export OUT_DIR=${OHOS_SOURCE_ROOT}/out
 
@@ -82,23 +84,24 @@ function copy_kernel(){
     patch -d ${KERNEL_BUILD_ROOT} -p1 <${KERNEL_PATCH_PATH}/patch/md_stop_writes.patch
 }
 
-function cp_ko(){
+function stage_ko(){
+    mkdir -p ${KERNEL_MODULES_OUT}
 #8852a
-    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/realtek/rtw89/rtw89_core.ko ${KERNEL_PATCH_PATH}/ko
-    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/realtek/rtw89/rtw89_8852a.ko ${KERNEL_PATCH_PATH}/ko
-    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/realtek/rtw89/rtw89_8852ae.ko ${KERNEL_PATCH_PATH}/ko
-    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/realtek/rtw89/rtw89_pci.ko ${KERNEL_PATCH_PATH}/ko
+    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/realtek/rtw89/rtw89_core.ko ${KERNEL_MODULES_OUT}
+    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/realtek/rtw89/rtw89_8852a.ko ${KERNEL_MODULES_OUT}
+    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/realtek/rtw89/rtw89_8852ae.ko ${KERNEL_MODULES_OUT}
+    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/realtek/rtw89/rtw89_pci.ko ${KERNEL_MODULES_OUT}
 #mt7601u
-    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/mediatek/mt7601u/mt7601u.ko ${KERNEL_PATCH_PATH}/ko
+    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/mediatek/mt7601u/mt7601u.ko ${KERNEL_MODULES_OUT}
 #vwifi
-    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/virtual/mac80211_hwsim.ko ${KERNEL_PATCH_PATH}/ko
-    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/virtual/virt_wifi.ko ${KERNEL_PATCH_PATH}/ko
+    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/virtual/mac80211_hwsim.ko ${KERNEL_MODULES_OUT}
+    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/virtual/virt_wifi.ko ${KERNEL_MODULES_OUT}
 #iwlwifi,iwlmvm and deps
-    cp  ${KERNEL_BUILD_ROOT}/lib/crypto/libarc4.ko ${KERNEL_PATCH_PATH}/ko
-    cp  ${KERNEL_BUILD_ROOT}/net/mac80211/mac80211.ko ${KERNEL_PATCH_PATH}/ko
-    cp  ${KERNEL_BUILD_ROOT}/net/wireless/cfg80211.ko ${KERNEL_PATCH_PATH}/ko
-    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko ${KERNEL_PATCH_PATH}/ko
-    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/intel/iwlwifi/mvm/iwlmvm.ko ${KERNEL_PATCH_PATH}/ko
+    cp  ${KERNEL_BUILD_ROOT}/lib/crypto/libarc4.ko ${KERNEL_MODULES_OUT}
+    cp  ${KERNEL_BUILD_ROOT}/net/mac80211/mac80211.ko ${KERNEL_MODULES_OUT}
+    cp  ${KERNEL_BUILD_ROOT}/net/wireless/cfg80211.ko ${KERNEL_MODULES_OUT}
+    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko ${KERNEL_MODULES_OUT}
+    cp  ${KERNEL_BUILD_ROOT}/drivers/net/wireless/intel/iwlwifi/mvm/iwlmvm.ko ${KERNEL_MODULES_OUT}
 }
 
 function clean_hdf() {
@@ -140,7 +143,7 @@ function make_kernel(){
     make ${MAKE_OPTIONS} -j$(nproc)
     mkdir -p ${OHOS_IMAGES_DIR}
     cp ${KERNEL_OUT_IMAGE} ${OHOS_IMAGES_DIR}
-    cp_ko
+    stage_ko
     clean_hdf
 }
 
