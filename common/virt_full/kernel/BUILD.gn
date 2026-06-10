@@ -3,11 +3,11 @@
 import("//build/config/clang/clang.gni")
 import("//build/ohos.gni")
 import("//build/ohos/kernel/kernel.gni")
+import("//device/qemu/common/virt_full/device.gni")
 
 kernel_build_script_dir = "//device/qemu/common/virt_full/kernel"
 kernel_source_dir = "//kernel/linux/linux-6.6"
 kernel_modules_dir = "$root_build_dir/kernel_modules"
-virt_subsystem_name = "device_arm64_virt"
 kernel_module_outputs = [
   "$kernel_modules_dir/rtw89_core.ko",
   "$kernel_modules_dir/rtw89_pci.ko",

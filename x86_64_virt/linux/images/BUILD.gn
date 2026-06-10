@@ -11,12 +11,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import("//build/ohos.gni")
+import("//device/qemu/x86_64_virt/linux/part_name.gni")
 
-ohos_copy("all_image_conf") {
-  sources = [
-    "system_image_conf.txt",
-    "userdata_image_conf.txt",
-    "vendor_image_conf.txt",
-  ]
-  outputs = [ "${product_output_dir}/imagesconf/{{source_file_part}}" ]
+if (x86_64_linux_full_product) {
+  group("all_image_conf") {
+    deps = []
+  }
+} else {
+  ohos_copy("all_image_conf") {
+    sources = [
+      "system_image_conf.txt",
+      "userdata_image_conf.txt",
+      "vendor_image_conf.txt",
+    ]
+    outputs = [ "${product_output_dir}/imagesconf/{{source_file_part}}" ]
+  }
 }

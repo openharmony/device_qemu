@@ -27,6 +27,13 @@ declare_args() {
   is_support_codec = false
 }
 
+virt_subsystem_name = "device_arm64_virt"
+virt_part_name = "qemu_virt_full"
+if (target_cpu == "x86_64") {
+  virt_subsystem_name = "device_x86_64_virt"
+  virt_part_name = "qemu_virt_full_x86_64"
+}
+
 if (!defined(global_parts_info.graphic_graphic_2d)) {
   is_support_graphic = false
 }
@@ -36,6 +43,9 @@ if (!defined(global_parts_info.hdf_drivers_peripheral_codec)) {
 }
 
 product_config_path = "//vendor/${product_company}/${product_name}"
+if (target_cpu == "x86_64") {
+  product_config_path = "//vendor/ohemu/virt"
+}
 
 board_camera_path = "//device/qemu/common/virt_full/camera"
 

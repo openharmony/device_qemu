@@ -12,6 +12,7 @@
 # limitations under the License.
 import("//build/config/components/init/param/param_fixer.gni")
 import("//build/ohos.gni")
+import("//device/qemu/x86_64_virt/linux/part_name.gni")
 
 ohos_prebuilt_etc("qemu.x86_64.linux.init.cfg") {
   source = "init.qemu.x86_64.linux.cfg"
@@ -20,7 +21,7 @@ ohos_prebuilt_etc("qemu.x86_64.linux.init.cfg") {
   } else {
     install_images = [ chipset_base_dir ]
   }
-  part_name = "qemu_x86_64_linux_chipset"
+  part_name = x86_64_linux_part_name
 }
 
 ohos_prebuilt_etc("qemu.x86_64.linux.usb.cfg") {
@@ -30,20 +31,20 @@ ohos_prebuilt_etc("qemu.x86_64.linux.usb.cfg") {
   } else {
     install_images = [ chipset_base_dir ]
   }
-  part_name = "qemu_x86_64_linux_chipset"
+  part_name = x86_64_linux_part_name
 }
 
 ohos_prebuilt_etc("qemu.x86_64.linux.updater.cfg") {
   source = "qemu.x86_64.linux.updater.cfg"
   install_images = [ "updater" ]
-  part_name = "qemu_x86_64_linux_chipset"
+  part_name = x86_64_linux_part_name
 }
 
 ohos_prebuilt_para("default_param") {
   source = "default.para"
   install_images = [ chipset_base_dir ]
   module_install_dir = "etc/param"
-  part_name = "qemu_x86_64_linux_chipset"
+  part_name = x86_64_linux_part_name
 }
 
 group("rootfs_files") {

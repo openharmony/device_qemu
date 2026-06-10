@@ -1,0 +1,10 @@
+# Copyright (c) 2026
+
+# Keep the legacy chipset part for the minimal product while rebinding the
+# shared linux assets to the full device part when building x86_64_virt.
+x86_64_linux_full_product = false
+x86_64_linux_part_name = "qemu_x86_64_linux_chipset"
+if (product_name == "x86_64_virt") {
+  x86_64_linux_full_product = true
+  x86_64_linux_part_name = "qemu_virt_full_x86_64"
+}

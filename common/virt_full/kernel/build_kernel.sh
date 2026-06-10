@@ -36,8 +36,7 @@ then
     export KERNEL_OUT_IMAGE=${KERNEL_BUILD_ROOT}/arch/riscv/boot/Image
 elif [ ${6} == "x86_64" ]
 then
-    export PATH=${OHOS_SOURCE_ROOT}/prebuilts/gcc/linux-x86/riscv64/riscv64-unknown-linux-gnu/bin:$PATH
-    export MAKE_OPTIONS=""
+    export MAKE_OPTIONS="ARCH=x86_64 "
     export KERNEL_OUT_IMAGE=${KERNEL_BUILD_ROOT}/arch/x86/boot/bzImage
 elif [ ${6} == "arm64" ]
 then
@@ -69,6 +68,14 @@ function copy_kernel(){
 #cp config
     cp ${KERNEL_PATCH_PATH}/${KERNEL_CONFIG_NAME} ${KERNEL_BUILD_ROOT}/.config
 
+    if [ -f arch/x86/Kconfig.cpu ]; then
+        sed -i '/^config CPU_SUP_AMD$/{n;s/default y/default n/;}' arch/x86/Kconfig.cpu
+        sed -i '/^config CPU_SUP_HYGON$/{n;s/default y/default n/;}' arch/x86/Kconfig.cpu
+        sed -i 's/^obj-\$(CONFIG_CPU_SUP_AMD)[[:space:]]\{1,\}+= amd\.o/# &/' arch/x86/kernel/cpu/Makefile
+        sed -i 's/^obj-\$(CONFIG_CPU_SUP_AMD)[[:space:]]\{1,\}+= core\.o lbr\.o/# &/' arch/x86/events/amd/Makefile
+        sed -i 's/^obj-\$(CONFIG_CPU_SUP_AMD)[[:space:]]\{1,\}+= iommu\.o/# &/' arch/x86/events/amd/Makefile
+    fi
+
 #cp common_modules
     cp -arfL  $OHOS_SOURCE_ROOT/kernel/linux/common_modules/memory_security ${KERNEL_BUILD_ROOT}/fs/proc
     cp -arfL  $OHOS_SOURCE_ROOT/kernel/linux/common_modules/code_sign ${KERNEL_BUILD_ROOT}/fs
@@ -76,6 +83,7 @@ function copy_kernel(){
 #patch
     patch -d ${KERNEL_BUILD_ROOT} -p1 <${KERNEL_PATCH_PATH}/patch/hdf.patch
     patch -d ${KERNEL_BUILD_ROOT} -p1 <${KERNEL_PATCH_PATH}/patch/virt.patch
+    patch -d ${KERNEL_BUILD_ROOT} -p1 <${KERNEL_PATCH_PATH}/patch/x86_pfnmap_tracking.patch
     patch -d ${KERNEL_BUILD_ROOT} -p1 <${KERNEL_PATCH_PATH}/patch/drivers_staging_android.patch
     patch -d ${KERNEL_BUILD_ROOT} -p1 <${KERNEL_PATCH_PATH}/patch/virtio_gpu.patch
     patch -d ${KERNEL_BUILD_ROOT} -p1 <${KERNEL_PATCH_PATH}/patch/es1370.patch
@@ -139,6 +147,11 @@ function make_kernel(){
     cd  ${KERNEL_BUILD_ROOT}
     # Normalize new Kconfig symbols non-interactively before the parallel build.
     make ${MAKE_OPTIONS} olddefconfig
+    if [ -f arch/x86/Kconfig.cpu ]; then
+        scripts/config --file .config \
+            --disable CPU_SUP_HYGON \
+            --disable CPU_SUP_AMD
+    fi
     clean_hdf
     make ${MAKE_OPTIONS} -j$(nproc)
     mkdir -p ${OHOS_IMAGES_DIR}

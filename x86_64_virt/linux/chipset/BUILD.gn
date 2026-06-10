@@ -11,17 +11,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import("//build/ohos.gni")
+import("//device/qemu/x86_64_virt/linux/part_name.gni")
 
 ohos_prebuilt_etc("fstab.qemu.x86_64.linux") {
   source = "etc/fstab.qemu.x86_64.linux"
   module_install_dir = "etc"
-  part_name = "qemu_x86_64_linux_chipset"
+  part_name = x86_64_linux_part_name
   install_images = [ chipset_base_dir ]
 }
 
 group("chipset_files") {
-  deps = [
-    ":fstab.qemu.x86_64.linux",
-    "//kernel/linux/build:linux_kernel",
-  ]
+  deps = [ ":fstab.qemu.x86_64.linux" ]
+  if (!x86_64_linux_full_product) {
+    deps += [ "//kernel/linux/build:linux_kernel" ]
+  }
 }

@@ -1,0 +1,8 @@
+# Copyright (C) 2024 Institute of Software, Chinese Academy of Sciences .
+
+group("qemu-x86_64-linux-full-group") {
+  deps = [
+    "//device/qemu/common/virt_full:virt_group",
+    "//device/qemu/x86_64_virt/linux:qemu-x86_64-linux-group",
+  ]
+}

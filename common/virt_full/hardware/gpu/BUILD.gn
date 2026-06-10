@@ -13,12 +13,12 @@
 
 import("//build/ohos.gni")
 import("//build/ohos/ndk/ndk.gni")
-virt_subsystem_name = "device_arm64_virt"
+import("//device/qemu/common/virt_full/device.gni")
 
-assert(target_cpu == "arm64",
-       "device/qemu/common/virt_full/hardware/gpu only supports arm64")
+assert(target_cpu == "arm64" || target_cpu == "x86_64",
+       "device/qemu/common/virt_full/hardware/gpu only supports arm64 and x86_64")
 
-virt_gpu_prebuilt_dir = "arm64"
+virt_gpu_prebuilt_dir = target_cpu
 virt_lib = "lib64"
 
 ohos_prebuilt_shared_library("libglapi.so.0.0.0") {
@@ -26,7 +26,7 @@ ohos_prebuilt_shared_library("libglapi.so.0.0.0") {
   install_images = [ "system" ]
   module_install_dir = "$virt_lib"
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
   install_enable = true
   symlink_target_name = [
     "libglapi.so",
@@ -39,7 +39,7 @@ ohos_prebuilt_shared_library("libEGL.so.1.0.0") {
   install_images = [ "system" ]
   module_install_dir = "$virt_lib"
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
   install_enable = true
   symlink_target_name = [
     "libEGL_impl.so",
@@ -51,7 +51,7 @@ ohos_prebuilt_shared_library("libgbm.so.1.0.0") {
   install_images = [ "system" ]
   module_install_dir = "$virt_lib"
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
   install_enable = true
   symlink_target_name = [
     "libgbm.so",
@@ -64,11 +64,13 @@ ohos_prebuilt_shared_library("kms_swrast_dri.so") {
   install_images = [ "system" ]
   module_install_dir = "$virt_lib"
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
   install_enable = true
-  symlink_target_name = [
-    "swrast_dri.so",
-  ]
+  if (target_cpu != "x86_64") {
+    symlink_target_name = [
+      "swrast_dri.so",
+    ]
+  }
 }
 
 ohos_prebuilt_shared_library("libGLESv1_CM.so.1.1.0") {
@@ -76,7 +78,7 @@ ohos_prebuilt_shared_library("libGLESv1_CM.so.1.1.0") {
   install_images = [ "system" ]
   module_install_dir = "$virt_lib"
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
   install_enable = true
   symlink_target_name = [
     "libGLESv1_impl.so",
@@ -88,12 +90,104 @@ ohos_prebuilt_shared_library("libGLESv2.so.2.0.0") {
   install_images = [ "system" ]
   module_install_dir = "$virt_lib"
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
   install_enable = true
   symlink_target_name = [
     "libGLESv2_impl.so",
     "libGLESv3_impl.so",
   ]
+}
+
+if (target_cpu == "x86_64") {
+  ohos_prebuilt_shared_library("virtio_gpu_dri.so") {
+    source = "${virt_gpu_prebuilt_dir}/virtio_gpu_dri.so"
+    install_images = [ "system" ]
+    module_install_dir = "$virt_lib"
+    subsystem_name = virt_subsystem_name
+    part_name = virt_part_name
+    install_enable = true
+  }
+
+  ohos_prebuilt_shared_library("swrast_dri.so") {
+    source = "${virt_gpu_prebuilt_dir}/swrast_dri.so"
+    install_images = [ "system" ]
+    module_install_dir = "$virt_lib"
+    subsystem_name = virt_subsystem_name
+    part_name = virt_part_name
+    install_enable = true
+  }
+
+  ohos_prebuilt_shared_library("libVkLayer_MESA_overlay.so") {
+    source = "${virt_gpu_prebuilt_dir}/libVkLayer_MESA_overlay.so"
+    install_images = [ "system" ]
+    module_install_dir = "$virt_lib"
+    subsystem_name = virt_subsystem_name
+    part_name = virt_part_name
+    install_enable = true
+  }
+
+  ohos_prebuilt_shared_library("libVkLayer_MESA_device_select.so") {
+    source = "${virt_gpu_prebuilt_dir}/libVkLayer_MESA_device_select.so"
+    install_images = [ "system" ]
+    module_install_dir = "$virt_lib"
+    subsystem_name = virt_subsystem_name
+    part_name = virt_part_name
+    install_enable = true
+  }
+
+  ohos_prebuilt_shared_library("libvulkan_virtio.so") {
+    source = "${virt_gpu_prebuilt_dir}/libvulkan_virtio.so"
+    install_images = [ "system" ]
+    module_install_dir = "$virt_lib"
+    subsystem_name = virt_subsystem_name
+    part_name = virt_part_name
+    install_enable = true
+  }
+
+  ohos_prebuilt_etc("IMG.icd") {
+    source = "etc/OpenCL/vendors/IMG.icd"
+    install_images = [ "system" ]
+    module_install_dir = "etc/OpenCL/vendors"
+    subsystem_name = virt_subsystem_name
+    part_name = virt_part_name
+    install_enable = true
+  }
+
+  ohos_prebuilt_etc("VkLayer_MESA_overlay.json") {
+    source = "etc/vulkan/explicit_layer.d/VkLayer_MESA_overlay.json"
+    install_images = [ "system" ]
+    module_install_dir = "etc/vulkan/explicit_layer.d"
+    subsystem_name = virt_subsystem_name
+    part_name = virt_part_name
+    install_enable = true
+  }
+
+  ohos_prebuilt_etc("VkLayer_MESA_device_select.json") {
+    source = "etc/vulkan/implicit_layer.d/VkLayer_MESA_device_select.json"
+    install_images = [ "system" ]
+    module_install_dir = "etc/vulkan/implicit_layer.d"
+    subsystem_name = virt_subsystem_name
+    part_name = virt_part_name
+    install_enable = true
+  }
+
+  ohos_prebuilt_etc("icdconf.json") {
+    source = "etc/vulkan/icd.d/icdconf.json"
+    install_images = [ "system" ]
+    module_install_dir = "etc/vulkan/icd.d"
+    subsystem_name = virt_subsystem_name
+    part_name = virt_part_name
+    install_enable = true
+  }
+}
+
+ohos_prebuilt_etc("00-mesa-defaults.conf") {
+  source = "drirc.d/00-mesa-defaults.conf"
+  install_images = [ "system" ]
+  module_install_dir = "etc/drirc.d"
+  subsystem_name = virt_subsystem_name
+  part_name = virt_part_name
+  install_enable = true
 }
 
 group("virtio") {
@@ -104,5 +198,19 @@ group("virtio") {
     ":kms_swrast_dri.so",
     ":libGLESv1_CM.so.1.1.0",
     ":libGLESv2.so.2.0.0",
+    ":00-mesa-defaults.conf",
   ]
+  if (target_cpu == "x86_64") {
+    deps += [
+      ":IMG.icd",
+      ":VkLayer_MESA_device_select.json",
+      ":VkLayer_MESA_overlay.json",
+      ":icdconf.json",
+      ":libVkLayer_MESA_device_select.so",
+      ":libVkLayer_MESA_overlay.so",
+      ":libvulkan_virtio.so",
+      ":swrast_dri.so",
+      ":virtio_gpu_dri.so",
+    ]
+  }
 }

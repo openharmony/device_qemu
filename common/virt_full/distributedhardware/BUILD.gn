@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import("//build/ohos.gni")
-virt_subsystem_name = "device_arm64_virt"
+import("//device/qemu/common/virt_full/device.gni")
 
 ohos_prebuilt_etc("distributed_hardware_components_cfg.json") {
   source = "distributed_hardware_components_cfg.json"
@@ -19,7 +19,7 @@ ohos_prebuilt_etc("distributed_hardware_components_cfg.json") {
   module_install_dir = "etc/distributedhardware/"
   install_images = [ chipset_base_dir ]
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
 }
 
 ohos_prebuilt_etc("dinput_business_event_whitelist.cfg") {
@@ -28,7 +28,7 @@ ohos_prebuilt_etc("dinput_business_event_whitelist.cfg") {
   module_install_dir = "etc/distributedhardware/"
   install_images = [ chipset_base_dir ]
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
 }
 
 group("distributedhardware") {
