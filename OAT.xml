@@ -96,6 +96,17 @@
             </filefilter>
             <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
                 <filteritem type="filepath" name="riscv32_virt/liteos_m/gen_fs/mklittlefs" desc="littlefs image making tools"/>
+                <filteritem type="filepath" name="common/virt_full/hardware/gpu/x86_64/kms_swrast_dri.so" desc="Mesa GPU driver binary"/>
+                <filteritem type="filepath" name="common/virt_full/hardware/gpu/x86_64/libEGL.so.1.0.0" desc="Mesa EGL library binary"/>
+                <filteritem type="filepath" name="common/virt_full/hardware/gpu/x86_64/libGLESv1_CM.so.1.1.0" desc="Mesa OpenGL ES library binary"/>
+                <filteritem type="filepath" name="common/virt_full/hardware/gpu/x86_64/libGLESv2.so.2.0.0" desc="Mesa OpenGL ES library binary"/>
+                <filteritem type="filepath" name="common/virt_full/hardware/gpu/x86_64/libVkLayer_MESA_device_select.so" desc="Mesa Vulkan layer binary"/>
+                <filteritem type="filepath" name="common/virt_full/hardware/gpu/x86_64/libVkLayer_MESA_overlay.so" desc="Mesa Vulkan layer binary"/>
+                <filteritem type="filepath" name="common/virt_full/hardware/gpu/x86_64/libgbm.so.1.0.0" desc="Mesa GBM library binary"/>
+                <filteritem type="filepath" name="common/virt_full/hardware/gpu/x86_64/libglapi.so.0.0.0" desc="Mesa GL API library binary"/>
+                <filteritem type="filepath" name="common/virt_full/hardware/gpu/x86_64/libvulkan_virtio.so" desc="Virtio Vulkan driver binary"/>
+                <filteritem type="filepath" name="common/virt_full/hardware/gpu/x86_64/swrast_dri.so" desc="Mesa GPU driver binary"/>
+                <filteritem type="filepath" name="common/virt_full/hardware/gpu/x86_64/virtio_gpu_dri.so" desc="Virtio GPU driver binary"/>
                 <!--filteritem type="filename" name="*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="abcdefg/.*.uvwxyz" desc="Describe the reason for filtering scan results"/-->
                 <!--filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/-->
