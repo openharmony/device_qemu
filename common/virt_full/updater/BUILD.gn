@@ -12,7 +12,7 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
-virt_subsystem_name = "device_arm64_virt"
+import("//device/qemu/common/virt_full/device.gni")
 
 updater_ueventd_cfg = "//base/startup/init/services/etc/ueventd.cfg"
 
@@ -20,21 +20,21 @@ ohos_prebuilt_etc("updater_ueventd.cfg") {
   source = "${updater_ueventd_cfg}"
   install_images = [ "updater" ]
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
 }
 
 ohos_prebuilt_etc("updater_init.cfg") {
   source = "config/init.cfg"
   install_images = [ "updater" ]
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
 }
 
 ohos_prebuilt_etc("updater_init_virt_usb.cfg") {
   source = "config/init.virt.usb.cfg"
   install_images = [ "updater" ]
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
 }
 
 ohos_prebuilt_etc("signing_cert.crt") {
@@ -45,14 +45,14 @@ ohos_prebuilt_etc("signing_cert.crt") {
     "updater",
   ]
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
 }
 
 ohos_prebuilt_etc("fstab.updater") {
   source = "config/fstab.updater"
   install_images = [ "updater" ]
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
 }
 
 group("updater_files") {

@@ -13,12 +13,12 @@
 
 import("//build/config/components/init/param/param_fixer.gni")
 import("//build/ohos.gni")
-virt_subsystem_name = "device_arm64_virt"
+import("//device/qemu/common/virt_full/device.gni")
 
 ohos_prebuilt_etc("init.virt.cfg") {
   source = "init.virt.cfg"
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
   install_images = [ chipset_base_dir ]
   install_enable = true
 }
@@ -26,7 +26,7 @@ ohos_prebuilt_etc("init.virt.cfg") {
 ohos_prebuilt_etc("init.virt.usb.cfg") {
   source = "init.virt.usb.cfg"
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
   install_images = [ chipset_base_dir ]
   install_enable = true
 }
@@ -34,7 +34,7 @@ ohos_prebuilt_etc("init.virt.usb.cfg") {
 ohos_prebuilt_etc("fstab.virt") {
   source = "fstab.virt"
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
   install_images = [ vendor_base_dir ]
   install_enable = true
 }
@@ -44,7 +44,7 @@ ohos_prebuilt_para("default_param") {
   install_images = [ vendor_base_dir ]
   module_install_dir = "etc/param"
   subsystem_name = virt_subsystem_name
-  part_name = "qemu_virt_full"
+  part_name = virt_part_name
 }
 
 group("init_configs") {

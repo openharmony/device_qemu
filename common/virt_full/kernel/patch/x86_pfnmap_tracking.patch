@@ -1,0 +1,58 @@
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index bc29be670..32181448c 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -9,7 +9,7 @@
+ #include <linux/sched/clock.h>
+ #include <linux/random.h>
+ #include <linux/topology.h>
+-#include <linux/platform_data/x86/amd-fch.h>
++#include <linux/platform_data/gpio/gpio-amd-fch.h>
+ #include <asm/processor.h>
+ #include <asm/apic.h>
+ #include <asm/cacheinfo.h>
+diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
+index 36b603d0c..c1082e91a 100644
+--- a/arch/x86/mm/pat/memtype.c
++++ b/arch/x86/mm/pat/memtype.c
+@@ -986,15 +986,19 @@ static int get_pat_info(struct vm_area_struct *vma, resource_size_t *paddr,
+  * If the vma has a linear pfn mapping for the entire range, we get the prot
+  * from pte and reserve the entire vma range with single reserve_pfn_range call.
+  */
+-int track_pfn_copy(struct vm_area_struct *vma)
++int track_pfn_copy(struct vm_area_struct *dst_vma,
++		   struct vm_area_struct *src_vma, unsigned long *pfn)
+ {
+ 	resource_size_t paddr;
+-	unsigned long vma_size = vma->vm_end - vma->vm_start;
++	unsigned long vma_size = dst_vma->vm_end - dst_vma->vm_start;
+ 	pgprot_t pgprot;
+ 
+-	if (vma->vm_flags & VM_PAT) {
+-		if (get_pat_info(vma, &paddr, &pgprot))
++	*pfn = 0;
++
++	if (src_vma->vm_flags & VM_PAT) {
++		if (get_pat_info(src_vma, &paddr, &pgprot))
+ 			return -EINVAL;
++		*pfn = PHYS_PFN(paddr);
+ 		/* reserve the whole chunk covered by vma. */
+ 		return reserve_pfn_range(paddr, vma_size, &pgprot, 1);
+ 	}
+@@ -1002,6 +1006,16 @@ int track_pfn_copy(struct vm_area_struct *vma)
+ 	return 0;
+ }
+ 
++void untrack_pfn_copy(struct vm_area_struct *dst_vma, unsigned long pfn)
++{
++	if (!(dst_vma->vm_flags & VM_PAT))
++		return;
++
++	free_pfn_range((resource_size_t)pfn << PAGE_SHIFT,
++		       dst_vma->vm_end - dst_vma->vm_start);
++	vm_flags_clear(dst_vma, VM_PAT);
++}
++
+ /*
+  * prot is passed in as a parameter for the new mapping. If the vma has
+  * a linear pfn mapping for the entire range, or no vma is provided,

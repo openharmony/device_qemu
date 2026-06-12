@@ -1,4 +1,5 @@
-# Copyright (c) 2022 Huawei Device Co., Ltd.
+# Copyright (c) 2026 Huawei Device Co., Ltd.
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,20 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import("//build/ohos.gni")
-import("//device/qemu/x86_64_virt/linux/part_name.gni")
 
-if (x86_64_linux_full_product) {
-  group("all_image_conf") {
-    deps = []
-  }
-} else {
-  ohos_copy("all_image_conf") {
-    sources = [
-      "system_image_conf.txt",
-      "userdata_image_conf.txt",
-      "vendor_image_conf.txt",
-    ]
-    outputs = [ "${product_output_dir}/imagesconf/{{source_file_part}}" ]
-  }
+# Keep the legacy chipset part for the minimal product while rebinding the
+# shared linux assets to the full device part when building x86_64_virt.
+x86_64_linux_full_product = false
+x86_64_linux_part_name = "qemu_x86_64_linux_chipset"
+if (product_name == "x86_64_virt") {
+  x86_64_linux_full_product = true
+  x86_64_linux_part_name = "qemu_virt_full_x86_64"
 }
