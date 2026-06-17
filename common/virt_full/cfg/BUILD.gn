@@ -32,7 +32,11 @@ ohos_prebuilt_etc("init.virt.usb.cfg") {
 }
 
 ohos_prebuilt_etc("fstab.virt") {
-  source = "fstab.virt"
+  if (target_cpu == "x86_64") {
+    source = "reverted/fstab.virt"
+  } else {
+    source = "fstab.virt"
+  }
   subsystem_name = virt_subsystem_name
   part_name = virt_part_name
   install_images = [ vendor_base_dir ]

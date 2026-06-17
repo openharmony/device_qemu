@@ -51,6 +51,7 @@
             </filefilter>
             <filefilter name="defaultFilter" desc="Files not to check">
                 <filteritem type="filepath" name="arm_virt/linux/chipset/etc/fstab*.*" desc="fstab配置文件，不能加其他注释"/>
+                <filteritem type="filepath" name="common/virt_full/cfg/reverted/fstab*.*" desc="fstab配置文件，不能加其他注释"/>
                 <filteritem type="filepath" name="arm_virt/linux/rootfs/*.cfg" desc="init配置文件，不能加其他注释"/>
                 <filteritem type="filepath" name="arm_virt/linux/rootfs/*.para" desc="默认系统参数文件，不添加注释"/>
             </filefilter>

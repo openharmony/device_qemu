@@ -22,11 +22,9 @@ group("virt_group") {
     "//device/qemu/common/virt_full/kernel/firmware:virt_firmware",
     "//device/qemu/common/virt_full/distributedhardware:distributedhardware",
     "//device/qemu/common/virt_full/updater:updater_files",
+    "//device/qemu/common/virt_full/hardware:hardware_group",
     "//vendor/ohemu/virt:virtconfig_group",
   ]
-  if (target_cpu == "arm64") {
-    deps += [ "//device/qemu/common/virt_full/hardware:hardware_group" ]
-  }
   if (is_support_graphic) {
     deps += [
       "//device/qemu/common/virt_full/hardware/display:display_buffer_model",
