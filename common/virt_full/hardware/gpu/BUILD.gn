@@ -99,14 +99,49 @@ ohos_prebuilt_shared_library("libGLESv2.so.2.0.0") {
 }
 
 if (target_cpu == "x86_64") {
-  ohos_prebuilt_shared_library("virtio_gpu_dri.so") {
-    source = "${virt_gpu_prebuilt_dir}/virtio_gpu_dri.so"
+  # x86_64 runtime still dlopen()s these legacy Mesa impl names.
+  # The regular prebuilt symlink metadata is not materializing into the
+  # final image, so install explicit compatibility copies here.
+  ohos_copy("libEGL_impl_compat") {
+    sources = [ "${virt_gpu_prebuilt_dir}/libEGL.so.1.0.0" ]
+    outputs = [ "${target_out_dir}/libEGL_impl.so" ]
+    module_install_name = "libEGL_impl.so"
+    module_type = "lib"
+    prebuilt = true
+    install_enable = true
+    enable_strip = false
+    copy_linkable_file = true
     install_images = [ "system" ]
     module_install_dir = "$virt_lib"
     subsystem_name = virt_subsystem_name
     part_name = virt_part_name
-    install_enable = true
   }
+
+  ohos_copy("libGLESv3_impl_compat") {
+    sources = [ "${virt_gpu_prebuilt_dir}/libGLESv2.so.2.0.0" ]
+    outputs = [ "${target_out_dir}/libGLESv3_impl.so" ]
+    module_install_name = "libGLESv3_impl.so"
+    module_type = "lib"
+    prebuilt = true
+    install_enable = true
+    enable_strip = false
+    copy_linkable_file = true
+    install_images = [ "system" ]
+    module_install_dir = "$virt_lib"
+    subsystem_name = virt_subsystem_name
+    part_name = virt_part_name
+  }
+
+  # virtio_gpu_dri.so disabled due to render_service SIGSEGV crash
+  # The driver contains a bug in ohos_logger that causes crashes
+  # ohos_prebuilt_shared_library("virtio_gpu_dri.so") {
+  #   source = "${virt_gpu_prebuilt_dir}/virtio_gpu_dri.so"
+  #   install_images = [ "system" ]
+  #   module_install_dir = "$virt_lib"
+  #   subsystem_name = virt_subsystem_name
+  #   part_name = virt_part_name
+  #   install_enable = true
+  # }
 
   ohos_prebuilt_shared_library("swrast_dri.so") {
     source = "${virt_gpu_prebuilt_dir}/swrast_dri.so"
@@ -206,11 +241,13 @@ group("virtio") {
       ":VkLayer_MESA_device_select.json",
       ":VkLayer_MESA_overlay.json",
       ":icdconf.json",
+      ":libEGL_impl_compat",
+      ":libGLESv3_impl_compat",
       ":libVkLayer_MESA_device_select.so",
       ":libVkLayer_MESA_overlay.so",
       ":libvulkan_virtio.so",
       ":swrast_dri.so",
-      ":virtio_gpu_dri.so",
+      # ":virtio_gpu_dri.so",  # disabled due to render_service crashes
     ]
   }
 }

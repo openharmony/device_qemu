@@ -30,7 +30,7 @@ std::shared_ptr<DrmDevice> DrmDevice::mInstance;
 
 std::shared_ptr<HdiDeviceInterface> DrmDevice::Create()
 {
-    DISPLAY_LOGD();
+    DISPLAY_LOGI("DrmDevice Create begin");
     if (mDrmFd == nullptr) {
         const std::string name("virtio_gpu");
         int drmFd = open("/dev/dri/card0", O_RDWR | O_CLOEXEC); // drmOpen(name.c_str(), nullptr);
@@ -38,12 +38,13 @@ std::shared_ptr<HdiDeviceInterface> DrmDevice::Create()
             DISPLAY_LOGE("drm file:%{public}s open failed %{public}s", name.c_str(), strerror(errno));
             return nullptr;
         }
-        DISPLAY_LOGD("the drm fd is %{public}d", drmFd);
+        DISPLAY_LOGI("DrmDevice Create opened card0 fd=%{public}d", drmFd);
         mDrmFd = std::make_shared<HdiFd>(drmFd);
     }
     if (mInstance == nullptr) {
         mInstance = std::make_shared<DrmDevice>();
     }
+    DISPLAY_LOGI("DrmDevice Create end instance=%{public}p", mInstance.get());
     return mInstance;
 }
 
@@ -125,6 +126,7 @@ int32_t DrmDevice::GetProperty(uint32_t objId, uint32_t objType, const std::stri
 
 int32_t DrmDevice::Init()
 {
+    DISPLAY_LOGI("DrmDevice Init begin");
     int ret = drmSetClientCap(GetDrmFd(), DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
     DISPLAY_CHK_RETURN((ret), DISPLAY_FAILURE,
         DISPLAY_LOGE("DRM_CLIENT_CAP_UNIVERSAL_PLANES set failed %{public}s", strerror(errno)));
@@ -137,7 +139,7 @@ int32_t DrmDevice::Init()
     DISPLAY_LOGE("chenyf master");
     ret = drmIsMaster(GetDrmFd());
     DISPLAY_CHK_RETURN((!ret), DISPLAY_FAILURE, DISPLAY_LOGE("is not master : %{public}d", errno));
-
+    DISPLAY_LOGI("DrmDevice Init success fd=%{public}d", GetDrmFd());
     return DISPLAY_SUCCESS;
 }
 

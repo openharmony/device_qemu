@@ -23,7 +23,7 @@ namespace HDI {
 namespace DISPLAY {
 std::vector<std::shared_ptr<HdiDeviceInterface>> HdiDeviceInterface::DiscoveryDevice()
 {
-    DISPLAY_LOGD();
+    DISPLAY_LOGI("DiscoveryDevice begin");
     int ret;
     std::vector<std::shared_ptr<HdiDeviceInterface>> devices;
     std::shared_ptr<HdiDeviceInterface> drmDevice = DrmDevice::Create();
@@ -32,11 +32,12 @@ std::vector<std::shared_ptr<HdiDeviceInterface>> HdiDeviceInterface::DiscoveryDe
     }
     ret = drmDevice->Init();
     if (ret == DISPLAY_SUCCESS) {
-        DISPLAY_LOGD("drm device init success");
+        DISPLAY_LOGI("DiscoveryDevice drm device init success");
         devices.push_back(std::move(drmDevice));
     } else {
         DISPLAY_LOGE("drm device init failed");
     }
+    DISPLAY_LOGI("DiscoveryDevice end count=%{public}zu", devices.size());
     return devices;
 }
 }

@@ -37,9 +37,9 @@ HdiSession &HdiSession::GetInstance()
 
 void HdiSession::Init()
 {
-    DISPLAY_LOGD();
+    DISPLAY_LOGI("HdiSession Init begin");
     mHdiDevices = HdiDeviceInterface::DiscoveryDevice();
-    DISPLAY_LOGD("devices size %{public}zd", mHdiDevices.size());
+    DISPLAY_LOGI("HdiSession Init devices size %{public}zu", mHdiDevices.size());
     mHdiDisplays.clear();
     for (auto device : mHdiDevices) {
         auto displays = device->DiscoveryDisplay();
@@ -50,13 +50,16 @@ void HdiSession::Init()
         for (auto display : displays) {
             mHdiDisplays[display.first] = display.second;
         }
+        DISPLAY_LOGI("HdiSession Init discovered display batch size %{public}zu", displays.size());
     }
     mNetLinkMonitor = std::make_shared<HdiNetLinkMonitor>();
     mNetLinkMonitor->Init();
+    DISPLAY_LOGI("HdiSession Init end total displays %{public}zu", mHdiDisplays.size());
 }
 
 void HdiSession::HandleHotplug(bool plugIn)
 {
+    DISPLAY_LOGI("HdiSession HandleHotplug plugIn=%{public}d displays=%{public}zu", plugIn, mHdiDisplays.size());
     for (auto device : mHdiDevices) {
         for (auto displayMap : mHdiDisplays) {
             auto display = displayMap.second;
@@ -72,6 +75,8 @@ int32_t HdiSession::RegHotPlugCallback(HotPlugCallback callback, void *data)
 {
     DISPLAY_CHK_RETURN((callback == nullptr), DISPLAY_NULL_PTR, DISPLAY_LOGE("the callback is nullptr"));
     mHotPlugCallBacks.emplace(callback, data);
+    DISPLAY_LOGI("HdiSession RegHotPlugCallback callbacks=%{public}zu displays=%{public}zu",
+        mHotPlugCallBacks.size(), mHdiDisplays.size());
     for (auto displayMap : mHdiDisplays) {
         auto display = displayMap.second;
         if (display->IsConnected()) {
@@ -83,7 +88,8 @@ int32_t HdiSession::RegHotPlugCallback(HotPlugCallback callback, void *data)
 
 void HdiSession::DoHotPlugCallback(uint32_t devId, bool connect)
 {
-    DISPLAY_LOGD();
+    DISPLAY_LOGI("HdiSession DoHotPlugCallback devId=%{public}u connect=%{public}d cbCount=%{public}zu",
+        devId, connect, mHotPlugCallBacks.size());
     for (const auto &callback : mHotPlugCallBacks) {
         callback.first(devId, connect, callback.second);
     }
@@ -337,4 +343,3 @@ static int32_t SetLayerBlendType(uint32_t devId, uint32_t layerId, BlendType typ
     DISPLAY_LOGD();
     return HdiSession::GetInstance().CallLayerFunction(devId, layerId, &HdiLayer::SetLayerBlendType, type);
 }
-

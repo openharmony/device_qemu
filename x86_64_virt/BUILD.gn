@@ -27,8 +27,4 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 group("x86_64_virt") {
-  deps = [
-    "linux:qemu-x86_64-linux-group",
-    "linux_full:qemu-x86_64-linux-full-group",
-  ]
 }
