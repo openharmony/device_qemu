@@ -56,7 +56,7 @@ void RKExifNode::DeliverBuffer(std::shared_ptr<IBuffer> &buffer)
     int32_t id = buffer->GetStreamId();
     CAMERA_LOGE("RKExifNode::DeliverBuffer StreamId %{public}d", id);
     if (buffer->GetEncodeType() == ENCODE_TYPE_JPEG && gpsInfo_.size() > 0) {
-        int outPutBufferSize = 0;
+        int32_t bufferSize = static_cast<int32_t>(buffer->GetSize());
         exif_data exifInfo;
         exifInfo.latitude = gpsInfo_.at(LATITUDE_INDEX);
         exifInfo.longitude = gpsInfo_.at(LONGITUDE_INDEX);
@@ -65,10 +65,13 @@ void RKExifNode::DeliverBuffer(std::shared_ptr<IBuffer> &buffer)
         CAMERA_LOGI("%{public}s info.size = (%{public}d)\n", __FUNCTION__, info.size);
         if (info.size != -1) {
             exifInfo.frame_size = info.size;
-            ExifUtils::AddCustomExifInfo(exifInfo, buffer->GetVirAddress(), outPutBufferSize);
-            CAMERA_LOGI("%{public}s virAddress(%{public}p) and outPutBufferSize = (%{public}d)\n",
-                __FUNCTION__, buffer->GetVirAddress(), outPutBufferSize);
-            buffer->SetEsFrameSize(outPutBufferSize);
+            uint32_t exifRet = ExifUtils::AddCustomExifInfo(exifInfo, buffer->GetVirAddress(), bufferSize);
+            if (exifRet == RC_OK) {
+                CAMERA_LOGI("%{public}s and bufferSize = (%{public}d)\n", __FUNCTION__, bufferSize);
+                buffer->SetEsFrameSize(bufferSize);
+            } else {
+                CAMERA_LOGE("%{public}s AddCustomExifInfo failed, skip EXIF", __FUNCTION__);
+            }
         }
     }
 
