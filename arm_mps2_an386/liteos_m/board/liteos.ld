@@ -74,6 +74,27 @@ SECTIONS
     *(.data .data.* .gnu.linkonce.d.*)
   } > ram
 
+  .sysinitcall : ALIGN(0x4) {
+    __sysinitcall_start = .;
+    __sysinitcall0_start = .;
+    KEEP(*(SORT(.sysinitcall_level0_*)))
+    __sysinitcall1_start = .;
+    KEEP(*(SORT(.sysinitcall_level1_*)))
+    __sysinitcall2_start = .;
+    KEEP(*(SORT(.sysinitcall_level2_*)))
+    __sysinitcall3_start = .;
+    KEEP(*(SORT(.sysinitcall_level3_*)))
+    __sysinitcall4_start = .;
+    KEEP(*(SORT(.sysinitcall_level4_*)))
+    __sysinitcall5_start = .;
+    KEEP(*(SORT(.sysinitcall_level5_*)))
+    __sysinitcall6_start = .;
+    KEEP(*(SORT(.sysinitcall_level6_*)))
+    __sysinitcall7_start = .;
+    KEEP(*(SORT(.sysinitcall_level7_*)))
+    __sysinitcall_end = .;
+  } > ram
+
   .bss : ALIGN(0x4) {
    __bss_start = .;
    *(.dynbss)

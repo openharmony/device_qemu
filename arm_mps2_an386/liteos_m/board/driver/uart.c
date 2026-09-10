@@ -17,6 +17,7 @@
 #include "arm_uart_drv.h"
 #include "stdio.h"
 #include "los_config.h"
+#include "los_debug.h"
 #include "los_reg.h"
 #include "los_interrupt.h"
 #include "los_event.h"
@@ -44,6 +45,20 @@ INT32 UartGetc(VOID)
 INT32 UartPutc(INT32 c, VOID *file)
 {
     return arm_uart_write(&g_uartDev, (UINT8)c);
+}
+
+VOID UartPuts(const CHAR *s, UINT32 len, BOOL isLock)
+{
+    UINT32 intSave = 0;
+    if (isLock == UART_WITH_LOCK) {
+        intSave = LOS_IntLock();
+    }
+    for (UINT32 i = 0; i < len; i++) {
+        UartPutc((INT32)s[i], NULL);
+    }
+    if (isLock == UART_WITH_LOCK) {
+        LOS_IntRestore(intSave);
+    }
 }
 
 VOID UartReceiveHandler(VOID)
