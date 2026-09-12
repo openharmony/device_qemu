@@ -40,10 +40,9 @@
 #define _TARGET_CONFIG_H
 
 /*=============================================================================
-                                        System clock module configuration
+                                         System clock module configuration
 =============================================================================*/
 #define OS_SYS_CLOCK                                        SYSCLK_FREQ
-#define LOSCFG_BASE_CORE_TICK_PER_SECOND                    (100UL)
 #define LOSCFG_BASE_CORE_TICK_HW_TIME                       0
 #define LOSCFG_BASE_CORE_TICK_WTIMER                        0
 #define LOSCFG_BASE_CORE_TICK_RESPONSE_MAX                  0xFFFFFFUL
@@ -57,36 +56,17 @@
 /*=============================================================================
                                        Task module configuration
 =============================================================================*/
-#define LOSCFG_BASE_CORE_TSK_LIMIT                          24
-#define LOSCFG_BASE_CORE_TSK_IDLE_STACK_SIZE                (0x500U)
-#define LOSCFG_BASE_CORE_TSK_DEFAULT_STACK_SIZE             (0x1000U)
-#define LOSCFG_BASE_CORE_TSK_MIN_STACK_SIZE                 (0x130U)
-#define LOSCFG_BASE_CORE_TIMESLICE                          1
-#define LOSCFG_BASE_CORE_TIMESLICE_TIMEOUT                  20000
-#define LOSCFG_BASE_CORE_TSK_MONITOR                        1
 #define LOSCFG_BASE_CORE_EXC_TSK_SWITCH                     1
 
-/*=============================================================================
-                                       Semaphore module configuration
-=============================================================================*/
-#define LOSCFG_BASE_IPC_SEM                                 1
-#define LOSCFG_BASE_IPC_SEM_LIMIT                           48
-/*=============================================================================
-                                       Mutex module configuration
-=============================================================================*/
-#define LOSCFG_BASE_IPC_MUX                                 1
-#define LOSCFG_BASE_IPC_MUX_LIMIT                           24
-/*=============================================================================
-                                       Queue module configuration
-=============================================================================*/
-#define LOSCFG_BASE_IPC_QUEUE                               1
-#define LOSCFG_BASE_IPC_QUEUE_LIMIT                         24
+/* IPC module configuration (SEM/MUX/QUEUE/EVENT) managed by Kconfig + vendor defconfig */
+
 /*=============================================================================
                                        Software timer module configuration
 =============================================================================*/
 #define LOSCFG_BASE_CORE_SWTMR                              1
 #define LOSCFG_BASE_CORE_SWTMR_ALIGN                        1
 #define LOSCFG_BASE_CORE_SWTMR_LIMIT                        48
+#define LOSCFG_BASE_CORE_SWTMR_IN_ISR                       1
 /*=============================================================================
                                        Memory module configuration
 =============================================================================*/
@@ -95,9 +75,7 @@ extern unsigned int __heap_size;
 #define LOSCFG_SYS_EXTERNAL_HEAP                            1
 #define LOSCFG_SYS_HEAP_ADDR                                (void *)&__heap_start
 #define LOSCFG_SYS_HEAP_SIZE                                (unsigned int)&__heap_size
-#define LOSCFG_MEM_MUL_POOL                                 1
 #define OS_SYS_MEM_NUM                                      20
-#define LOSCFG_MEM_FREE_BY_TASKID                           1
 #define LOSCFG_MEMORY_BESTFIT                               1
 
 /* =============================================================================
@@ -112,5 +90,10 @@ extern unsigned int __heap_size;
 =============================================================================*/
 #define LOSCFG_USE_SHELL                                    1
 #define LOSCFG_SHELL_PRIO                                   3
+
+/*=============================================================================
+                                        Initcall mechanism
+=============================================================================*/
+#define LOSCFG_KERNEL_INITCALL                              1
 
 #endif /* _TARGET_CONFIG_H */
