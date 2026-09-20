@@ -82,6 +82,7 @@ VOID Uart0RxIrqRegister(VOID)
 {
     (void)arm_uart_irq_rx_enable(&g_uartDev);
     (void)LOS_HwiCreate(Uart0_Rx_IRQn, 0, 0, (HWI_PROC_FUNC)UartReceiveHandler, 0);
+    LOS_HwiEnable(Uart0_Rx_IRQn);
     return;
 }
 #ifdef __cplusplus

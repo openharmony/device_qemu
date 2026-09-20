@@ -69,6 +69,20 @@ SECTIONS
     *(.rodata1)
   } > ram
 
+  .init_array : ALIGN(0x4) {
+    __init_array_start = .;
+    KEEP(*(.init_array))
+    KEEP(*(.init_array.*))
+    __init_array_end = .;
+  } > ram
+
+  .fini_array : ALIGN(0x4) {
+    __fini_array_start = .;
+    KEEP(*(.fini_array))
+    KEEP(*(.fini_array.*))
+    __fini_array_end = .;
+  } > ram
+
   .data : {
     __data_start = . ;
     *(.data .data.* .gnu.linkonce.d.*)
