@@ -1203,6 +1203,7 @@ err_t EthernetifInit(struct netif* netif)
     /* Enable Ethernet interrupts */
     lan9118_enable_interrupt(g_dev, LAN9118_INTERRUPT_RX_STATUS_FIFO_LEVEL);
     (void)LOS_HwiCreate(ETHERNET_IRQn, 0, 0, (HWI_PROC_FUNC)EthernetReceiveHandler, 0);
+    LOS_HwiEnable(ETHERNET_IRQn);
 
 #if LWIP_IPV4
     netif->output = etharp_output;
